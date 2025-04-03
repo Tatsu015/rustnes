@@ -38,6 +38,9 @@ impl CPU {
                         self.status = self.status & 0b0111_1111;
                     }
                 }
+                0x00 => {
+                    return;
+                }
                 _ => todo!(""),
             }
         }
