@@ -129,8 +129,7 @@ mod test {
     #[test]
     fn test_0xaa_tax_move_a_to_x() {
         let mut cpu = CPU::new();
-        cpu.register_a = 10;
-        cpu.load_and_run(vec![0xaa, 0x00]);
+        cpu.load_and_run(vec![0xa9, 0x0a, 0xaa, 0x00]);
         assert_eq!(cpu.register_x, 10)
     }
 
@@ -138,7 +137,7 @@ mod test {
     fn test_inx_overflow() {
         let mut cpu = CPU::new();
         cpu.register_x = 0xff;
-        cpu.load_and_run(vec![0xe8, 0xe8, 0x00]);
+        cpu.load_and_run(vec![0xa9, 0xff, 0xaa, 0xe8, 0xe8]);
 
         assert_eq!(cpu.register_x, 1)
     }
