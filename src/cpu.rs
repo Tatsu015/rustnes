@@ -1,6 +1,22 @@
+#[derive(Debug)]
+#[allow(non_camel_case_types)]
+pub enum AddressingMode {
+    Immediate,
+    ZeroPage,
+    ZeroPage_X,
+    ZeroPage_Y,
+    Absolute,
+    Absolute_X,
+    Absolute_Y,
+    Indirect_X,
+    Indirect_Y,
+    NoneAdressing,
+}
+
 pub struct CPU {
     pub register_a: u8,
     pub register_x: u8,
+    pub register_y: u8,
     pub status: u8,
     pub program_counter: u16,
     pub memory: [u8; 0xFFFF],
@@ -11,6 +27,7 @@ impl CPU {
         CPU {
             register_a: 0,
             register_x: 0,
+            register_y: 0,
             status: 0,
             program_counter: 0,
             memory: [0; 0xFFFF],
@@ -72,6 +89,31 @@ impl CPU {
                 0xE8 => self.inx(),
                 0x00 => return, // BRK
                 _ => todo!(""),
+            }
+        }
+    }
+
+    fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
+        match mode {
+            AddressingMode::Immediate => self.program_counter,
+            AddressingMode::ZeroPage => self.mem_read(self.program_counter) as u16,
+            AddressingMode::Absolute => self.mem_read_u16(self.program_counter),
+            AddressingMode::ZeroPage_X => {
+                let pos = self.mem_read(self.program_counter);
+                let addr = pos.wrapping_add(self.register_x) as u16;
+                addr
+            }
+            AddressingMode::ZeroPage_Y => {
+                let pos = self.mem_read(self.program_counter);
+                let addr = pos.wrapping_add(self.register_y) as u16;
+                addr
+            }
+            AddressingMode::Absolute_X => {}
+            AddressingMode::Absolute_Y => {}
+            AddressingMode::Indirect_X => {}
+            AddressingMode::Indirect_Y => {}
+            AddressingMode::NoneAdressing => {
+                panic!("mode {:?} is not supported", mode)
             }
         }
     }
