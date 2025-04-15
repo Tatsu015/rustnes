@@ -96,6 +96,9 @@ impl CPU {
     fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
         match mode {
             AddressingMode::Immediate => self.program_counter,
+            // `page` is 256byte memory region.
+            // for ex. 0page:0x0000 ~ 0x00FF, 1page:0x0100 ~ 0x01FF, ...
+            // ZeroPage adressing uses only the first 256 bytes of memory, where the adress is in the instruction
             AddressingMode::ZeroPage => self.mem_read(self.program_counter) as u16,
             AddressingMode::Absolute => self.mem_read_u16(self.program_counter),
             AddressingMode::ZeroPage_X => {
@@ -108,7 +111,10 @@ impl CPU {
                 let addr = pos.wrapping_add(self.register_y) as u16;
                 addr
             }
-            AddressingMode::Absolute_X => {}
+            AddressingMode::Absolute_X => {
+                let base = self.mem_read_u16(self.program_counter);
+                let addr = base.wrapping_add(self)
+            }
             AddressingMode::Absolute_Y => {}
             AddressingMode::Indirect_X => {}
             AddressingMode::Indirect_Y => {}
