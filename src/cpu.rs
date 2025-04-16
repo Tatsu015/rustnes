@@ -125,7 +125,7 @@ impl CPU {
             AddressingMode::Indirect_X => {
                 let base = self.mem_read(self.program_counter);
 
-                let ptr = base.wrapping_add(self.register_x);
+                let ptr = (base as u8).wrapping_add(self.register_x);
                 let lo = self.mem_read(ptr as u16);
                 let hi = self.mem_read(ptr.wrapping_add(1) as u16);
                 let addr = (hi as u16) << 8 | lo as u16;
@@ -135,7 +135,7 @@ impl CPU {
                 let base = self.mem_read(self.program_counter);
 
                 let lo = self.mem_read(base as u16);
-                let hi = self.mem_read(base.wrapping_add(1) as u16);
+                let hi = self.mem_read((base as u8).wrapping_add(1) as u16);
                 let deref_base = (hi as u16) << 8 | lo as u16;
                 let deref = deref_base.wrapping_add(self.register_y as u16);
                 deref
