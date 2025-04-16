@@ -95,6 +95,7 @@ impl CPU {
 
     fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
         match mode {
+            // Immidiate use program counter value as operand adress
             AddressingMode::Immediate => self.program_counter,
             // `page` is 256byte memory region.
             // for ex. 0page:0x0000 ~ 0x00FF, 1page:0x0100 ~ 0x01FF, ...
@@ -113,11 +114,32 @@ impl CPU {
             }
             AddressingMode::Absolute_X => {
                 let base = self.mem_read_u16(self.program_counter);
-                let addr = base.wrapping_add(self)
+                let addr = base.wrapping_add(self.register_x as u16);
+                addr
             }
-            AddressingMode::Absolute_Y => {}
-            AddressingMode::Indirect_X => {}
-            AddressingMode::Indirect_Y => {}
+            AddressingMode::Absolute_Y => {
+                let base = self.mem_read_u16(self.program_counter);
+                let addr = base.wrapping_add(self.register_y as u16);
+                addr
+            }
+            AddressingMode::Indirect_X => {
+                let base = self.mem_read(self.program_counter);
+
+                let ptr = base.wrapping_add(self.register_x);
+                let lo = self.mem_read(ptr as u16);
+                let hi = self.mem_read(ptr.wrapping_add(1) as u16);
+                let addr = (hi as u16) << 8 | lo as u16;
+                addr
+            }
+            AddressingMode::Indirect_Y => {
+                let base = self.mem_read(self.program_counter);
+
+                let lo = self.mem_read(base as u16);
+                let hi = self.mem_read(base.wrapping_add(1) as u16);
+                let deref_base = (hi as u16) << 8 | lo as u16;
+                let deref = deref_base.wrapping_add(self.register_y as u16);
+                deref
+            }
             AddressingMode::NoneAdressing => {
                 panic!("mode {:?} is not supported", mode)
             }
