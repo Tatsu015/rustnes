@@ -82,8 +82,8 @@ impl CPU {
             match opscode {
                 0xA9 => {
                     let param = self.memory[self.program_counter as usize];
+                    self.lda(param);
                     self.program_counter += 1;
-                    self.lda(param)
                 }
                 0xAA => self.tax(),
                 0xE8 => self.inx(),
