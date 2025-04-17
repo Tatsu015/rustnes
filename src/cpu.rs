@@ -84,6 +84,14 @@ impl CPU {
                     self.lda(&AddressingMode::Immediate);
                     self.program_counter += 1;
                 }
+                0xA5 => {
+                    self.lda(&AddressingMode::ZeroPage);
+                    self.program_counter += 1;
+                }
+                0xAD => {
+                    self.lda(&AddressingMode::Absolute);
+                    self.program_counter += 2;
+                }
                 0xAA => self.tax(),
                 0xE8 => self.inx(),
                 0x00 => return, // BRK
