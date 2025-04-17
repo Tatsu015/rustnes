@@ -81,8 +81,7 @@ impl CPU {
 
             match opscode {
                 0xA9 => {
-                    let param = self.memory[self.program_counter as usize];
-                    self.lda(param);
+                    self.lda(&AddressingMode::Immediate);
                     self.program_counter += 1;
                 }
                 0xAA => self.tax(),
@@ -152,7 +151,10 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_x);
     }
 
-    fn lda(&mut self, value: u8) {
+    fn lda(&mut self, mode: &AddressingMode) {
+        // let addr = self.program_counter as usize;
+        let addr = self.get_operand_adress(mode);
+        let value = self.mem_read(addr);
         self.register_a = value;
         self.update_zero_and_negative_flags(self.register_a);
     }
