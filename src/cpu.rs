@@ -92,6 +92,14 @@ impl CPU {
                     self.lda(&AddressingMode::Absolute);
                     self.program_counter += 2;
                 }
+                0x85 => {
+                    self.sta(&AddressingMode::ZeroPage);
+                    self.program_counter += 1
+                }
+                0x95 => {
+                    self.sta(&AddressingMode::ZeroPage_X);
+                    self.program_counter += 1
+                }
                 0xAA => self.tax(),
                 0xE8 => self.inx(),
                 0x00 => return, // BRK
@@ -160,7 +168,6 @@ impl CPU {
     }
 
     fn lda(&mut self, mode: &AddressingMode) {
-        // let addr = self.program_counter as usize;
         let addr = self.get_operand_adress(mode);
         let value = self.mem_read(addr);
         self.register_a = value;
@@ -170,6 +177,11 @@ impl CPU {
     fn inx(&mut self) {
         self.register_x = self.register_x.wrapping_add(1);
         self.update_zero_and_negative_flags(self.register_x);
+    }
+
+    fn sta(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        self.mem_write(addr, self.register_a);
     }
 
     fn update_zero_and_negative_flags(&mut self, result: u8) {
