@@ -161,6 +161,16 @@ impl CPU {
         }
     }
 
+    fn adc(&mut self, mode: &AddressingMode) {
+        todo!("fixme")
+    }
+
+    fn and(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        self.register_a = self.register_a & self.mem_read(addr);
+        self.update_zero_and_negative_flags(self.register_a);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
