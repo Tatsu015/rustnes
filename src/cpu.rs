@@ -171,6 +171,23 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_a);
     }
 
+    fn asl(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr) * 2;
+
+        let bit7_val = self.register_a >> 7;
+        self.status = self.status | bit7_val;
+
+        self.mem_write(addr, data);
+    }
+
+    fn asl_accumulator(&mut self) {
+        let bit7_val = self.register_a >> 7;
+        self.status = self.status | bit7_val;
+
+        self.register_a = self.register_a * 2;
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
