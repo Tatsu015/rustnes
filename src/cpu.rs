@@ -27,6 +27,7 @@ bitflags! {
         const NEGATIVE = 0b1000_0000;
     }
 }
+const INITIAL_STATUS: u8 = CpuFlags::RESERVED.bits() | CpuFlags::INTERRUPT_DISABLE.bits();
 
 pub struct CPU {
     pub register_a: u8,
@@ -43,7 +44,7 @@ impl CPU {
             register_a: 0,
             register_x: 0,
             register_y: 0,
-            status: 0,
+            status: CpuFlags::from_bits_truncate(INITIAL_STATUS),
             program_counter: 0,
             memory: [0; 0xFFFF],
         }
@@ -78,7 +79,7 @@ impl CPU {
     pub fn reset(&mut self) {
         self.register_a = 0;
         self.register_x = 0;
-        self.status = 0;
+        self.status = CpuFlags::from_bits_truncate(INITIAL_STATUS);
 
         self.program_counter = self.mem_read_u16(0xFFFC);
     }
@@ -176,30 +177,39 @@ impl CPU {
         }
     }
 
-    fn adc(&mut self, mode: &AddressingMode) {
+    #[allow(dead_code)]
+    fn adc(&mut self, _mode: &AddressingMode) {
         todo!("fixme")
     }
 
+    #[allow(dead_code)]
     fn and(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
         self.register_a = self.register_a & self.mem_read(addr);
         self.update_zero_and_negative_flags(self.register_a);
     }
 
+    #[allow(dead_code)]
     fn asl(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
         let data = self.mem_read(addr) * 2;
 
-        let bit7_val = self.register_a >> 7;
-        self.status = self.status | bit7_val;
+        if self.register_a >> 7 == 1 {
+            self.status.insert(CpuFlags::CARRY);
+        } else {
+            self.status.remove(CpuFlags::CARRY);
+        }
 
         self.mem_write(addr, data);
     }
 
+    #[allow(dead_code)]
     fn asl_accumulator(&mut self) {
-        let bit7_val = self.register_a >> 7;
-        self.status = self.status | bit7_val;
-
+        if self.register_a >> 7 == 1 {
+            self.status.insert(CpuFlags::CARRY);
+        } else {
+            self.status.remove(CpuFlags::CARRY);
+        }
         self.register_a = self.register_a * 2;
     }
 
@@ -228,14 +238,14 @@ impl CPU {
 
     fn update_zero_and_negative_flags(&mut self, result: u8) {
         if result == 0 {
-            self.status = self.status | 0b0000_0010;
+            self.status.insert(CpuFlags::ZERO);
         } else {
-            self.status = self.status & 0b1111_1101;
+            self.status.remove(CpuFlags::ZERO);
         }
         if result & 0b1000_0000 != 0 {
-            self.status = self.status | 0b1000_0000;
+            self.status.insert(CpuFlags::NEGATIVE);
         } else {
-            self.status = self.status & 0b0111_1111;
+            self.status.remove(CpuFlags::NEGATIVE);
         }
     }
 }
@@ -249,15 +259,15 @@ mod test {
         let mut cpu = CPU::new();
         cpu.load_and_run(vec![0xa9, 0x05, 0x00]);
         assert_eq!(cpu.register_a, 0x05);
-        assert!(cpu.status & 0b0000_0010 == 0b00);
-        assert!(cpu.status & 0b1000_0000 == 0);
+        assert!(!cpu.status.contains(CpuFlags::ZERO));
+        assert!(!cpu.status.contains(CpuFlags::NEGATIVE));
     }
 
     #[test]
     fn test_0xa9_lda_zero_flag() {
         let mut cpu = CPU::new();
         cpu.load_and_run(vec![0xa9, 0x00, 0x00]);
-        assert!(cpu.status & 0b0000_0010 == 0b10)
+        assert!(cpu.status.contains(CpuFlags::ZERO))
     }
 
     #[test]
