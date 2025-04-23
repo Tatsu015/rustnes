@@ -215,31 +215,21 @@ impl CPU {
 
     #[allow(dead_code)]
     fn bcc(&mut self) {
-        if self.status.contains(CpuFlags::CARRY) {
-            let jump = self.mem_read(self.program_counter) as i8;
-            let jump_addr = self
-                .program_counter
-                .wrapping_add(1)
-                .wrapping_add(jump as u16);
-            self.program_counter = jump_addr;
-        }
+        self.branch(self.status.contains(CpuFlags::CARRY));
     }
 
     #[allow(dead_code)]
     fn bcs(&mut self) {
-        if !self.status.contains(CpuFlags::CARRY) {
-            let jump = self.mem_read(self.program_counter);
-            let jump_addr = self
-                .program_counter
-                .wrapping_add(1)
-                .wrapping_add(jump as u16);
-            self.program_counter = jump_addr;
-        }
+        self.branch(!self.status.contains(CpuFlags::CARRY));
     }
 
     #[allow(dead_code)]
     fn beq(&mut self) {
-        if self.status.contains(CpuFlags::ZERO) {
+        self.branch(self.status.contains(CpuFlags::ZERO));
+    }
+
+    fn branch(&mut self, condition: bool) {
+        if condition {
             let jump = self.mem_read(self.program_counter);
             let jump_addr = self
                 .program_counter
