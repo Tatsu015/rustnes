@@ -225,6 +225,18 @@ impl CPU {
         }
     }
 
+    #[allow(dead_code)]
+    fn bcs(&mut self) {
+        if !self.status.contains(CpuFlags::CARRY) {
+            let jump = self.mem_read(self.program_counter);
+            let jump_addr = self
+                .program_counter
+                .wrapping_add(1)
+                .wrapping_add(jump as u16);
+            self.program_counter = jump_addr;
+        }
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
