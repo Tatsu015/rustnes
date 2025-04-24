@@ -228,6 +228,23 @@ impl CPU {
         self.branch(self.status.contains(CpuFlags::ZERO));
     }
 
+    #[allow(dead_code)]
+    fn bit(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        let and = self.register_a & data;
+        if and == 0 {
+            self.status.insert(CpuFlags::ZERO);
+        } else {
+            self.status.remove(CpuFlags::ZERO);
+        }
+
+        self.status
+            .set(CpuFlags::NEGATIVE, data & CpuFlags::NEGATIVE.bits() > 0);
+        self.status
+            .set(CpuFlags::OVERFLOW, data & CpuFlags::OVERFLOW.bits() > 0);
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
