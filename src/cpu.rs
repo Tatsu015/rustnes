@@ -255,6 +255,11 @@ impl CPU {
         self.branch(!self.status.contains(CpuFlags::ZERO));
     }
 
+    #[allow(dead_code)]
+    fn bpl(&mut self) {
+        self.branch(!self.status.contains(CpuFlags::NEGATIVE));
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
