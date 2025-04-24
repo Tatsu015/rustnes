@@ -245,6 +245,11 @@ impl CPU {
             .set(CpuFlags::OVERFLOW, data & CpuFlags::OVERFLOW.bits() > 0);
     }
 
+    #[allow(dead_code)]
+    fn bmi(&mut self) {
+        self.branch(self.status.contains(CpuFlags::NEGATIVE));
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
