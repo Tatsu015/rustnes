@@ -272,6 +272,11 @@ impl CPU {
         self.branch(self.status.contains(CpuFlags::OVERFLOW));
     }
 
+    #[allow(dead_code)]
+    fn clc(&mut self) {
+        self.status.remove(CpuFlags::CARRY);
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
