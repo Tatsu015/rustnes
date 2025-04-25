@@ -277,6 +277,11 @@ impl CPU {
         self.status.remove(CpuFlags::CARRY);
     }
 
+    #[allow(dead_code)]
+    fn cld(&mut self) {
+        self.status.remove(CpuFlags::DECIMAL);
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
