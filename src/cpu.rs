@@ -262,6 +262,11 @@ impl CPU {
 
     // no brk function needed. 0x00 case only return
 
+    #[allow(dead_code)]
+    fn bvc(&mut self) {
+        self.branch(!self.status.contains(CpuFlags::OVERFLOW));
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
