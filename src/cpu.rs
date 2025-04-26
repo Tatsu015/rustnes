@@ -316,6 +316,18 @@ impl CPU {
         self.update_zero_and_negative_flags(data.wrapping_sub(data));
     }
 
+    #[allow(dead_code)]
+    fn cpy(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        if self.register_y >= data {
+            self.status.insert(CpuFlags::CARRY);
+        } else {
+            self.status.remove(CpuFlags::CARRY);
+        }
+        self.update_zero_and_negative_flags(self.register_y.wrapping_sub(data));
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
