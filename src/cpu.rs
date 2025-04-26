@@ -301,7 +301,7 @@ impl CPU {
         } else {
             self.status.remove(CpuFlags::CARRY);
         }
-        self.update_zero_and_negative_flags(data.wrapping_sub(data));
+        self.update_zero_and_negative_flags(self.register_a.wrapping_sub(data));
     }
 
     #[allow(dead_code)]
@@ -313,7 +313,7 @@ impl CPU {
         } else {
             self.status.remove(CpuFlags::CARRY);
         }
-        self.update_zero_and_negative_flags(data.wrapping_sub(data));
+        self.update_zero_and_negative_flags(self.register_x.wrapping_sub(data));
     }
 
     #[allow(dead_code)]
