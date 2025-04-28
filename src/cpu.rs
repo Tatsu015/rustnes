@@ -337,6 +337,12 @@ impl CPU {
         self.update_zero_and_negative_flags(new_data);
     }
 
+    #[allow(dead_code)]
+    fn dex(&mut self) {
+        self.register_x = self.register_x.wrapping_sub(1);
+        self.update_zero_and_negative_flags(self.register_x);
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
