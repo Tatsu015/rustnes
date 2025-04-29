@@ -357,6 +357,15 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_a); // [TODO] maybe need.
     }
 
+    #[allow(dead_code)]
+    fn inc(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        let new_data = data.wrapping_add(1);
+        self.mem_write(addr, new_data);
+        self.update_zero_and_negative_flags(new_data);
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
