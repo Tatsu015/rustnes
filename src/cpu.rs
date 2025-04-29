@@ -28,6 +28,7 @@ bitflags! {
     }
 }
 const INITIAL_STATUS: u8 = CpuFlags::RESERVED.bits() | CpuFlags::INTERRUPT_DISABLE.bits();
+const INITIAL_STACK: u8 = 0xFD;
 
 pub struct CPU {
     pub register_a: u8,
@@ -35,6 +36,7 @@ pub struct CPU {
     pub register_y: u8,
     pub status: CpuFlags,
     pub program_counter: u16,
+    pub stack_pointer: u8,
     pub memory: [u8; 0xFFFF],
 }
 
@@ -46,6 +48,7 @@ impl CPU {
             register_y: 0,
             status: CpuFlags::from_bits_truncate(INITIAL_STATUS),
             program_counter: 0,
+            stack_pointer: INITIAL_STACK,
             memory: [0; 0xFFFF],
         }
     }
@@ -79,6 +82,8 @@ impl CPU {
     pub fn reset(&mut self) {
         self.register_a = 0;
         self.register_x = 0;
+        self.register_y = 0;
+        self.stack_pointer = INITIAL_STACK;
         self.status = CpuFlags::from_bits_truncate(INITIAL_STATUS);
 
         self.program_counter = self.mem_read_u16(0xFFFC);
