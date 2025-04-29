@@ -409,11 +409,6 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_a);
     }
 
-    fn inx(&mut self) {
-        self.register_x = self.register_x.wrapping_add(1);
-        self.update_zero_and_negative_flags(self.register_x);
-    }
-
     fn sta(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
         self.mem_write(addr, self.register_a);
