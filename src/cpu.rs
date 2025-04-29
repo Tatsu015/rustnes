@@ -367,7 +367,7 @@ impl CPU {
     }
 
     #[allow(dead_code)]
-    fn inx(&mut self, mode: &AddressingMode) {
+    fn inx(&mut self) {
         self.register_x.wrapping_add(1);
         self.update_zero_and_negative_flags(self.register_x);
     }
