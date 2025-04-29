@@ -378,6 +378,13 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_y);
     }
 
+    #[allow(dead_code)]
+    fn jmp(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read_u16(addr);
+        self.program_counter = data;
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
