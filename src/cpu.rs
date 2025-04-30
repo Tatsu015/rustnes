@@ -394,9 +394,9 @@ impl CPU {
     #[allow(dead_code)]
     fn jsr(&mut self) {
         let pc = self.program_counter - 1;
-        let hi = pc >> 8;
-        let lo = pc & 0xFF;
-        self.stack_push(data);
+        self.stack_push_u16(pc);
+        let adress = self.mem_read_u16(self.program_counter);
+        self.program_counter = adress;
     }
 
     fn branch(&mut self, condition: bool) {
