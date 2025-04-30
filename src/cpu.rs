@@ -419,6 +419,31 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_y);
     }
 
+    #[allow(dead_code)]
+    fn lsr(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        if data & 1 == 1 {
+            self.status.insert(CpuFlags::CARRY);
+        } else {
+            self.status.remove(CpuFlags::CARRY);
+        }
+        let new_data = data >> 1;
+        self.mem_write(addr, new_data);
+        self.update_zero_and_negative_flags(new_data);
+    }
+
+    #[allow(dead_code)]
+    fn lsr_accumulator(&mut self) {
+        if self.register_a & 1 == 1 {
+            self.status.insert(CpuFlags::CARRY);
+        } else {
+            self.status.remove(CpuFlags::CARRY);
+        }
+        self.register_a = self.register_a >> 1;
+        self.update_zero_and_negative_flags(self.register_a);
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
