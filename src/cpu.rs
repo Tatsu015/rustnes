@@ -401,9 +401,15 @@ impl CPU {
 
     fn lda(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
-        let value = self.mem_read(addr);
-        self.register_a = value;
+        self.register_a = self.mem_read(addr);
         self.update_zero_and_negative_flags(self.register_a);
+    }
+
+    #[allow(dead_code)]
+    fn ldx(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        self.register_x = self.mem_read(addr);
+        self.update_zero_and_negative_flags(self.register_x);
     }
 
     fn branch(&mut self, condition: bool) {
@@ -441,6 +447,7 @@ impl CPU {
         }
     }
 
+    #[allow(dead_code)]
     fn stack_pop(&mut self) -> u8 {
         let _ = self.stack_pointer.wrapping_add(1);
         self.mem_read((STACK as u16) + self.stack_pointer as u16)
@@ -451,6 +458,7 @@ impl CPU {
         let _ = self.stack_pointer.wrapping_sub(1);
     }
 
+    #[allow(dead_code)]
     fn stack_pop_u16(&mut self) -> u16 {
         let lo = self.stack_pop() as u16;
         let hi = self.stack_pop() as u16;
