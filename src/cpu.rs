@@ -399,6 +399,13 @@ impl CPU {
         self.program_counter = adress;
     }
 
+    fn lda(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let value = self.mem_read(addr);
+        self.register_a = value;
+        self.update_zero_and_negative_flags(self.register_a);
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
@@ -414,13 +421,6 @@ impl CPU {
         self.register_x = self.register_a;
 
         self.update_zero_and_negative_flags(self.register_x);
-    }
-
-    fn lda(&mut self, mode: &AddressingMode) {
-        let addr = self.get_operand_adress(mode);
-        let value = self.mem_read(addr);
-        self.register_a = value;
-        self.update_zero_and_negative_flags(self.register_a);
     }
 
     fn sta(&mut self, mode: &AddressingMode) {
