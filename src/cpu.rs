@@ -374,14 +374,14 @@ impl CPU {
 
     #[allow(dead_code)]
     fn inx(&mut self) {
-        let data = self.register_x.wrapping_add(1);
-        self.update_zero_and_negative_flags(data);
+        self.register_x = self.register_x.wrapping_add(1);
+        self.update_zero_and_negative_flags(self.register_x);
     }
 
     #[allow(dead_code)]
     fn iny(&mut self) {
-        let data = self.register_y.wrapping_add(1);
-        self.update_zero_and_negative_flags(data);
+        self.register_y = self.register_y.wrapping_add(1);
+        self.update_zero_and_negative_flags(self.register_y);
     }
 
     #[allow(dead_code)]
@@ -449,7 +449,7 @@ impl CPU {
 
     #[allow(dead_code)]
     fn stack_pop(&mut self) -> u8 {
-        let _ = self.stack_pointer.wrapping_add(1);
+        self.stack_pointer = self.stack_pointer.wrapping_add(1);
         self.mem_read((STACK as u16) + self.stack_pointer as u16)
     }
 
