@@ -28,6 +28,7 @@ bitflags! {
     }
 }
 const INITIAL_STATUS: u8 = CpuFlags::RESERVED.bits() | CpuFlags::INTERRUPT_DISABLE.bits();
+const STACK: u16 = 0x0100;
 const INITIAL_STACK: u8 = 0xFD;
 
 pub struct CPU {
@@ -390,6 +391,13 @@ impl CPU {
         self.program_counter = data;
     }
 
+    #[allow(dead_code)]
+    fn jsr(&mut self) {
+        let pc = self.program_counter - 1;
+        let hi = pc >> 8;
+        let lo = pc & 0xFF;
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
@@ -430,6 +438,16 @@ impl CPU {
         } else {
             self.status.remove(CpuFlags::NEGATIVE);
         }
+    }
+
+    fn stack_pop(&mut self) -> u8 {
+        let _ = self.stack_pointer.wrapping_add(1);
+        self.mem_read((STACK as u16) + self.stack_pointer as u16)
+    }
+
+    fn stack_push(&mut self, data: u8) {
+        self.mem_write((STACK as u16) + self.stack_pointer as u16, data);
+        let _ = self.stack_pointer.wrapping_sub(1);
     }
 }
 
