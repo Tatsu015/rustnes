@@ -444,17 +444,6 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_a);
     }
 
-    fn branch(&mut self, condition: bool) {
-        if condition {
-            let jump = self.mem_read(self.program_counter);
-            let jump_addr = self
-                .program_counter
-                .wrapping_add(1)
-                .wrapping_add(jump as u16);
-            self.program_counter = jump_addr;
-        }
-    }
-
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
@@ -464,6 +453,17 @@ impl CPU {
     fn sta(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
         self.mem_write(addr, self.register_a);
+    }
+
+    fn branch(&mut self, condition: bool) {
+        if condition {
+            let jump = self.mem_read(self.program_counter);
+            let jump_addr = self
+                .program_counter
+                .wrapping_add(1)
+                .wrapping_add(jump as u16);
+            self.program_counter = jump_addr;
+        }
     }
 
     fn update_zero_and_negative_flags(&mut self, result: u8) {
