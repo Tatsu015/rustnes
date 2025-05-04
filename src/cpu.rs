@@ -449,6 +449,14 @@ impl CPU {
         // nothing to do
     }
 
+    #[allow(dead_code)]
+    fn ora(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        self.register_a = data | self.register_a;
+        self.update_zero_and_negative_flags(self.register_a);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
