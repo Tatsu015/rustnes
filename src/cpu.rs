@@ -457,6 +457,11 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_a);
     }
 
+    #[allow(dead_code)]
+    fn pha(&mut self) {
+        self.stack_push(self.register_a);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
