@@ -484,6 +484,40 @@ impl CPU {
         self.status.remove(CpuFlags::RESERVED);
     }
 
+    #[allow(dead_code)]
+    fn rol(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let mut data = self.mem_read(addr);
+        let carry = self.status.contains(CpuFlags::CARRY);
+        let bit7 = data << 7;
+        if bit7 == 0 {
+            self.status.remove(CpuFlags::CARRY);
+        } else {
+            self.status.insert(CpuFlags::CARRY);
+        }
+
+        data = data << 1;
+        data = data | (carry as u8);
+        self.mem_write(addr, data);
+        self.update_zero_and_negative_flags(data);
+    }
+
+    #[allow(dead_code)]
+    fn rol_accumulate(&mut self) {
+        let mut data = self.register_a;
+        let carry = self.status.contains(CpuFlags::CARRY);
+        let bit7 = data << 7;
+        if bit7 == 0 {
+            self.status.remove(CpuFlags::CARRY);
+        } else {
+            self.status.insert(CpuFlags::CARRY);
+        }
+        data = data << 1;
+        data = data | (carry as u8);
+        self.register_a = data;
+        self.update_zero_and_negative_flags(data);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
