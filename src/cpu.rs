@@ -477,6 +477,13 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_a);
     }
 
+    #[allow(dead_code)]
+    fn plp(&mut self) {
+        self.status = CpuFlags::from_bits_truncate(self.stack_pop());
+        self.status.remove(CpuFlags::BREAK);
+        self.status.remove(CpuFlags::RESERVED);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
