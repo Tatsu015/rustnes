@@ -16,6 +16,7 @@ pub enum AddressingMode {
 }
 
 bitflags! {
+    #[derive(Debug, Clone)]
     pub struct CpuFlags:u8 {
         const CARRY = 0b0000_0001;
         const ZERO = 0b0000_0010;
@@ -460,6 +461,14 @@ impl CPU {
     #[allow(dead_code)]
     fn pha(&mut self) {
         self.stack_push(self.register_a);
+    }
+
+    #[allow(dead_code)]
+    fn php(&mut self) {
+        let mut data = self.status.clone();
+        data.insert(CpuFlags::BREAK);
+        data.insert(CpuFlags::RESERVED);
+        self.stack_push(data.bits());
     }
 
     fn tax(&mut self) {
