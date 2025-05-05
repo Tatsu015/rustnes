@@ -471,6 +471,12 @@ impl CPU {
         self.stack_push(data.bits());
     }
 
+    #[allow(dead_code)]
+    fn pla(&mut self) {
+        self.register_a = self.stack_pop();
+        self.update_zero_and_negative_flags(self.register_a);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
