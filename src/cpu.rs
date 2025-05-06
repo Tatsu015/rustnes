@@ -562,6 +562,11 @@ impl CPU {
         self.program_counter = self.stack_pop_u16();
     }
 
+    #[allow(dead_code)]
+    fn rts(&mut self) {
+        self.program_counter = self.stack_pop_u16() + 1;
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
