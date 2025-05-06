@@ -642,6 +642,12 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_x);
     }
 
+    #[allow(dead_code)]
+    fn txa(&mut self) {
+        self.register_a = self.register_x;
+        self.update_zero_and_negative_flags(self.register_a);
+    }
+
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter);
