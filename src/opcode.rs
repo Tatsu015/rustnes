@@ -62,8 +62,20 @@ lazy_static! {
         // BEQ
         OpCode::new(0xf0, "BEQ", 2, 2 /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
         // BIT
-        OpCode::new(0x24, "ASL", 2, 5, ZeroPage),
-        OpCode::new(0x2c, "ASL", 2, 6, Absolute),
+        OpCode::new(0x24, "BIT", 2, 5, ZeroPage),
+        OpCode::new(0x2c, "BIT", 2, 6, Absolute),
+        // BMI
+        OpCode::new(0x30, "BMI", 2, 2, /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
+        // BNE
+        OpCode::new(0xd0, "BNE", 2, 2, /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
+        // BPL
+        OpCode::new(0x10, "BPL", 2, 2, /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
+        // BRK
+        OpCode::new(0x00, "BRK", 1, 7, NoneAdressing),
+        // BVC
+        OpCode::new(0xd0, "BNE", 2, 2, /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
+        // BVS
+        OpCode::new(0x70, "BNE", 2, 2, /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
 
 
         // BRK
