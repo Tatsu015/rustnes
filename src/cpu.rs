@@ -619,6 +619,12 @@ impl CPU {
         self.mem_write(addr, self.register_x);
     }
 
+    #[allow(dead_code)]
+    fn sty(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        self.mem_write(addr, self.register_y);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
