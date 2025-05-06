@@ -49,6 +49,13 @@ lazy_static! {
         OpCode::new(0x39, "AND", 3, 4 /*(+1 if page crossed)*/, Absolute_Y),
         OpCode::new(0x21, "AND", 2, 6, Indirect_X),
         OpCode::new(0x31, "AND", 2, 5 /*(+1 if page crossed)*/, Indirect_Y),
+        // ASL
+        OpCode::new(0x29, "ASL", 1, 2, NoneAdressing),
+        OpCode::new(0x25, "ASL", 2, 5, ZeroPage),
+        OpCode::new(0x35, "ASL", 2, 6, ZeroPage_X),
+        OpCode::new(0x2d, "ASL", 3, 6, Absolute),
+        OpCode::new(0x3d, "ASL", 3, 7, Absolute_X),
+
 
         // BRK
         OpCode::new(0x00, "BRK", 1, 7, NoneAdressing),
