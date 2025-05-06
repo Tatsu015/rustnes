@@ -481,7 +481,7 @@ impl CPU {
     fn plp(&mut self) {
         self.status = CpuFlags::from_bits_truncate(self.stack_pop());
         self.status.remove(CpuFlags::BREAK);
-        self.status.remove(CpuFlags::RESERVED);
+        self.status.insert(CpuFlags::RESERVED);
     }
 
     #[allow(dead_code)]
@@ -551,6 +551,15 @@ impl CPU {
         data = data | (carry as u8) << 7;
         self.register_a = data;
         self.update_zero_and_negative_flags(data);
+    }
+
+    #[allow(dead_code)]
+    fn rti(&mut self) {
+        self.status = CpuFlags::from_bits_truncate(self.stack_pop());
+        self.status.remove(CpuFlags::BREAK);
+        self.status.insert(CpuFlags::RESERVED);
+
+        self.program_counter = self.stack_pop_u16();
     }
 
     fn tax(&mut self) {
