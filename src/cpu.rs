@@ -608,15 +608,15 @@ impl CPU {
         self.status.insert(CpuFlags::INTERRUPT_DISABLE);
     }
 
+    fn sta(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        self.mem_write(addr, self.register_a);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
         self.update_zero_and_negative_flags(self.register_x);
-    }
-
-    fn sta(&mut self, mode: &AddressingMode) {
-        let addr = self.get_operand_adress(mode);
-        self.mem_write(addr, self.register_a);
     }
 
     fn branch(&mut self, condition: bool) {
