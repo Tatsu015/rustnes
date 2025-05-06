@@ -185,8 +185,28 @@ impl CPU {
     }
 
     #[allow(dead_code)]
-    fn adc(&mut self, _mode: &AddressingMode) {
-        todo!("fixme")
+    fn adc(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        let carry = if self.status.contains(CpuFlags::CARRY) {
+            1
+        } else {
+            0
+        };
+        let overable_resule = self.register_a as i16 + data as i16 + carry as i16;
+        if overable_resule > 0xff {
+            self.status.remove(CpuFlags::CARRY);
+        } else {
+            self.status.insert(CpuFlags::CARRY);
+        }
+        let result = overable_resule as u8;
+        if (result ^ self.register_a) & (result ^ data) & 0x80 == 0 {
+            self.status.remove(CpuFlags::OVERFLOW);
+        } else {
+            self.status.insert(CpuFlags::OVERFLOW);
+        }
+        self.register_a = result;
+        self.update_zero_and_negative_flags(result);
     }
 
     #[allow(dead_code)]
@@ -576,8 +596,14 @@ impl CPU {
         } else {
             0
         };
-        let add_data = data.wrapping_neg().wrapping_add(carry);
-        let (result, overflow) = self.register_a.overflowing_add(add_data);
+        let overable_result = self.register_a as i16 - (data as i16) + carry as i16;
+        if overable_result > 0xff {
+            self.status.remove(CpuFlags::CARRY);
+        } else {
+            self.status.insert(CpuFlags::CARRY);
+        }
+        let result = overable_result as u8;
+
         if (result ^ self.register_a) & (result ^ data) & 0x80 == 0 {
             self.status.remove(CpuFlags::OVERFLOW);
         } else {
@@ -585,11 +611,6 @@ impl CPU {
         }
 
         self.register_a = result;
-        if overflow {
-            self.status.remove(CpuFlags::CARRY);
-        } else {
-            self.status.insert(CpuFlags::CARRY);
-        }
         self.update_zero_and_negative_flags(result);
     }
 
