@@ -518,6 +518,41 @@ impl CPU {
         self.update_zero_and_negative_flags(data);
     }
 
+    #[allow(dead_code)]
+    fn ror(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let mut data = self.mem_read(addr);
+        let carry = self.status.contains(CpuFlags::CARRY);
+        let bit0 = data & 1;
+        if bit0 == 0 {
+            self.status.remove(CpuFlags::CARRY);
+        } else {
+            self.status.insert(CpuFlags::CARRY);
+        }
+
+        data = data >> 1;
+        data = data | (carry as u8) << 7;
+        self.mem_write(addr, data);
+        self.update_zero_and_negative_flags(data);
+    }
+
+    #[allow(dead_code)]
+    fn ror_accumulator(&mut self) {
+        let mut data = self.register_a;
+        let carry = self.status.contains(CpuFlags::CARRY);
+        let bit0 = data & 1;
+        if bit0 == 0 {
+            self.status.remove(CpuFlags::CARRY);
+        } else {
+            self.status.insert(CpuFlags::CARRY);
+        }
+
+        data = data >> 1;
+        data = data | (carry as u8) << 7;
+        self.register_a = data;
+        self.update_zero_and_negative_flags(data);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
