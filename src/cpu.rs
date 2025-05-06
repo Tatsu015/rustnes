@@ -647,6 +647,10 @@ impl CPU {
         self.register_a = self.register_x;
         self.update_zero_and_negative_flags(self.register_a);
     }
+    #[allow(dead_code)]
+    fn txs(&mut self) {
+        self.stack_pointer = self.register_x;
+    }
 
     fn branch(&mut self, condition: bool) {
         if condition {
