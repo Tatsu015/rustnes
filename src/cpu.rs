@@ -613,6 +613,12 @@ impl CPU {
         self.mem_write(addr, self.register_a);
     }
 
+    #[allow(dead_code)]
+    fn stx(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        self.mem_write(addr, self.register_x);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
