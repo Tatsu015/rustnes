@@ -55,6 +55,15 @@ lazy_static! {
         OpCode::new(0x35, "ASL", 2, 6, ZeroPage_X),
         OpCode::new(0x2d, "ASL", 3, 6, Absolute),
         OpCode::new(0x3d, "ASL", 3, 7, Absolute_X),
+        // BCC
+        OpCode::new(0x90, "BCC", 2, 2 /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
+        // BCS
+        OpCode::new(0xb0, "BCS", 2, 2 /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
+        // BEQ
+        OpCode::new(0xf0, "BEQ", 2, 2 /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
+        // BIT
+        OpCode::new(0x24, "ASL", 2, 5, ZeroPage),
+        OpCode::new(0x2c, "ASL", 2, 6, Absolute),
 
 
         // BRK
