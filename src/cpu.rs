@@ -593,6 +593,11 @@ impl CPU {
         self.update_zero_and_negative_flags(result);
     }
 
+    #[allow(dead_code)]
+    fn sec(&mut self) {
+        self.status.insert(CpuFlags::CARRY);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
