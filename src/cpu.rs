@@ -603,6 +603,11 @@ impl CPU {
         self.status.insert(CpuFlags::DECIMAL);
     }
 
+    #[allow(dead_code)]
+    fn sei(&mut self) {
+        self.status.insert(CpuFlags::INTERRUPT_DISABLE);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
