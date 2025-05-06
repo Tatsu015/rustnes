@@ -567,6 +567,32 @@ impl CPU {
         self.program_counter = self.stack_pop_u16() + 1;
     }
 
+    #[allow(dead_code)]
+    fn sbc(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        let carry = if self.status.contains(CpuFlags::CARRY) {
+            1
+        } else {
+            0
+        };
+        let add_data = data.wrapping_neg().wrapping_add(carry);
+        let (result, overflow) = self.register_a.overflowing_add(add_data);
+        if (result ^ self.register_a) & (result ^ data) & 0x80 == 0 {
+            self.status.remove(CpuFlags::OVERFLOW);
+        } else {
+            self.status.insert(CpuFlags::OVERFLOW);
+        }
+
+        self.register_a = result;
+        if overflow {
+            self.status.remove(CpuFlags::CARRY);
+        } else {
+            self.status.insert(CpuFlags::CARRY);
+        }
+        self.update_zero_and_negative_flags(result);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
