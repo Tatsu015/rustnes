@@ -598,6 +598,11 @@ impl CPU {
         self.status.insert(CpuFlags::CARRY);
     }
 
+    #[allow(dead_code)]
+    fn sed(&mut self) {
+        self.status.insert(CpuFlags::DECIMAL);
+    }
+
     fn tax(&mut self) {
         self.register_x = self.register_a;
 
