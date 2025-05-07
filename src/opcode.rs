@@ -84,6 +84,46 @@ lazy_static! {
         OpCode::new(0x58, "CLD", 1, 2, , NoneAdressing),
         // CLV
         OpCode::new(0xb8, "CLD", 1, 2, , NoneAdressing),
+        // CMP
+        OpCode::new(0xc9, "CMP", 2, 2, Immidiate),
+        OpCode::new(0xc5, "CMP", 2, 3, ZeroPage),
+        OpCode::new(0xd5, "CMP", 2, 4, ZeroPage_X),
+        OpCode::new(0xcd, "CMP", 3, 4, Absolute),
+        OpCode::new(0xdd, "CMP", 3, 4 /*(+1 if page crossed)*/, Absolute_X),
+        OpCode::new(0xd9, "CMP", 3, 4 /*(+1 if page crossed)*/, Absolute_Y),
+        OpCode::new(0xc1, "CMP", 2, 6, Indirect_X),
+        OpCode::new(0xd1, "CMP", 2, 5 /*(+1 if page crossed)*/, Indirect_Y),
+        // CPX
+        OpCode::new(0xe0, "CPX", 2, 2, Immidiate),
+        OpCode::new(0xe4, "CPX", 2, 3, ZeroPage),
+        OpCode::new(0xec, "CPX", 3, 4, Absolute),
+        // CPY
+        OpCode::new(0xc0, "CPY", 2, 2, Immidiate),
+        OpCode::new(0xc4, "CPY", 2, 3, ZeroPage),
+        OpCode::new(0xcc, "CPY", 3, 4, Absolute),
+        // DEC
+        OpCode::new(0xc6, "DEC", 2, 5, ZeroPage),
+        OpCode::new(0xd6, "DEC", 2, 6, ZeroPage_X),
+        OpCode::new(0xce, "DEC", 3, 6, Absolute),
+        OpCode::new(0xde, "DEC", 3, 7, Absolute_X),
+        // DEX
+        OpCode::new(0xca, "DEX", 1, 2, NoneAdressing),
+        // DEY
+        OpCode::new(0x88, "DEY", 1, 2, NoneAdressing),
+        // EOR
+        OpCode::new(0x49, "EOR", 2, 2, Immidiate),
+        OpCode::new(0x45, "EOR", 2, 3, ZeroPage),
+        OpCode::new(0x55, "EOR", 2, 4, ZeroPage_X),
+        OpCode::new(0x4d, "EOR", 3, 4, Absolute),
+        OpCode::new(0x5d, "EOR", 3, 4 /*(+1 if page crossed)*/, Absolute_X),
+        OpCode::new(0x59, "EOR", 3, 4 /*(+1 if page crossed)*/, Absolute_Y),
+        OpCode::new(0x41, "EOR", 2, 6, Indirect_X),
+        OpCode::new(0x51, "EOR", 2, 5 /*(+1 if page crossed)*/, Indirect_Y),
+        // INC
+        OpCode::new(0xe6, "INC", 2, 5, ZeroPage),
+        OpCode::new(0xf6, "INC", 2, 6, ZeroPage_X),
+        OpCode::new(0xee, "INC", 3, 6, Absolute),
+        OpCode::new(0xfe, "INC", 3, 7, Absolute_X),
 
         // BRK
         OpCode::new(0x00, "BRK", 1, 7, NoneAdressing),
