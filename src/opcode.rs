@@ -75,8 +75,15 @@ lazy_static! {
         // BVC
         OpCode::new(0xd0, "BNE", 2, 2, /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
         // BVS
-        OpCode::new(0x70, "BNE", 2, 2, /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
-
+        OpCode::new(0x70, "BVS", 2, 2, /*(+1 if branch succeeds +2 if to a new page)*/, NoneAdressing),
+        // CLC
+        OpCode::new(0x18, "CVC", 1, 2, , NoneAdressing),
+        // CLD
+        OpCode::new(0xd8, "CLD", 1, 2, , NoneAdressing),
+        // CLI
+        OpCode::new(0x58, "CLD", 1, 2, , NoneAdressing),
+        // CLV
+        OpCode::new(0xb8, "CLD", 1, 2, , NoneAdressing),
 
         // BRK
         OpCode::new(0x00, "BRK", 1, 7, NoneAdressing),
