@@ -124,6 +124,14 @@ lazy_static! {
         OpCode::new(0xf6, "INC", 2, 6, ZeroPage_X),
         OpCode::new(0xee, "INC", 3, 6, Absolute),
         OpCode::new(0xfe, "INC", 3, 7, Absolute_X),
+        // INX
+        OpCode::new(0xe8, "INX", 1, 2, ZeroPage),
+        // INY
+        OpCode::new(0xc8, "INY", 1, 2, ZeroPage),
+        // JMP
+        OpCode::new(0x4c, "JMP", 3, 3, Absolute),
+        OpCode::new(0x6c, "JMP", 3, 5, NoneAdressing),
+
 
         // BRK
         OpCode::new(0x00, "BRK", 1, 7, NoneAdressing),
