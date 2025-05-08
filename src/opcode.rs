@@ -154,7 +154,23 @@ lazy_static! {
         OpCode::new(0xb4, "LDY", 2, 4, ZeroPage_X),
         OpCode::new(0xac, "LDY", 3, 4, Absolute),
         OpCode::new(0xbc, "LDY", 3, 4 /*(+1 if page crossed)*/, Absolute_X),
-
+        // LSR
+        OpCode::new(0x4a, "LSR", 1, 2, NoneAdressing),
+        OpCode::new(0x46, "LSR", 2, 5, ZeroPage),
+        OpCode::new(0x56, "LSR", 2, 6, ZeroPage_X),
+        OpCode::new(0x4e, "LSR", 3, 6, Absolute),
+        OpCode::new(0x5e, "LSR", 3, 7, Absolute_X),
+        // NOP
+        OpCode::new(0xea, "NOP", 1, 2, NoneAdressing),
+        // ORA
+        OpCode::new(0x09, "ORA", 2, 2, Immidiate),
+        OpCode::new(0x05, "ORA", 2, 3, ZeroPage),
+        OpCode::new(0x15, "ORA", 2, 4, ZeroPage_X),
+        OpCode::new(0x0d, "ORA", 3, 4, Absolute),
+        OpCode::new(0x1d, "ORA", 3, 4 /*(+1 if page crossed)*/, Absolute_X),
+        OpCode::new(0x19, "ORA", 3, 4 /*(+1 if page crossed)*/, Absolute_Y),
+        OpCode::new(0x01, "ORA", 2, 6, Indirect_X),
+        OpCode::new(0x11, "ORA", 2, 5 /*(+1 if page crossed)*/, Indirect_Y),
 
         // BRK
         OpCode::new(0x00, "BRK", 1, 7, NoneAdressing),
