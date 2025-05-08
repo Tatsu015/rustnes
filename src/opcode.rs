@@ -171,6 +171,41 @@ lazy_static! {
         OpCode::new(0x19, "ORA", 3, 4 /*(+1 if page crossed)*/, Absolute_Y),
         OpCode::new(0x01, "ORA", 2, 6, Indirect_X),
         OpCode::new(0x11, "ORA", 2, 5 /*(+1 if page crossed)*/, Indirect_Y),
+        // PHA
+        OpCode::new(0x48, "PHA", 1, 3, NoneAdressing),
+        // PHP
+        OpCode::new(0x08, "PHP", 1, 3, NoneAdressing),
+        // PLA
+        OpCode::new(0x68, "PLA", 1, 4, NoneAdressing),
+        // PLP
+        OpCode::new(0x28, "PLP", 1, 4, NoneAdressing),
+        // ROL
+        OpCode::new(0x2a, "ROL", 1, 2, NoneAdressing),
+        OpCode::new(0x26, "ROL", 2, 5, ZeroPage),
+        OpCode::new(0x36, "ROL", 2, 6, ZeroPage_X),
+        OpCode::new(0x2e, "ROL", 3, 6, Absolute),
+        OpCode::new(0x3e, "RSL", 3, 7, Absolute_X),
+        // ROR
+        OpCode::new(0x6a, "ROR", 1, 2, NoneAdressing),
+        OpCode::new(0x66, "ROR", 2, 5, ZeroPage),
+        OpCode::new(0x76, "ROR", 2, 6, ZeroPage_X),
+        OpCode::new(0x6e, "ROR", 3, 6, Absolute),
+        OpCode::new(0x7e, "ROR", 3, 7, Absolute_X),
+        // RTI
+        OpCode::new(0x40, "RTI", 1, 6, NoneAdressing),
+        // RTS
+        OpCode::new(0x60, "RTS", 1, 6, NoneAdressing),
+        // SBC
+        OpCode::new(0xe9, "SBC", 2, 2, Immidiate),
+        OpCode::new(0xe5, "SBC", 2, 3, ZeroPage),
+        OpCode::new(0xf5, "SBC", 2, 4, ZeroPage_X),
+        OpCode::new(0xed, "SBC", 3, 4, Absolute),
+        OpCode::new(0xfd, "SBC", 3, 4 /*(+1 if page crossed)*/, Absolute_X),
+        OpCode::new(0xf9, "SBC", 3, 4 /*(+1 if page crossed)*/, Absolute_Y),
+        OpCode::new(0xe1, "SBC", 2, 6, Indirect_X),
+        OpCode::new(0xf1, "SBC", 2, 5 /*(+1 if page crossed)*/, Indirect_Y),
+
+
 
         // BRK
         OpCode::new(0x00, "BRK", 1, 7, NoneAdressing),
