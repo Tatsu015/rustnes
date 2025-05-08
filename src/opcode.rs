@@ -204,10 +204,39 @@ lazy_static! {
         OpCode::new(0xf9, "SBC", 3, 4 /*(+1 if page crossed)*/, Absolute_Y),
         OpCode::new(0xe1, "SBC", 2, 6, Indirect_X),
         OpCode::new(0xf1, "SBC", 2, 5 /*(+1 if page crossed)*/, Indirect_Y),
-
-
-
-        // BRK
-        OpCode::new(0x00, "BRK", 1, 7, NoneAdressing),
+        // SEC
+        OpCode::new(0x38, "SEC", 1, 2, NoneAdressing),
+        // SED
+        OpCode::new(0xf8, "SED", 1, 2, NoneAdressing),
+        // SEI
+        OpCode::new(0x78, "SEI", 1, 2, NoneAdressing),
+        // STA
+        OpCode::new(0x85, "STA", 2, 3, ZeroPage),
+        OpCode::new(0x95, "STA", 2, 4, ZeroPage_X),
+        OpCode::new(0x8d, "STA", 3, 4, Absolute),
+        OpCode::new(0x9d, "STA", 3, 5, Absolute_X),
+        OpCode::new(0x99, "STA", 3, 5, Absolute_Y),
+        OpCode::new(0x81, "STA", 2, 6, Indirect_X),
+        OpCode::new(0x91, "STA", 2, 5, Indirect_Y),
+        // STX
+        OpCode::new(0x86, "STX", 2, 3, ZeroPage),
+        OpCode::new(0x96, "STX", 2, 4, ZeroPage_X),
+        OpCode::new(0x8e, "STX", 3, 4, Absolute),
+        // STY
+        OpCode::new(0x84, "STY", 2, 3, ZeroPage),
+        OpCode::new(0x94, "STY", 2, 4, ZeroPage_X),
+        OpCode::new(0x8c, "STY", 3, 4, Absolute),
+        // TAX
+        OpCode::new(0xaa, "TAX", 1, 2, NoneAdressing),
+        // TAY
+        OpCode::new(0xa8, "TAY", 1, 2, NoneAdressing),
+        // TSX
+        OpCode::new(0xba, "TSX", 1, 2, NoneAdressing),
+        // TXA
+        OpCode::new(0x8a, "TXA", 1, 2, NoneAdressing),
+        // TXS
+        OpCode::new(0x9a, "TXS", 1, 2, NoneAdressing),
+        // TYA
+        OpCode::new(0x98, "TYA", 1, 2, NoneAdressing),
     ];
 }
