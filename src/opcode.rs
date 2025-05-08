@@ -239,4 +239,12 @@ lazy_static! {
         // TYA
         OpCode::new(0x98, "TYA", 1, 2, NoneAdressing),
     ];
+
+    pub static ref OPECODE_MAP: MashMap<u8, &'static OpCode>={
+        let mut map = HashMap::new();
+        for cpuop in &*CPU_OPS_CODES{
+            map.insert(cpuop.code, cpuop);
+        }
+        map
+    };
 }
