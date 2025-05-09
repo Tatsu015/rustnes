@@ -1,3 +1,6 @@
+use crate::opcode::{self, OpCode};
+use std::collections::HashMap;
+
 use bitflags::bitflags;
 
 #[derive(Debug)]
@@ -98,6 +101,7 @@ impl CPU {
     }
 
     pub fn run(&mut self) {
+        let ref opcodes: HashMap<u8, &'static OpCode> = *opcode::OPECODE_MAP;
         loop {
             let opscode = self.mem_read(self.program_counter);
             self.program_counter += 1;
