@@ -105,20 +105,20 @@ impl CPU {
         loop {
             let code = self.mem_read(self.program_counter);
             self.program_counter += 1;
-            let program_counter_state = self.program_counter;
+            let before_program_counter = self.program_counter;
 
             let opcode = opcodes
                 .get(&code)
                 .expect(&format!("OpCode {:x} is not recognized", code));
 
             match code {
-                0xA9 => {
+                0xa9 => {
                     self.lda(&opcode.mode);
                 }
-                0xA5 => {
+                0xa5 => {
                     self.lda(&opcode.mode);
                 }
-                0xAD => {
+                0xad => {
                     self.lda(&opcode.mode);
                 }
                 0x85 => {
@@ -127,12 +127,12 @@ impl CPU {
                 0x95 => {
                     self.sta(&opcode.mode);
                 }
-                0xAA => self.tax(),
-                0xE8 => self.inx(),
+                0xaa => self.tax(),
+                0xe8 => self.inx(),
                 0x00 => return, // BRK
                 _ => todo!(""),
             }
-            if program_counter_state == self.program_counter {
+            if before_program_counter == self.program_counter {
                 self.program_counter += (opcode.len - 1) as u16;
             }
         }
