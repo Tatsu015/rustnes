@@ -33,7 +33,7 @@ bitflags! {
 }
 const INITIAL_STATUS: u8 = CpuFlags::RESERVED.bits() | CpuFlags::INTERRUPT_DISABLE.bits();
 const STACK: u16 = 0x0100;
-const INITIAL_STACK: u8 = 0xFD;
+const INITIAL_STACK: u8 = 0xfd;
 
 pub struct CPU {
     pub register_a: u8,
@@ -42,7 +42,7 @@ pub struct CPU {
     pub status: CpuFlags,
     pub program_counter: u16,
     pub stack_pointer: u8,
-    pub memory: [u8; 0xFFFF],
+    pub memory: [u8; 0xffff],
 }
 
 impl CPU {
@@ -54,7 +54,7 @@ impl CPU {
             status: CpuFlags::from_bits_truncate(INITIAL_STATUS),
             program_counter: 0,
             stack_pointer: INITIAL_STACK,
-            memory: [0; 0xFFFF],
+            memory: [0; 0xffff],
         }
     }
 
@@ -81,7 +81,7 @@ impl CPU {
 
     pub fn load(&mut self, program: Vec<u8>) {
         self.memory[0x8000..(0x8000 + program.len())].copy_from_slice(&program[..]);
-        self.mem_write_u16(0xFFFC, 0x8000);
+        self.mem_write_u16(0xfffc, 0x8000);
     }
 
     pub fn reset(&mut self) {
@@ -91,7 +91,7 @@ impl CPU {
         self.stack_pointer = INITIAL_STACK;
         self.status = CpuFlags::from_bits_truncate(INITIAL_STATUS);
 
-        self.program_counter = self.mem_read_u16(0xFFFC);
+        self.program_counter = self.mem_read_u16(0xfffc);
     }
 
     pub fn load_and_run(&mut self, program: Vec<u8>) {
@@ -143,7 +143,7 @@ impl CPU {
             // Immidiate use program counter value as operand adress
             AddressingMode::Immediate => self.program_counter,
             // `page` is 256byte memory region.
-            // for ex. 0page:0x0000 ~ 0x00FF, 1page:0x0100 ~ 0x01FF, ...
+            // for ex. 0page:0x0000 ~ 0x00ff, 1page:0x0100 ~ 0x01ff, ...
             // ZeroPage adressing uses only the first 256 bytes of memory, where the adress is in the instruction
             AddressingMode::ZeroPage => self.mem_read(self.program_counter) as u16,
             AddressingMode::Absolute => self.mem_read_u16(self.program_counter),
