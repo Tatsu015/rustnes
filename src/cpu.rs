@@ -1,5 +1,5 @@
 use crate::opcode::{self, OpCode};
-use std::collections::HashMap;
+use std::{collections::HashMap, os::unix::process};
 
 use bitflags::bitflags;
 
@@ -103,34 +103,37 @@ impl CPU {
     pub fn run(&mut self) {
         let ref opcodes: HashMap<u8, &'static OpCode> = *opcode::OPECODE_MAP;
         loop {
-            let opscode = self.mem_read(self.program_counter);
+            let code = self.mem_read(self.program_counter);
             self.program_counter += 1;
+            let program_counter_state = self.program_counter;
 
-            match opscode {
+            let opcode = opcodes
+                .get(&code)
+                .expect(&format!("OpCode {:x} is not recognized", code));
+
+            match code {
                 0xA9 => {
-                    self.lda(&AddressingMode::Immediate);
-                    self.program_counter += 1;
+                    self.lda(&opcode.mode);
                 }
                 0xA5 => {
-                    self.lda(&AddressingMode::ZeroPage);
-                    self.program_counter += 1;
+                    self.lda(&opcode.mode);
                 }
                 0xAD => {
-                    self.lda(&AddressingMode::Absolute);
-                    self.program_counter += 2;
+                    self.lda(&opcode.mode);
                 }
                 0x85 => {
-                    self.sta(&AddressingMode::ZeroPage);
-                    self.program_counter += 1
+                    self.sta(&opcode.mode);
                 }
                 0x95 => {
-                    self.sta(&AddressingMode::ZeroPage_X);
-                    self.program_counter += 1
+                    self.sta(&opcode.mode);
                 }
                 0xAA => self.tax(),
                 0xE8 => self.inx(),
                 0x00 => return, // BRK
                 _ => todo!(""),
+            }
+            if program_counter_state == self.program_counter {
+                self.program_counter += (opcode.len - 1) as u16;
             }
         }
     }
