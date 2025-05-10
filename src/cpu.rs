@@ -1,5 +1,5 @@
 use crate::opcode::{self, OpCode};
-use std::{collections::HashMap, os::unix::process};
+use std::collections::HashMap;
 
 use bitflags::bitflags;
 
@@ -112,6 +112,10 @@ impl CPU {
                 .expect(&format!("OpCode {:x} is not recognized", code));
 
             match code {
+                0x69 | 0x65 | 0x75 | 0x6d | 0x7d | 0x79 | 0x61 | 0x71 => self.adc(&opcode.mode),
+                0x29 | 0x25 | 0x35 | 0x2d | 0x3d | 0x39 | 0x21 | 0x31 => self.and(&opcode.mode),
+                0x0a | 0x06 | 0x16 | 0x0e | 0x1e => self.asl(&opcode.mode),
+
                 0xa9 => {
                     self.lda(&opcode.mode);
                 }
