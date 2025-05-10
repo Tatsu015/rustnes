@@ -115,25 +115,36 @@ impl CPU {
                 0x69 | 0x65 | 0x75 | 0x6d | 0x7d | 0x79 | 0x61 | 0x71 => self.adc(&opcode.mode),
                 0x29 | 0x25 | 0x35 | 0x2d | 0x3d | 0x39 | 0x21 | 0x31 => self.and(&opcode.mode),
                 0x0a | 0x06 | 0x16 | 0x0e | 0x1e => self.asl(&opcode.mode),
-
-                0xa9 => {
-                    self.lda(&opcode.mode);
-                }
-                0xa5 => {
-                    self.lda(&opcode.mode);
-                }
-                0xad => {
-                    self.lda(&opcode.mode);
-                }
-                0x85 => {
-                    self.sta(&opcode.mode);
-                }
-                0x95 => {
-                    self.sta(&opcode.mode);
-                }
-                0xaa => self.tax(),
-                0xe8 => self.inx(),
+                0x90 => self.bcc(),
+                0xb0 => self.bcs(),
+                0xf0 => self.beq(),
+                0x24 | 0x2c => self.bit(&opcode.mode),
+                0x30 => self.bmi(),
+                0xd0 => self.bne(),
+                0x10 => self.bpl(),
                 0x00 => return, // BRK
+                0x50 => self.bne(),
+                0x70 => self.bvc(),
+                0x18 => self.clc(),
+
+                // 0xa9 => {
+                //     self.lda(&opcode.mode);
+                // }
+                // 0xa5 => {
+                //     self.lda(&opcode.mode);
+                // }
+                // 0xad => {
+                //     self.lda(&opcode.mode);
+                // }
+                // 0x85 => {
+                //     self.sta(&opcode.mode);
+                // }
+                // 0x95 => {
+                //     self.sta(&opcode.mode);
+                // }
+                // 0xaa => self.tax(),
+                // 0xe8 => self.inx(),
+                // 0x00 => return, // BRK
                 _ => todo!(""),
             }
             if before_program_counter == self.program_counter {
