@@ -45,11 +45,11 @@ lazy_static! {
         OpCode::new(0x21, "AND", 2, 6, AddressingMode::Indirect_X),
         OpCode::new(0x31, "AND", 2, 5 /*(+1 if page crossed)*/, AddressingMode::Indirect_Y),
         // ASL
-        OpCode::new(0x29, "ASL", 1, 2, AddressingMode::NoneAdressing),
-        OpCode::new(0x25, "ASL", 2, 5, AddressingMode::ZeroPage),
-        OpCode::new(0x35, "ASL", 2, 6, AddressingMode::ZeroPage_X),
-        OpCode::new(0x2d, "ASL", 3, 6, AddressingMode::Absolute),
-        OpCode::new(0x3d, "ASL", 3, 7, AddressingMode::Absolute_X),
+        OpCode::new(0x0a, "ASL", 1, 2, AddressingMode::NoneAdressing),
+        OpCode::new(0x06, "ASL", 2, 5, AddressingMode::ZeroPage),
+        OpCode::new(0x16, "ASL", 2, 6, AddressingMode::ZeroPage_X),
+        OpCode::new(0x0e, "ASL", 3, 6, AddressingMode::Absolute),
+        OpCode::new(0x1e, "ASL", 3, 7, AddressingMode::Absolute_X),
         // BCC
         OpCode::new(0x90, "BCC", 2, 2 /*(+1 if branch succeeds +2 if to a new page)*/, AddressingMode::NoneAdressing),
         // BCS
