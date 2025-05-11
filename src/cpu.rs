@@ -126,6 +126,12 @@ impl CPU {
                 0x50 => self.bne(),
                 0x70 => self.bvc(),
                 0x18 => self.clc(),
+                0xd8 => self.cld(),
+                0x58 => self.cli(),
+                0xb8 => self.clv(),
+                0xd1 | 0xc1 | 0xd9 | 0xdd | 0xcd | 0xd5 | 0xc5 | 0xc9 => self.cmp(&opcode.mode),
+                0xe0 | 0xe4 | 0xec => self.cpx(&opcode.mode),
+                0xc0 | 0xc4 | 0xcc => self.cpy(&opcode.mode),
 
                 // 0xa9 => {
                 //     self.lda(&opcode.mode);
