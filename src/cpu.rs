@@ -132,25 +132,42 @@ impl CPU {
                 0xd1 | 0xc1 | 0xd9 | 0xdd | 0xcd | 0xd5 | 0xc5 | 0xc9 => self.cmp(&opcode.mode),
                 0xe0 | 0xe4 | 0xec => self.cpx(&opcode.mode),
                 0xc0 | 0xc4 | 0xcc => self.cpy(&opcode.mode),
-
-                // 0xa9 => {
-                //     self.lda(&opcode.mode);
-                // }
-                // 0xa5 => {
-                //     self.lda(&opcode.mode);
-                // }
-                // 0xad => {
-                //     self.lda(&opcode.mode);
-                // }
-                // 0x85 => {
-                //     self.sta(&opcode.mode);
-                // }
-                // 0x95 => {
-                //     self.sta(&opcode.mode);
-                // }
-                // 0xaa => self.tax(),
-                // 0xe8 => self.inx(),
-                // 0x00 => return, // BRK
+                0xc6 | 0xd6 | 0xce | 0xde => self.dec(&opcode.mode),
+                0xca => self.dex(),
+                0x88 => self.dey(),
+                0x49 | 0x45 | 0x55 | 0x4d | 0x5d | 0x59 | 0x41 | 0x51 => self.eor(&opcode.mode),
+                0xe6 | 0xf6 | 0xee | 0xfe => self.inc(&opcode.mode),
+                0xe8 => self.inx(),
+                0xc8 => self.iny(),
+                0x4c | 0x6c => self.jmp(&opcode.mode),
+                0x20 => self.jsr(),
+                0xa9 | 0xa5 | 0xb5 | 0xad | 0xbd | 0xb9 | 0xa1 | 0xb1 => self.lda(&opcode.mode),
+                0xa2 | 0xa6 | 0xb6 | 0xae | 0xbe => self.ldx(&opcode.mode),
+                0xa0 | 0xa4 | 0xb4 | 0xac | 0xbc => self.ldy(&opcode.mode),
+                0x4a | 0x46 | 0x56 | 0x4e | 0x5e => self.lsr(&opcode.mode),
+                0xea => self.nop(),
+                0x09 | 0x05 | 0x15 | 0x0d | 0x1d | 0x19 | 0x01 | 0x11 => self.ora(&opcode.mode),
+                0x48 => self.pha(),
+                0x08 => self.php(),
+                0x68 => self.pla(),
+                0x28 => self.plp(),
+                0x2a | 0x26 | 0x36 | 0x2e | 0x3e => self.rol(&opcode.mode),
+                0x6a | 0x66 | 0x76 | 0x6e | 0x7e => self.ror(&opcode.mode),
+                0x40 => self.rti(),
+                0x60 => self.rts(),
+                0xe9 | 0xe5 | 0xf5 | 0xed | 0xfd | 0xf9 | 0xe1 | 0xf1 => self.sbc(&opcode.mode),
+                0x38 => self.sec(),
+                0xf8 => self.sed(),
+                0x78 => self.sei(),
+                0x85 | 0x95 | 0x8d | 0x9d | 0x99 | 0x81 | 0x91 => self.sta(&opcode.mode),
+                0x86 | 0x96 | 0x8e => self.stx(&opcode.mode),
+                0x84 | 0x94 | 0x8c => self.sty(&opcode.mode),
+                0xaa => self.tax(),
+                0xa8 => self.tay(),
+                0xba => self.tsx(),
+                0x8a => self.txa(),
+                0x9a => self.txs(),
+                0x98 => self.tya(),
                 _ => todo!(""),
             }
             if before_program_counter == self.program_counter {
