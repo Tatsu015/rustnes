@@ -72,28 +72,19 @@ fn handle_user_input(cpu: &mut CPU, event_pump: &mut EventPump) {
             Event::KeyDown {
                 keycode: Some(Keycode::W),
                 ..
-            } => {
-                cpu.mem_write(0xff, 0x77);
-            }
-
+            } => cpu.mem_write(0xff, 0x77),
             Event::KeyDown {
                 keycode: Some(Keycode::S),
                 ..
-            } => {
-                cpu.mem_write(0xff, 0x73);
-            }
+            } => cpu.mem_write(0xff, 0x73),
             Event::KeyDown {
                 keycode: Some(Keycode::A),
                 ..
-            } => {
-                cpu.mem_write(0xff, 0x61);
-            }
+            } => cpu.mem_write(0xff, 0x61),
             Event::KeyDown {
                 keycode: Some(Keycode::D),
                 ..
-            } => {
-                cpu.mem_write(0xff, 0x64);
-            }
+            } => cpu.mem_write(0xff, 0x64),
             _ => { /* nop */ }
         }
     }
