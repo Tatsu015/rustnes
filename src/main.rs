@@ -1,5 +1,3 @@
-use std::os::unix::process;
-
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
@@ -102,4 +100,21 @@ fn color(byte: u8) -> Color {
         7 | 14 => sdl2::pixels::Color::YELLOW,
         _ => sdl2::pixels::Color::CYAN,
     }
+}
+
+fn read_screen_state(cpu: &CPU, frame: &mut [u8; 32 * 3 * 32]) -> bool {
+    let mut frame_idx = 0;
+    let mut update = false;
+    for i in 0x0200..0x600 {
+        let color_idx = cpu.mem_read(i as u16);
+        let (b1, b2, b3) = color(color_idx).rgb();
+        if frame[frame_idx] != b1 || frame[frame_idx + 1] != b2 || frame[frame_idx + 2] != b3 {
+            frame[frame_idx] = b1;
+            frame[frame_idx + 1] = b2;
+            frame[frame_idx + 2] = b3;
+            update = true;
+        }
+        frame_idx += 3;
+    }
+    update
 }
