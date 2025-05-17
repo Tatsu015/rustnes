@@ -1,4 +1,5 @@
 use crate::opcode::{self, OpCode};
+use core::fmt;
 use std::collections::HashMap;
 
 use bitflags::bitflags;
@@ -43,6 +44,22 @@ pub struct CPU {
     pub program_counter: u16,
     pub stack_pointer: u8,
     pub memory: [u8; 0xffff],
+}
+
+impl std::fmt::Debug for CPU {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("CPU")
+            .field("register_a", &format!("0x{:02x}", self.register_a))
+            .field("register_x", &format!("0x{:02x}", self.register_x))
+            .field("register_y", &format!("0x{:02x}", self.register_y))
+            .field("status", &self.status)
+            .field(
+                "program_counter",
+                &format!("0x{:02x}", self.program_counter),
+            )
+            .field("stack_pointer", &format!("0x{:02x}", self.stack_pointer))
+            .finish()
+    }
 }
 
 impl CPU {
@@ -120,7 +137,8 @@ impl CPU {
                 .get(&code)
                 .expect(&format!("OpCode {:x} is not recognized", code));
 
-            println!("0x{:02x}", code);
+            dbg!("0x{:02x}", code);
+            dbg!("{}", &self);
 
             match code {
                 0x69 | 0x65 | 0x75 | 0x6d | 0x7d | 0x79 | 0x61 | 0x71 => self.adc(&opcode.mode),
