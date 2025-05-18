@@ -46,18 +46,16 @@ pub struct CPU {
     pub memory: [u8; 0xffff],
 }
 
-impl std::fmt::Debug for CPU {
+impl fmt::Debug for CPU {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("CPU")
-            .field("register_a", &format!("0x{:02x}", self.register_a))
-            .field("register_x", &format!("0x{:02x}", self.register_x))
-            .field("register_y", &format!("0x{:02x}", self.register_y))
+            .field("register_a", &self.register_a)
+            .field("register_x", &self.register_x)
+            .field("register_y", &self.register_y)
             .field("status", &self.status)
-            .field(
-                "program_counter",
-                &format!("0x{:02x}", self.program_counter),
-            )
-            .field("stack_pointer", &format!("0x{:02x}", self.stack_pointer))
+            .field("program_counter", &self.program_counter)
+            .field("stack_pointer", &self.stack_pointer)
+            // .field("memory", &self.memory) // memoryフィールドは省略
             .finish()
     }
 }
@@ -137,8 +135,7 @@ impl CPU {
                 .get(&code)
                 .expect(&format!("OpCode {:x} is not recognized", code));
 
-            dbg!("0x{:02x}", code);
-            dbg!("{}", &self);
+            self.debug(code);
 
             match code {
                 0x69 | 0x65 | 0x75 | 0x6d | 0x7d | 0x79 | 0x61 | 0x71 => self.adc(&opcode.mode),
@@ -207,6 +204,19 @@ impl CPU {
                 self.program_counter += (opcode.len - 1) as u16;
             }
         }
+    }
+
+    fn debug(&mut self, code: u8) {
+        println!(
+            "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
+            code,
+            self.register_a,
+            self.register_x,
+            self.register_y,
+            self.status,
+            self.program_counter,
+            self.stack_pointer
+        )
     }
 
     fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
