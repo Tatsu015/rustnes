@@ -46,20 +46,6 @@ pub struct CPU {
     pub memory: [u8; 0xffff],
 }
 
-impl fmt::Debug for CPU {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("CPU")
-            .field("register_a", &self.register_a)
-            .field("register_x", &self.register_x)
-            .field("register_y", &self.register_y)
-            .field("status", &self.status)
-            .field("program_counter", &self.program_counter)
-            .field("stack_pointer", &self.stack_pointer)
-            // .field("memory", &self.memory) // memoryフィールドは省略
-            .finish()
-    }
-}
-
 impl CPU {
     pub fn new() -> Self {
         CPU {
