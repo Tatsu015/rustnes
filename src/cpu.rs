@@ -92,7 +92,8 @@ impl CPU {
         self.stack_pointer = INITIAL_STACK;
         self.status = CpuFlags::from_bits_truncate(INITIAL_STATUS);
 
-        self.program_counter = self.mem_read_u16(0xfffc);
+        self.program_counter = self.mem_read_u16(0xFFFC);
+        print!("{}", self.program_counter)
     }
 
     pub fn load_and_run(&mut self, program: Vec<u8>) {
@@ -114,14 +115,13 @@ impl CPU {
             callback(self);
 
             let code = self.mem_read(self.program_counter);
+            self.debug(code);
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
             let opcode = opcodes
                 .get(&code)
                 .expect(&format!("OpCode {:x} is not recognized", code));
-
-            self.debug(code);
 
             match code {
                 0x69 | 0x65 | 0x75 | 0x6d | 0x7d | 0x79 | 0x61 | 0x71 => self.adc(&opcode.mode),
