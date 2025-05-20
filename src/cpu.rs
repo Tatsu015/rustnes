@@ -81,8 +81,8 @@ impl CPU {
     }
 
     pub fn load(&mut self, program: Vec<u8>) {
-        self.memory[0x8000..(0x8000 + program.len())].copy_from_slice(&program[..]);
-        self.mem_write_u16(0xfffc, 0x8000);
+        self.memory[0x0600..(0x0600 + program.len())].copy_from_slice(&program[..]);
+        self.mem_write_u16(0xfffc, 0x0600);
     }
 
     pub fn reset(&mut self) {
@@ -93,7 +93,6 @@ impl CPU {
         self.status = CpuFlags::from_bits_truncate(INITIAL_STATUS);
 
         self.program_counter = self.mem_read_u16(0xFFFC);
-        print!("{}", self.program_counter)
     }
 
     pub fn load_and_run(&mut self, program: Vec<u8>) {
