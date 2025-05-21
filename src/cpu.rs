@@ -728,7 +728,7 @@ impl CPU {
 
     fn stack_push(&mut self, data: u8) {
         self.mem_write((STACK as u16) + self.stack_pointer as u16, data);
-        let _ = self.stack_pointer.wrapping_sub(1);
+        self.stack_pointer = self.stack_pointer.wrapping_sub(1);
     }
 
     fn stack_pop_u16(&mut self) -> u16 {
