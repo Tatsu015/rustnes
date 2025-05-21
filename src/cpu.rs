@@ -458,7 +458,7 @@ impl CPU {
     }
 
     fn jsr(&mut self) {
-        let pc = self.program_counter - 1;
+        let pc = self.program_counter + 1;
         self.stack_push_u16(pc);
         let adress = self.mem_read_u16(self.program_counter);
         self.program_counter = adress;
