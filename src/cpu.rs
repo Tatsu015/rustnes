@@ -714,7 +714,7 @@ impl CPU {
         } else {
             self.status.remove(CpuFlags::ZERO);
         }
-        if result & 0b1000_0000 != 0 {
+        if result >> 7 == 1 {
             self.status.insert(CpuFlags::NEGATIVE);
         } else {
             self.status.remove(CpuFlags::NEGATIVE);
