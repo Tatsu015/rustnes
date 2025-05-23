@@ -729,6 +729,7 @@ impl CPU {
     }
 
     fn stack_push(&mut self, data: u8) {
+        println!("stack_push: data:0x{:02x}", data);
         self.mem_write((STACK as u16) + self.stack_pointer as u16, data);
         self.stack_pointer = self.stack_pointer.wrapping_sub(1);
     }
