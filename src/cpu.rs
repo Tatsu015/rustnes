@@ -1,5 +1,4 @@
 use crate::opcode::{self, OpCode};
-use core::fmt;
 use std::collections::HashMap;
 
 use bitflags::bitflags;
