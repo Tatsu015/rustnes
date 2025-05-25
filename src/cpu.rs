@@ -70,7 +70,7 @@ impl CPU {
 
     pub fn mem_write(&mut self, addr: u16, data: u8) {
         self.memory[addr as usize] = data;
-        println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
+        // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
     }
 
     pub fn mem_write_u16(&mut self, pos: u16, data: u16) {
@@ -78,7 +78,7 @@ impl CPU {
         let lo = (data & 0xff) as u8;
         self.mem_write(pos, lo);
         self.mem_write(pos + 1, hi);
-        println!("mem_write_u16: addr:0x{:04x}, data:0x{:04x}", pos, data);
+        // println!("mem_write_u16: addr:0x{:04x}, data:0x{:04x}", pos, data);
     }
 
     pub fn load(&mut self, program: Vec<u8>) {
@@ -700,7 +700,7 @@ impl CPU {
 
     fn branch(&mut self, condition: bool) {
         if condition {
-            let jump = self.mem_read(self.program_counter);
+            let jump = self.mem_read(self.program_counter) as i8;
             let jump_addr = self
                 .program_counter
                 .wrapping_add(1)
