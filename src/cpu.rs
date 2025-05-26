@@ -152,7 +152,8 @@ impl CPU {
                 0xe6 | 0xf6 | 0xee | 0xfe => self.inc(&opcode.mode),
                 0xe8 => self.inx(),
                 0xc8 => self.iny(),
-                0x4c | 0x6c => self.jmp(&opcode.mode),
+                0x4c => self.jmp_absolute(),
+                0x6c => self.jmp(&opcode.mode),
                 0x20 => self.jsr(),
                 0xa9 | 0xa5 | 0xb5 | 0xad | 0xbd | 0xb9 | 0xa1 | 0xb1 => self.lda(&opcode.mode),
                 0xa2 | 0xa6 | 0xb6 | 0xae | 0xbe => self.ldx(&opcode.mode),
@@ -456,6 +457,11 @@ impl CPU {
         let addr = self.get_operand_adress(mode);
         let data = self.mem_read_u16(addr);
         self.program_counter = data;
+    }
+
+    fn jmp_absolute(&mut self) {
+        let adress = self.mem_read_u16(self.program_counter);
+        self.program_counter = adress;
     }
 
     fn jsr(&mut self) {
