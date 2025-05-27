@@ -70,7 +70,6 @@ impl CPU {
 
     pub fn mem_write(&mut self, addr: u16, data: u8) {
         self.memory[addr as usize] = data;
-        // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
     }
 
     pub fn mem_write_u16(&mut self, pos: u16, data: u16) {
@@ -78,7 +77,6 @@ impl CPU {
         let lo = (data & 0xff) as u8;
         self.mem_write(pos, lo);
         self.mem_write(pos + 1, hi);
-        // println!("mem_write_u16: addr:0x{:04x}, data:0x{:04x}", pos, data);
     }
 
     pub fn load(&mut self, program: Vec<u8>) {
@@ -194,16 +192,16 @@ impl CPU {
     }
 
     fn debug(&mut self, code: u8) {
-        println!(
-            "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
-            code,
-            self.register_a,
-            self.register_x,
-            self.register_y,
-            self.status,
-            self.program_counter,
-            self.stack_pointer
-        )
+        // println!(
+        //     "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
+        //     code,
+        //     self.register_a,
+        //     self.register_x,
+        //     self.register_y,
+        //     self.status,
+        //     self.program_counter,
+        //     self.stack_pointer
+        // )
     }
 
     fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
@@ -734,7 +732,6 @@ impl CPU {
     }
 
     fn stack_push(&mut self, data: u8) {
-        // println!("stack_push: data:0x{:02x}", data);
         self.mem_write((STACK as u16) + self.stack_pointer as u16, data);
         self.stack_pointer = self.stack_pointer.wrapping_sub(1);
     }
