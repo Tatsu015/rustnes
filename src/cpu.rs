@@ -192,16 +192,16 @@ impl CPU {
     }
 
     fn debug(&mut self, code: u8) {
-        // println!(
-        //     "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
-        //     code,
-        //     self.register_a,
-        //     self.register_x,
-        //     self.register_y,
-        //     self.status,
-        //     self.program_counter,
-        //     self.stack_pointer
-        // )
+        println!(
+            "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
+            code,
+            self.register_a,
+            self.register_x,
+            self.register_y,
+            self.status,
+            self.program_counter,
+            self.stack_pointer
+        )
     }
 
     fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
