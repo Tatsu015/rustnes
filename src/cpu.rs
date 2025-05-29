@@ -70,6 +70,7 @@ impl CPU {
 
     pub fn mem_write(&mut self, addr: u16, data: u8) {
         self.memory[addr as usize] = data;
+        println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
     }
 
     pub fn mem_write_u16(&mut self, pos: u16, data: u16) {
@@ -471,8 +472,9 @@ impl CPU {
 
     fn lda(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
-        self.register_a = self.mem_read(addr);
-        self.update_zero_and_negative_flags(self.register_a);
+        let value = self.mem_read(addr);
+        self.register_a = value;
+        self.update_zero_and_negative_flags(value);
     }
 
     fn ldx(&mut self, mode: &AddressingMode) {
