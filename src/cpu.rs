@@ -632,9 +632,9 @@ impl CPU {
         };
         let overable_result = self.register_a as i16 - (data as i16) + carry as i16;
         if overable_result > 0xff {
-            self.status.remove(CpuFlags::CARRY);
-        } else {
             self.status.insert(CpuFlags::CARRY);
+        } else {
+            self.status.remove(CpuFlags::CARRY);
         }
         let result = overable_result as u8;
 
