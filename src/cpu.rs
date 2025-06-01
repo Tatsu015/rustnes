@@ -639,9 +639,9 @@ impl CPU {
         let result = overable_result as u8;
 
         if (result ^ self.register_a) & (result ^ data) & 0x80 == 0 {
-            self.status.insert(CpuFlags::OVERFLOW);
-        } else {
             self.status.remove(CpuFlags::OVERFLOW);
+        } else {
+            self.status.insert(CpuFlags::OVERFLOW);
         }
 
         self.register_a = result;
