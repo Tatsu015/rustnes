@@ -54,7 +54,6 @@ fn main() {
     let mut cpu = CPU::new();
     cpu.load(game_code);
     cpu.reset();
-    cpu.mem_write(0xff, 0x77);
 
     let mut screen_state = [0 as u8; 32 * 3 * 32];
     let mut rng = rand::rng();
@@ -62,8 +61,7 @@ fn main() {
     cpu.run_with_callback(move |cpu| {
         handle_user_input(cpu, &mut event_pump);
 
-        cpu.mem_write(0xfc, 1);
-        // cpu.mem_write(0xfe, rng.random_range(1..16));
+        cpu.mem_write(0xfe, rng.random_range(1..16));
 
         if read_screen_state(cpu, &mut screen_state) {
             texture.update(None, &screen_state, 32 * 3).unwrap();
