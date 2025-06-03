@@ -70,7 +70,7 @@ impl CPU {
 
     pub fn mem_write(&mut self, addr: u16, data: u8) {
         self.memory[addr as usize] = data;
-        println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
+        // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
     }
 
     pub fn mem_write_u16(&mut self, pos: u16, data: u16) {
@@ -114,7 +114,7 @@ impl CPU {
             callback(self);
 
             let code = self.mem_read(self.program_counter);
-            self.debug(code);
+            // self.debug(code);
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
@@ -192,6 +192,7 @@ impl CPU {
         }
     }
 
+    #[allow(dead_code)]
     fn debug(&mut self, code: u8) {
         println!(
             "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
