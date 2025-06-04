@@ -10,6 +10,11 @@ impl Bus {
     }
 }
 
+const RAM: u16 = 0x0000;
+const RAM_MIRRORS_END: u16 = 0x1FFF;
+const PPU_REGISTERS: u16 = 0x2000;
+const PPU_REGISTERS_MIRROR_END: u16 = 0x3FFF;
+
 impl Memory for Bus {
     fn mem_read(&self, addr: u16) -> u8 {
         match addr {}
