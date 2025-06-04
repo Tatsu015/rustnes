@@ -32,7 +32,7 @@ bitflags! {
     }
 }
 const INITIAL_STATUS: u8 = CpuFlags::RESERVED.bits() | CpuFlags::INTERRUPT_DISABLE.bits();
-const STACK: u16 = 0x0100;
+const STACK_TOP: u16 = 0x0100;
 const INITIAL_STACK: u8 = 0xfd;
 
 pub struct CPU {
@@ -736,11 +736,11 @@ impl CPU {
 
     fn stack_pop(&mut self) -> u8 {
         self.stack_pointer = self.stack_pointer.wrapping_add(1);
-        self.mem_read((STACK as u16) + self.stack_pointer as u16)
+        self.mem_read((STACK_TOP as u16) + self.stack_pointer as u16)
     }
 
     fn stack_push(&mut self, data: u8) {
-        self.mem_write((STACK as u16) + self.stack_pointer as u16, data);
+        self.mem_write((STACK_TOP as u16) + self.stack_pointer as u16, data);
         self.stack_pointer = self.stack_pointer.wrapping_sub(1);
     }
 
