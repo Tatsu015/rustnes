@@ -35,6 +35,22 @@ const INITIAL_STATUS: u8 = CpuFlags::RESERVED.bits() | CpuFlags::INTERRUPT_DISAB
 const STACK_TOP: u16 = 0x0100;
 const INITIAL_STACK: u8 = 0xfd;
 
+pub trait Memory {
+    fn mem_read(&self, addr: u16) -> u8;
+    fn mem_write(&mut self, addr: u16, data: u8);
+
+    fn mem_read_u16(&self, pos: u16) -> u16 {
+        let lo = self.mem_read(pos) as u16;
+        let hi = self.mem_read(pos + 1) as u16;
+        (hi << 8) | (lo as u16)
+    }
+    fn mem_write_u16(&mut self, pos: u16, data: u16) {
+        let hi = (data >> 8) as u8;
+        let lo = (data & 0xff) as u8;
+        self.mem_write(pos, lo);
+        self.mem_write(pos + 1, hi);
+    }
+}
 pub struct CPU {
     pub register_a: u8,
     pub register_x: u8,
@@ -43,6 +59,17 @@ pub struct CPU {
     pub program_counter: u16,
     pub stack_pointer: u8,
     pub memory: [u8; 0xffff],
+}
+
+impl Memory for CPU {
+    fn mem_read(&self, addr: u16) -> u8 {
+        self.memory[addr as usize]
+    }
+
+    fn mem_write(&mut self, addr: u16, data: u8) {
+        self.memory[addr as usize] = data;
+        // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
+    }
 }
 
 impl CPU {
@@ -56,28 +83,6 @@ impl CPU {
             stack_pointer: INITIAL_STACK,
             memory: [0; 0xffff],
         }
-    }
-
-    pub fn mem_read(&self, addr: u16) -> u8 {
-        self.memory[addr as usize]
-    }
-
-    pub fn mem_read_u16(&self, pos: u16) -> u16 {
-        let lo = self.mem_read(pos) as u16;
-        let hi = self.mem_read(pos + 1) as u16;
-        (hi << 8) | (lo as u16)
-    }
-
-    pub fn mem_write(&mut self, addr: u16, data: u8) {
-        self.memory[addr as usize] = data;
-        // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
-    }
-
-    pub fn mem_write_u16(&mut self, pos: u16, data: u16) {
-        let hi = (data >> 8) as u8;
-        let lo = (data & 0xff) as u8;
-        self.mem_write(pos, lo);
-        self.mem_write(pos + 1, hi);
     }
 
     pub fn load(&mut self, program: Vec<u8>) {
