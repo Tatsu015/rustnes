@@ -9,3 +9,10 @@ impl Bus {
         }
     }
 }
+
+impl Memory for Bus {
+    fn mem_read(&self, addr: u16) -> u8 {
+        match addr {}
+    }
+    fn mem_write(&self, addr: u16, data: u8) {}
+}
