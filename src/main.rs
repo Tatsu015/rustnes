@@ -8,6 +8,7 @@ use sdl2::EventPump;
 use crate::cpu::Memory;
 use cpu::CPU;
 
+pub mod bus;
 pub mod cpu;
 pub mod opcode;
 

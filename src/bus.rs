@@ -1,3 +1,5 @@
+use crate::cpu::Memory;
+
 pub struct Bus {
     cpu_vram: [u8; 2048],
 }
@@ -23,26 +25,26 @@ impl Memory for Bus {
                 self.cpu_vram[mirror_down_addr as usize]
             }
             PPU_REGISTERS..=PPU_REGISTERS_MIRROR_END => {
-                let mirror_down_addr = addr & 0b00100000_00000111;
+                let _mirror_down_addr = addr & 0b00100000_00000111;
                 todo!("PPU is not supported yet")
             }
             _ => {
-                println("Ignoring memory access at {}", addr);
+                println!("Ignoring memory access at {}", addr);
                 0
             }
         }
     }
-    fn mem_write(&self, addr: u16, data: u8) {
+    fn mem_write(&mut self, addr: u16, data: u8) {
         match addr {
             RAM..=RAM_MIRRORS_END => {
                 let mirror_down_addr = addr & 0b00000111_11111111;
                 self.cpu_vram[mirror_down_addr as usize] = data;
             }
             PPU_REGISTERS..=PPU_REGISTERS_MIRROR_END => {
-                let mirror_down_addr = addr & 0b00100000_00000111;
+                let _mirror_down_addr = addr & 0b00100000_00000111;
                 todo!("PPU is not supported yet")
             }
-            _ => println("Ignoring memory access at {}", addr),
+            _ => println!("Ignoring memory access at {}", addr),
         }
     }
 }

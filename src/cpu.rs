@@ -1,3 +1,4 @@
+use crate::bus::Bus;
 use crate::opcode::{self, OpCode};
 use std::collections::HashMap;
 
@@ -59,15 +60,16 @@ pub struct CPU {
     pub program_counter: u16,
     pub stack_pointer: u8,
     pub memory: [u8; 0xffff],
+    pub bus: Bus,
 }
 
 impl Memory for CPU {
     fn mem_read(&self, addr: u16) -> u8 {
-        self.memory[addr as usize]
+        self.bus.mem_read(addr)
     }
 
     fn mem_write(&mut self, addr: u16, data: u8) {
-        self.memory[addr as usize] = data;
+        self.bus.mem_write(addr, data);
         // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
     }
 }
@@ -82,6 +84,7 @@ impl CPU {
             program_counter: 0,
             stack_pointer: INITIAL_STACK,
             memory: [0; 0xffff],
+            bus: Bus::new(),
         }
     }
 
