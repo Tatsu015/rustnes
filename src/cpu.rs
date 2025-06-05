@@ -59,7 +59,6 @@ pub struct CPU {
     pub status: CpuFlags,
     pub program_counter: u16,
     pub stack_pointer: u8,
-    pub memory: [u8; 0xffff],
     pub bus: Bus,
 }
 
@@ -83,14 +82,17 @@ impl CPU {
             status: CpuFlags::from_bits_truncate(INITIAL_STATUS),
             program_counter: 0,
             stack_pointer: INITIAL_STACK,
-            memory: [0; 0xffff],
             bus: Bus::new(),
         }
     }
 
     pub fn load(&mut self, program: Vec<u8>) {
-        self.memory[0x0600..(0x0600 + program.len())].copy_from_slice(&program[..]);
-        self.mem_write_u16(0xfffc, 0x0600);
+        // self.memory[0x0600..(0x0600 + program.len())].copy_from_slice(&program[..]);
+        // self.mem_write_u16(0xfffc, 0x0600);
+        for i in 0..(program.len() as u16) {
+            self.mem_write(0x0000 + i, program[i as usize]);
+        }
+        self.mem_write_u16(0xfffc, 0x0000);
     }
 
     pub fn reset(&mut self) {
