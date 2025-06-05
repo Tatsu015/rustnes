@@ -17,7 +17,32 @@ const PPU_REGISTERS_MIRROR_END: u16 = 0x3FFF;
 
 impl Memory for Bus {
     fn mem_read(&self, addr: u16) -> u8 {
-        match addr {}
+        match addr {
+            RAM..=RAM_MIRRORS_END => {
+                let mirror_down_addr = addr & 0b00000111_11111111;
+                self.cpu_vram[mirror_down_addr as usize]
+            }
+            PPU_REGISTERS..=PPU_REGISTERS_MIRROR_END => {
+                let mirror_down_addr = addr & 0b00100000_00000111;
+                todo!("PPU is not supported yet")
+            }
+            _ => {
+                println("Ignoring memory access at {}", addr);
+                0
+            }
+        }
     }
-    fn mem_write(&self, addr: u16, data: u8) {}
+    fn mem_write(&self, addr: u16, data: u8) {
+        match addr {
+            RAM..=RAM_MIRRORS_END => {
+                let mirror_down_addr = addr & 0b00000111_11111111;
+                self.cpu_vram[mirror_down_addr as usize] = data;
+            }
+            PPU_REGISTERS..=PPU_REGISTERS_MIRROR_END => {
+                let mirror_down_addr = addr & 0b00100000_00000111;
+                todo!("PPU is not supported yet")
+            }
+            _ => println("Ignoring memory access at {}", addr),
+        }
+    }
 }
