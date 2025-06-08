@@ -1,3 +1,6 @@
+const PRG_ROM_PAGE_SIZE = 16*1024;
+const CHR_ROM_PAGE_SIZE = 8*1024;
+
 #[derive(Debug, PartialEq)]
 pub enum Mirroing {
     VERTICAL,
@@ -23,5 +26,15 @@ impl Rom {
         if ines_ver != 0 {
             return Err("NES2.0 format is not supported".to_string());
         }
+        let four_screen = raw[6] & 0b1000 != 0;
+        let vertical_mirroring = raw[6] & 0b1 != 0;
+        let screen_mirroring = match (four_screen, vertical_mirroring) {
+            (true, _) => Mirroing::FOUR_SCREEN,
+            (false, true) => Mirroing::VERTICAL,
+            (false, false) => Mirroing::HORIZONTAL,
+        };
+
+        let prg_rom_size = raw[4] as usize * PRG_ROM_PAGE_SIZE;
+        let chr_rom_size = raw[5] as usize * CHR_ROM_PAGE_SIZE;
     }
 }
