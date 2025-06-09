@@ -82,7 +82,7 @@ impl CPU {
             status: CpuFlags::from_bits_truncate(INITIAL_STATUS),
             program_counter: 0,
             stack_pointer: INITIAL_STACK,
-            bus: Bus::new(),
+            bus: Bus::new(new Rom()),
         }
     }
 

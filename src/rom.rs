@@ -1,11 +1,12 @@
 const PRG_ROM_PAGE_SIZE: usize = 16 * 1024;
 const CHR_ROM_PAGE_SIZE: usize = 8 * 1024;
+const NES_TAG: [u8; 4] = [0x4E, 0x45, 0x53, 0x1A];
 
 #[derive(Debug, PartialEq)]
 pub enum Mirroing {
-    VERTICAL,
-    HORIZONTAL,
-    FOUR_SCREEN,
+    Vertical,
+    Horizontal,
+    FourScreen,
 }
 
 pub struct Rom {
@@ -29,9 +30,9 @@ impl Rom {
         let four_screen = raw[6] & 0b1000 != 0;
         let vertical_mirroring = raw[6] & 0b1 != 0;
         let screen_mirroring = match (four_screen, vertical_mirroring) {
-            (true, _) => Mirroing::FOUR_SCREEN,
-            (false, true) => Mirroing::VERTICAL,
-            (false, false) => Mirroing::HORIZONTAL,
+            (true, _) => Mirroing::FourScreen,
+            (false, true) => Mirroing::Vertical,
+            (false, false) => Mirroing::Horizontal,
         };
 
         let prg_rom_size = raw[4] as usize * PRG_ROM_PAGE_SIZE;
@@ -40,5 +41,12 @@ impl Rom {
         let skip_trainer = raw[6] & 0b100 != 0;
         let prg_rom_start = 16 + if skip_trainer { 512 } else { 0 };
         let chr_rom_start = prg_rom_start + prg_rom_size;
+
+        Ok(Rom {
+            prg_rom: raw[prg_rom_start..(prg_rom_start + prg_rom_size)].to_vec(),
+            chr_rom: raw[chr_rom_start..(chr_rom_start + chr_rom_size)].to_vec(),
+            mapper: mapper,
+            screen_mirroring: screen_mirroring,
+        })
     }
 }

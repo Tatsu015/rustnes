@@ -11,6 +11,7 @@ use cpu::CPU;
 pub mod bus;
 pub mod cpu;
 pub mod opcode;
+pub mod rom;
 
 fn main() {
     let sdl_context = sdl2::init().unwrap();
