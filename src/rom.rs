@@ -1,5 +1,5 @@
-const PRG_ROM_PAGE_SIZE = 16*1024;
-const CHR_ROM_PAGE_SIZE = 8*1024;
+const PRG_ROM_PAGE_SIZE: usize = 16 * 1024;
+const CHR_ROM_PAGE_SIZE: usize = 8 * 1024;
 
 #[derive(Debug, PartialEq)]
 pub enum Mirroing {
@@ -36,5 +36,9 @@ impl Rom {
 
         let prg_rom_size = raw[4] as usize * PRG_ROM_PAGE_SIZE;
         let chr_rom_size = raw[5] as usize * CHR_ROM_PAGE_SIZE;
+
+        let skip_trainer = raw[6] & 0b100 != 0;
+        let prg_rom_start = 16 + if skip_trainer { 512 } else { 0 };
+        let chr_rom_start = prg_rom_start + prg_rom_size;
     }
 }
