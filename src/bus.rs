@@ -1,5 +1,5 @@
+use crate::cartoridge::Rom;
 use crate::cpu::Memory;
-use crate::rom::Rom;
 
 pub struct Bus {
     cpu_vram: [u8; 2048],
