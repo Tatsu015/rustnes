@@ -5,6 +5,8 @@ use sdl2::pixels::Color;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::EventPump;
 
+use crate::bus::Bus;
+use crate::cartoridge::Rom;
 use crate::cpu::Memory;
 use cpu::CPU;
 
@@ -54,7 +56,9 @@ fn main() {
         0x60, 0xa6, 0xff, 0xea, 0xea, 0xca, 0xd0, 0xfb, 0x60,
     ];
 
-    let mut cpu = CPU::new();
+    let rom = Rom::new(&vec![]).unwrap();
+    let bus = Bus::new(rom);
+    let mut cpu = CPU::new(bus);
     cpu.load(game_code);
     cpu.reset();
 
