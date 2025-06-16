@@ -774,22 +774,26 @@ mod test {
 
     use super::*;
 
+    // NESヘッダー
+    const TEST_HEADER: [u8; 16] = [
+        0x4E, 0x45, 0x53, 0x1A, // NES^Z
+        0x02, // PRG ROMサイズ (16KB単位)
+        0x01, // CHR ROMサイズ (8KB単位)
+        0x31, // フラグ6
+        0x00, // フラグ7
+        0x00, 0x00, 0x00, 0x00, // 予約領域
+        0x00, 0x00, 0x00, 0x00, // 予約領域
+    ];
+
     #[test]
     fn test_0xa9_lda_immediate_load_data() {
-        let rom = Rom::new(&vec![
-            // iNESヘッダー (16バイト)
-            0x4E, 0x45, 0x53, 0x1A, // NES^Z
-            0x02, // PRG ROMサイズ (16KB単位)
-            0x01, // CHR ROMサイズ (8KB単位)
-            0x31, // フラグ6
-            0x00, // フラグ7
-            0x00, 0x00, 0x00, 0x00, // 予約領域
-            0x00, 0x00, 0x00, 0x00, // 予約領域
-            // プログラムコード
-            0xA9, 0x05, // LDA #$05
-            0x00, // BRK
-        ])
-        .unwrap();
+        let mut rom_data = Vec::new();
+        rom_data.extend_from_slice(&TEST_HEADER);
+        rom_data.extend_from_slice(&[0xa9, 0x05, 0x00]);
+        rom_data.resize(rom_data.len() + 2 * 16 * 1024, 0);
+        rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
+
+        let rom = Rom::new(&rom_data).unwrap();
         let bus = Bus::new(rom);
         let mut cpu = CPU::new(bus);
         cpu.run();
