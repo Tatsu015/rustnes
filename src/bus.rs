@@ -9,7 +9,7 @@ pub struct Bus {
 impl Bus {
     pub fn new(rom: Rom) -> Self {
         Bus {
-            cpu_vram: [0; 2048],
+            cpu_vram: [0; 0x0800], // 2048
             rom: rom,
         }
     }
