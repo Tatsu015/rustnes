@@ -80,7 +80,7 @@ impl CPU {
             register_x: 0,
             register_y: 0,
             status: CpuFlags::from_bits_truncate(INITIAL_STATUS),
-            program_counter: 0,
+            program_counter: 0x8000,
             stack_pointer: INITIAL_STACK,
             bus: bus,
         }
@@ -92,7 +92,7 @@ impl CPU {
         for i in 0..(program.len() as u16) {
             self.mem_write(0x0000 + i, program[i as usize]);
         }
-        self.mem_write_u16(0xfffc, 0x0000);
+        self.mem_write_u16(0xfffc, 0x8600);
     }
 
     pub fn reset(&mut self) {
