@@ -787,9 +787,11 @@ mod test {
 
     #[test]
     fn test_0xa9_lda_immediate_load_data() {
+        let testdata = [0xa9, 0x05, 0x00];
+
         let mut rom_data = Vec::new();
         rom_data.extend_from_slice(&TEST_HEADER);
-        rom_data.extend_from_slice(&[0xa9, 0x05, 0x00]);
+        rom_data.extend_from_slice(&testdata);
         rom_data.resize(rom_data.len() + 2 * 16 * 1024, 0);
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
@@ -797,49 +799,83 @@ mod test {
         let bus = Bus::new(rom);
         let mut cpu = CPU::new(bus);
         cpu.run();
+
         assert_eq!(cpu.register_a, 0x05);
         assert!(!cpu.status.contains(CpuFlags::ZERO));
         assert!(!cpu.status.contains(CpuFlags::NEGATIVE));
     }
 
-    // #[test]
-    // fn test_0xa9_lda_zero_flag() {
-    //     let rom = Rom::new(&vec![]).unwrap();
-    //     let bus = Bus::new(rom);
-    //     let mut cpu = CPU::new(bus);
-    //     cpu.run();
-    //     assert!(cpu.status.contains(CpuFlags::ZERO))
-    // }
+    #[test]
+    fn test_0xa9_lda_zero_flag() {
+        let testdata = [0xa9, 0x00, 0x00];
 
-    // #[test]
-    // fn test_0xaa_tax_move_a_to_x() {
-    //     let rom = Rom::new(&vec![0xa9, 0x0a, 0xaa, 0x00]).unwrap();
-    //     let bus = Bus::new(rom);
-    //     let mut cpu = CPU::new(bus);
-    //     cpu.run();
-    //     assert_eq!(cpu.register_x, 10)
-    // }
+        let mut rom_data = Vec::new();
+        rom_data.extend_from_slice(&TEST_HEADER);
+        rom_data.extend_from_slice(&testdata);
+        rom_data.resize(rom_data.len() + 2 * 16 * 1024, 0);
+        rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
-    // #[test]
-    // fn test_inx_overflow() {
-    //     let rom = Rom::new(&vec![0xa9, 0xff, 0xaa, 0xe8, 0xe8]).unwrap();
-    //     let bus = Bus::new(rom);
-    //     let mut cpu = CPU::new(bus);
-    //     cpu.register_x = 0xff;
-    //     cpu.run();
+        let rom = Rom::new(&rom_data).unwrap();
+        let bus = Bus::new(rom);
+        let mut cpu = CPU::new(bus);
+        cpu.run();
 
-    //     assert_eq!(cpu.register_x, 1)
-    // }
+        assert!(cpu.status.contains(CpuFlags::ZERO))
+    }
 
-    // #[test]
-    // fn test_5_ops_working_togather() {
-    //     let rom = Rom::new(&vec![0xa9, 0xc0, 0xaa, 0xe8, 0x00]).unwrap();
-    //     let bus = Bus::new(rom);
-    //     let mut cpu = CPU::new(bus);
-    //     cpu.run();
+    #[test]
+    fn test_0xaa_tax_move_a_to_x() {
+        let testdata = [0xa9, 0x0a, 0xaa, 0x00];
 
-    //     assert_eq!(cpu.register_x, 0xc1)
-    // }
+        let mut rom_data = Vec::new();
+        rom_data.extend_from_slice(&TEST_HEADER);
+        rom_data.extend_from_slice(&testdata);
+        rom_data.resize(rom_data.len() + 2 * 16 * 1024, 0);
+        rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
+
+        let rom = Rom::new(&rom_data).unwrap();
+        let bus = Bus::new(rom);
+        let mut cpu = CPU::new(bus);
+        cpu.run();
+
+        assert_eq!(cpu.register_x, 10)
+    }
+
+    #[test]
+    fn test_inx_overflow() {
+        let testdata = [0xa9, 0xff, 0xaa, 0xe8, 0xe8];
+
+        let mut rom_data = Vec::new();
+        rom_data.extend_from_slice(&TEST_HEADER);
+        rom_data.extend_from_slice(&testdata);
+        rom_data.resize(rom_data.len() + 2 * 16 * 1024, 0);
+        rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
+
+        let rom = Rom::new(&rom_data).unwrap();
+        let bus = Bus::new(rom);
+        let mut cpu = CPU::new(bus);
+        cpu.run();
+
+        assert_eq!(cpu.register_x, 1)
+    }
+
+    #[test]
+    fn test_5_ops_working_togather() {
+        let testdata = [0xa9, 0xc0, 0xaa, 0xe8, 0x00];
+
+        let mut rom_data = Vec::new();
+        rom_data.extend_from_slice(&TEST_HEADER);
+        rom_data.extend_from_slice(&testdata);
+        rom_data.resize(rom_data.len() + 2 * 16 * 1024, 0);
+        rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
+
+        let rom = Rom::new(&rom_data).unwrap();
+        let bus = Bus::new(rom);
+        let mut cpu = CPU::new(bus);
+        cpu.run();
+
+        assert_eq!(cpu.register_x, 0xc1)
+    }
 
     // #[test]
     // fn test_lda_from_memory() {
