@@ -877,14 +877,25 @@ mod test {
         assert_eq!(cpu.register_x, 0xc1)
     }
 
-    // #[test]
-    // fn test_lda_from_memory() {
-    //     let rom = Rom::new(&vec![0xa5, 0x10, 0x00]).unwrap();
-    //     let bus = Bus::new(rom);
-    //     let mut cpu = CPU::new(bus);
-    //     cpu.mem_write(0x10, 0x55);
-    //     cpu.run();
+    #[test]
+    fn test_lda_from_memory() {
+        // let rom = Rom::new(&vec![0xa5, 0x10, 0x00]).unwrap();
+        // let bus = Bus::new(rom);
+        // let mut cpu = CPU::new(bus);
+        // cpu.mem_write(0x10, 0x55);
+        // cpu.run();
+        let testdata = [0xa5, 0x10, 0x00];
+        let mut rom_data = Vec::new();
+        rom_data.extend_from_slice(&TEST_HEADER);
+        rom_data.extend_from_slice(&testdata);
+        rom_data.resize(rom_data.len() + 2 * 16 * 1024, 0);
+        rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
-    //     assert_eq!(cpu.register_a, 0x55)
-    // }
+        let rom = Rom::new(&rom_data).unwrap();
+        let bus = Bus::new(rom);
+        let mut cpu = CPU::new(bus);
+        cpu.run();
+
+        assert_eq!(cpu.register_a, 0x55)
+    }
 }
