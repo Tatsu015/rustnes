@@ -879,12 +879,8 @@ mod test {
 
     #[test]
     fn test_lda_from_memory() {
-        // let rom = Rom::new(&vec![0xa5, 0x10, 0x00]).unwrap();
-        // let bus = Bus::new(rom);
-        // let mut cpu = CPU::new(bus);
-        // cpu.mem_write(0x10, 0x55);
-        // cpu.run();
         let testdata = [0xa5, 0x10, 0x00];
+
         let mut rom_data = Vec::new();
         rom_data.extend_from_slice(&TEST_HEADER);
         rom_data.extend_from_slice(&testdata);
@@ -894,6 +890,8 @@ mod test {
         let rom = Rom::new(&rom_data).unwrap();
         let bus = Bus::new(rom);
         let mut cpu = CPU::new(bus);
+
+        cpu.mem_write(0x10, 0x55); // set test data
         cpu.run();
 
         assert_eq!(cpu.register_a, 0x55)
