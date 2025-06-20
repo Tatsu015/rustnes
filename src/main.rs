@@ -1,4 +1,4 @@
-use rand::Rng;
+// use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
@@ -9,11 +9,13 @@ use crate::bus::Bus;
 use crate::cartoridge::Rom;
 use crate::cpu::Memory;
 use cpu::CPU;
+use trace::trace;
 
 pub mod bus;
 pub mod cartoridge;
 pub mod cpu;
 pub mod opcode;
+pub mod trace;
 
 fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -42,17 +44,18 @@ fn main() {
     let mut rng = rand::rng();
 
     cpu.run_with_callback(move |cpu| {
-        handle_user_input(cpu, &mut event_pump);
+        println!("{}", trace(cpu))
+        // handle_user_input(cpu, &mut event_pump);
 
-        cpu.mem_write(0xfe, rng.random_range(1..16));
+        // cpu.mem_write(0xfe, rng.random_range(1..16));
 
-        if read_screen_state(cpu, &mut screen_state) {
-            texture.update(None, &screen_state, 32 * 3).unwrap();
-            canvas.copy(&texture, None, None).unwrap();
-            canvas.present();
-        }
+        // if read_screen_state(cpu, &mut screen_state) {
+        //     texture.update(None, &screen_state, 32 * 3).unwrap();
+        //     canvas.copy(&texture, None, None).unwrap();
+        //     canvas.present();
+        // }
 
-        std::thread::sleep(std::time::Duration::new(0, 70_000));
+        // std::thread::sleep(std::time::Duration::new(0, 70_000));
     });
 }
 
