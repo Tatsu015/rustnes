@@ -34,7 +34,7 @@ fn main() {
         .create_texture_target(PixelFormatEnum::RGB24, 32, 32)
         .unwrap();
 
-    let bytes = std::fs::read("./test/sample/snake.nes").unwrap();
+    let bytes = std::fs::read("./test/sample/nestest.nes").unwrap();
     let rom = Rom::new(&bytes).unwrap();
     let bus = Bus::new(rom);
     let mut cpu = CPU::new(bus);
