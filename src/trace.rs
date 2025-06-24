@@ -21,19 +21,19 @@ pub fn trace(cpu: &CPU) -> String {
         "  ".to_string()
     };
 
-    println!(
-        "{:04X}  {:02X} {:} {:}  {:} {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
+    let machine = format!("{:02X} {:} {:}", ops.code, low_operand, high_operand);
+    let asm = format!("{:} {:?}", ops.mnemonic, ops.mode);
+
+    let result = format!(
+        "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
         cpu.program_counter,
-        ops.code,
-        low_operand,
-        high_operand,
-        ops.mnemonic,
-        ops.len,
+        machine,
+        asm,
         cpu.register_a,
         cpu.register_x,
         cpu.register_y,
         cpu.status,
         cpu.stack_pointer
     );
-    return "".to_owned();
+    return result;
 }
