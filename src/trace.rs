@@ -37,6 +37,7 @@ pub fn trace(cpu: &CPU) -> String {
         _ => format!("{:?}", ops.mode),
     };
     let asm = format!("{} {}", ops.mnemonic, operand);
+    let asm = format!("{:27}", asm);
 
     let result = format!(
         "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
