@@ -27,9 +27,12 @@ pub fn trace(cpu: &CPU) -> String {
         crate::cpu::AddressingMode::Absolute => {
             format!("${:}{:}", high_operand, low_operand)
         }
-        _ => "aaa".to_string(),
+        crate::cpu::AddressingMode::Immediate => {
+            format!("#${:}", low_operand)
+        }
+        _ => format!("{:?}", ops.mode),
     };
-    let asm = format!("{} {} {:?}", ops.mnemonic, operand, ops.mode);
+    let asm = format!("{} {}", ops.mnemonic, operand);
 
     let result = format!(
         "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
