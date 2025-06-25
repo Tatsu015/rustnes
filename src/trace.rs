@@ -30,6 +30,9 @@ pub fn trace(cpu: &CPU) -> String {
         crate::cpu::AddressingMode::Immediate => {
             format!("#${:}", low_operand)
         }
+        crate::cpu::AddressingMode::ZeroPage => {
+            format!("${:} = 00", low_operand)
+        }
         _ => format!("{:?}", ops.mode),
     };
     let asm = format!("{} {}", ops.mnemonic, operand);
