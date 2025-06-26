@@ -33,14 +33,20 @@ pub fn trace(cpu: &CPU) -> String {
         crate::cpu::AddressingMode::ZeroPage => {
             format!("${:} = 00", low_operand)
         }
-        crate::cpu::AddressingMode::NoneAdressing => "".to_string(),
+        crate::cpu::AddressingMode::NoneAdressing => {
+            if ops.len > 1 {
+                format!("{:02X}", cpu.program_counter)
+            } else {
+                "".to_string()
+            }
+        }
         _ => format!("{:?}", ops.mode),
     };
     let asm = format!("{} {}", ops.mnemonic, operand);
     let asm = format!("{:27}", asm);
 
     let result = format!(
-        "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
+        "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X} //{:?}",
         cpu.program_counter,
         machine,
         asm,
@@ -48,7 +54,8 @@ pub fn trace(cpu: &CPU) -> String {
         cpu.register_x,
         cpu.register_y,
         cpu.status,
-        cpu.stack_pointer
+        cpu.stack_pointer,
+        ops.mode
     );
     return result;
 }
