@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::cpu::{Memory, CPU};
-use crate::{color, opcode};
+use crate::opcode;
 
 pub fn trace(cpu: &CPU) -> String {
     let ref opcodes: HashMap<u8, &'static opcode::OpCode> = *opcode::OPECODE_MAP;
@@ -35,7 +35,12 @@ pub fn trace(cpu: &CPU) -> String {
             format!("#${:}", low_operand_str)
         }
         crate::cpu::AddressingMode::ZeroPage => {
-            format!("${:} = 00", low_operand_str)
+            if ops.len > 1 {
+                let addr = cpu.mem_read(pc_base + 1);
+                format!("${:} = {:02X}", low_operand_str, cpu.mem_read(addr as u16))
+            } else {
+                format!("${:} = 00", low_operand_str)
+            }
         }
         crate::cpu::AddressingMode::NoneAdressing => {
             if ops.len > 1 {
@@ -50,8 +55,20 @@ pub fn trace(cpu: &CPU) -> String {
     let asm = format!("{} {}", ops.mnemonic, operand);
     let asm = format!("{:27}", asm);
 
+    // let result = format!(
+    //     "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X} {:?}",
+    //     cpu.program_counter,
+    //     machine,
+    //     asm,
+    //     cpu.register_a,
+    //     cpu.register_x,
+    //     cpu.register_y,
+    //     cpu.status,
+    //     cpu.stack_pointer,
+    //     ops.mode
+    // );
     let result = format!(
-        "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}", // //{:?}",
+        "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
         cpu.program_counter,
         machine,
         asm,
@@ -59,8 +76,7 @@ pub fn trace(cpu: &CPU) -> String {
         cpu.register_x,
         cpu.register_y,
         cpu.status,
-        cpu.stack_pointer,
-        // ops.mode
+        cpu.stack_pointer
     );
     return result;
 }
