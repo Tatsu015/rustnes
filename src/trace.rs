@@ -27,6 +27,10 @@ pub fn trace(cpu: &CPU) -> String {
         ops.code, low_operand_str, high_operand_str
     );
 
+    // if ops.code == 0xe8 {
+    //     print!("aaaaaaaaaaaaaaaaaaaaaa")
+    // }
+
     let operand = match ops.mode {
         crate::cpu::AddressingMode::Absolute => {
             format!("${:}{:}", high_operand_str, low_operand_str)
@@ -39,7 +43,13 @@ pub fn trace(cpu: &CPU) -> String {
                 let addr = cpu.mem_read(pc_base + 1);
                 format!("${:} = {:02X}", low_operand_str, cpu.mem_read(addr as u16))
             } else {
-                format!("${:} = 00", low_operand_str)
+                if ops.code == 0xe8 {
+                    "".to_string()
+                } else if ops.code == 0xc8 {
+                    "".to_string()
+                } else {
+                    format!("${:} = 00", low_operand_str)
+                }
             }
         }
         crate::cpu::AddressingMode::NoneAdressing => {
@@ -50,25 +60,15 @@ pub fn trace(cpu: &CPU) -> String {
                 "".to_string()
             }
         }
+
         _ => format!("{:?}", ops.mode),
     };
     let asm = format!("{} {}", ops.mnemonic, operand);
     let asm = format!("{:27}", asm);
 
-    // let result = format!(
-    //     "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X} {:?}",
-    //     cpu.program_counter,
-    //     machine,
-    //     asm,
-    //     cpu.register_a,
-    //     cpu.register_x,
-    //     cpu.register_y,
-    //     cpu.status,
-    //     cpu.stack_pointer,
-    //     ops.mode
-    // );
+    // TODO
     let result = format!(
-        "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
+        "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X} {:?}",
         cpu.program_counter,
         machine,
         asm,
@@ -76,7 +76,19 @@ pub fn trace(cpu: &CPU) -> String {
         cpu.register_x,
         cpu.register_y,
         cpu.status,
-        cpu.stack_pointer
+        cpu.stack_pointer,
+        ops.mode
     );
+    // let result = format!(
+    //     "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
+    //     cpu.program_counter,
+    //     machine,
+    //     asm,
+    //     cpu.register_a,
+    //     cpu.register_x,
+    //     cpu.register_y,
+    //     cpu.status,
+    //     cpu.stack_pointer
+    // );
     return result;
 }
