@@ -78,7 +78,7 @@ lazy_static! {
         // CLI
         OpCode::new(0x58, "CLD", 1, 2, AddressingMode::NoneAdressing),
         // CLV
-        OpCode::new(0xb8, "CLD", 1, 2, AddressingMode::NoneAdressing),
+        OpCode::new(0xb8, "CLV", 1, 2, AddressingMode::NoneAdressing),
         // CMP
         OpCode::new(0xc9, "CMP", 2, 2, AddressingMode::Immediate),
         OpCode::new(0xc5, "CMP", 2, 3, AddressingMode::ZeroPage),
