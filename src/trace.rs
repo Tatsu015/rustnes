@@ -29,7 +29,11 @@ pub fn trace(cpu: &CPU) -> String {
 
     let operand = match ops.mode {
         crate::cpu::AddressingMode::Absolute => {
-            if ops.mnemonic == "LDX" || ops.mnemonic == "STX" || ops.mnemonic == "LDA" {
+            if ops.mnemonic == "LDX"
+                || ops.mnemonic == "STX"
+                || ops.mnemonic == "LDA"
+                || ops.mnemonic == "STA"
+            {
                 let addr =
                     (cpu.mem_read(pc_base + 2) as u16) << 8 | cpu.mem_read(pc_base + 1) as u16; // 0になる。
                 format!(
