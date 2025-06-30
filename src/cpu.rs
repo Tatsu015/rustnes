@@ -301,7 +301,7 @@ impl CPU {
 
     fn asl(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
-        let data = self.mem_read(addr) * 2;
+        let data = self.mem_read(addr) << 1;
 
         if self.register_a >> 7 == 1 {
             self.status.insert(CpuFlags::CARRY);
@@ -310,6 +310,7 @@ impl CPU {
         }
 
         self.mem_write(addr, data);
+        self.update_zero_and_negative_flags(self.register_a);
     }
 
     fn asl_accumulator(&mut self) {
@@ -318,7 +319,8 @@ impl CPU {
         } else {
             self.status.remove(CpuFlags::CARRY);
         }
-        self.register_a = self.register_a * 2;
+        self.register_a = self.register_a << 1;
+        self.update_zero_and_negative_flags(self.register_a);
     }
 
     fn bcc(&mut self) {
