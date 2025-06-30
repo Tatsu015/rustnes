@@ -60,7 +60,11 @@ pub fn trace(cpu: &CPU) -> String {
             }
         }
         crate::cpu::AddressingMode::NoneAdressing => {
-            if ops.mnemonic == "LSR" || ops.mnemonic == "ASL" {
+            if ops.mnemonic == "LSR"
+                || ops.mnemonic == "ASL"
+                || ops.mnemonic == "ROL"
+                || ops.mnemonic == "ROR"
+            {
                 format!("A")
             } else if ops.len > 1 {
                 let jump_to = pc_base + 2 + cpu.mem_read(pc_base + 1) as u16;
