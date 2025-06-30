@@ -77,11 +77,22 @@ pub fn trace(cpu: &CPU) -> String {
                 "".to_string()
             }
         }
+        crate::cpu::AddressingMode::Indirect_X => {
+            let ptr = cpu.mem_read(pc_base + 1).wrapping_add(cpu.register_x);
+            let addr = cpu.mem_read_u16(ptr as u16);
+            format!(
+                "(${},X) @ {:02X} = {:04X} = {:02X}",
+                low_operand_str,
+                ptr,
+                addr,
+                cpu.mem_read(addr),
+            )
+        }
 
         _ => format!("{:?}", ops.mode),
     };
     let asm = format!("{} {}", ops.mnemonic, operand);
-    let asm = format!("{:27}", asm);
+    let asm = format!("{:31}", asm);
 
     // TODO
     // let result = format!(
@@ -97,7 +108,7 @@ pub fn trace(cpu: &CPU) -> String {
     //     ops.mode
     // );
     let result = format!(
-        "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
+        "{:04X}  {:}  {:} A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
         cpu.program_counter,
         machine,
         asm,
