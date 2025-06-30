@@ -578,7 +578,7 @@ impl CPU {
     fn rol_accumulate(&mut self) {
         let mut data = self.register_a;
         let carry = self.status.contains(CpuFlags::CARRY);
-        let bit7 = data << 7;
+        let bit7 = data >> 7;
         if bit7 == 0 {
             self.status.remove(CpuFlags::CARRY);
         } else {
