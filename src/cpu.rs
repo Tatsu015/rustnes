@@ -216,7 +216,7 @@ impl CPU {
         )
     }
 
-    fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
+    pub fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
         match mode {
             // Immidiate use program counter value as operand adress
             AddressingMode::Immediate => self.program_counter,

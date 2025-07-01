@@ -1,122 +1,133 @@
 use std::collections::HashMap;
+use std::ptr::addr_of;
 
+use crate::cpu::AddressingMode;
 use crate::cpu::{Memory, CPU};
 use crate::opcode;
 
 pub fn trace(cpu: &CPU) -> String {
     let ref opcodes: HashMap<u8, &'static opcode::OpCode> = *opcode::OPECODE_MAP;
-    let pc_base = cpu.program_counter;
 
-    let code = cpu.mem_read(pc_base);
+    let code = cpu.mem_read(cpu.program_counter);
     let ops = opcodes.get(&code).unwrap();
 
-    let low_operand_str = if ops.len > 1 {
-        format!("{:02X}", cpu.mem_read(pc_base + 1))
-    } else {
-        "  ".to_string()
+    let begin = cpu.program_counter;
+    let mut hex_dump = vec![];
+    hex_dump.push(code);
+
+    let (mem_addr, stored_value) = match ops.mode {
+        AddressingMode::Immediate | AddressingMode::NoneAdressing => (0, 0),
+        _ => {
+            // let addr = cpu.get_absolute_address(&ops.mode, begin + 1);
+            let addr = cpu.get_operand_adress(&ops.mode);
+            (addr, cpu.mem_read(addr))
+        }
     };
 
-    let high_operand_str = if ops.len > 2 {
-        format!("{:02X}", cpu.mem_read(pc_base + 2))
-    } else {
-        "  ".to_string()
-    };
+    let tmp = match ops.len {
+        1 => match ops.code {
+            0x0a | 0x4a | 0x2a | 0x6a => format!("A "),
+            _ => String::from(""),
+        },
+        2 => {
+            let address: u8 = cpu.mem_read(begin + 1);
+            // let value = cpu.mem_read(address));
+            hex_dump.push(address);
 
-    let machine = format!(
-        "{:02X} {:} {:}",
-        ops.code, low_operand_str, high_operand_str
-    );
-
-    let operand = match ops.mode {
-        crate::cpu::AddressingMode::Absolute => {
-            if ops.mnemonic == "LDX"
-                || ops.mnemonic == "STX"
-                || ops.mnemonic == "LDA"
-                || ops.mnemonic == "STA"
-            {
-                let addr =
-                    (cpu.mem_read(pc_base + 2) as u16) << 8 | cpu.mem_read(pc_base + 1) as u16; // 0になる。
-                format!(
-                    "${:}{:} = {:02X}",
-                    high_operand_str,
-                    low_operand_str,
-                    cpu.mem_read(addr as u16)
-                )
-            } else {
-                format!("${:}{:}", high_operand_str, low_operand_str)
-            }
-        }
-        crate::cpu::AddressingMode::Immediate => {
-            format!("#${:}", low_operand_str)
-        }
-        crate::cpu::AddressingMode::ZeroPage => {
-            if ops.len > 1 {
-                let addr = cpu.mem_read(pc_base + 1);
-                format!("${:} = {:02X}", low_operand_str, cpu.mem_read(addr as u16))
-            } else {
-                if ops.code == 0xe8 {
-                    "".to_string()
-                } else if ops.code == 0xc8 {
-                    "".to_string()
-                } else {
-                    format!("${:} = 00", low_operand_str)
+            match ops.mode {
+                AddressingMode::Immediate => format!("#${:02x}", address),
+                AddressingMode::ZeroPage => format!("${:02x} = {:02x}", mem_addr, stored_value),
+                AddressingMode::ZeroPage_X => format!(
+                    "${:02x},X @ {:02x} = {:02x}",
+                    address, mem_addr, stored_value
+                ),
+                AddressingMode::ZeroPage_Y => format!(
+                    "${:02x},Y @ {:02x} = {:02x}",
+                    address, mem_addr, stored_value
+                ),
+                AddressingMode::Indirect_X => format!(
+                    "(${:02x},X) @ {:02x} = {:04x} = {:02x}",
+                    address,
+                    (address.wrapping_add(cpu.register_x)),
+                    mem_addr,
+                    stored_value
+                ),
+                AddressingMode::Indirect_Y => format!(
+                    "(${:02x}),Y = {:04x} @ {:04x} = {:02x}",
+                    address,
+                    (mem_addr.wrapping_sub(cpu.register_y as u16)),
+                    mem_addr,
+                    stored_value
+                ),
+                AddressingMode::NoneAdressing => {
+                    // assuming local jumps: BNE, BVS, etc....
+                    let address: usize =
+                        (begin as usize + 2).wrapping_add((address as i8) as usize);
+                    format!("${:04x}", address)
                 }
-            }
-        }
-        crate::cpu::AddressingMode::NoneAdressing => {
-            if ops.mnemonic == "LSR"
-                || ops.mnemonic == "ASL"
-                || ops.mnemonic == "ROL"
-                || ops.mnemonic == "ROR"
-            {
-                format!("A")
-            } else if ops.len > 1 {
-                let jump_to = pc_base + 2 + cpu.mem_read(pc_base + 1) as u16;
-                format!("${:02X}", jump_to)
-            } else {
-                "".to_string()
-            }
-        }
-        crate::cpu::AddressingMode::Indirect_X => {
-            let ptr = cpu.mem_read(pc_base + 1).wrapping_add(cpu.register_x);
-            let addr = cpu.mem_read_u16(ptr as u16);
-            format!(
-                "(${},X) @ {:02X} = {:04X} = {:02X}",
-                low_operand_str,
-                ptr,
-                addr,
-                cpu.mem_read(addr),
-            )
-        }
 
-        _ => format!("{:?}", ops.mode),
+                _ => panic!(
+                    "unexpected addressing mode {:?} has ops-len 2. code {:02x}",
+                    ops.mode, ops.code
+                ),
+            }
+        }
+        3 => {
+            let address_lo = cpu.mem_read(begin + 1);
+            let address_hi = cpu.mem_read(begin + 2);
+            hex_dump.push(address_lo);
+            hex_dump.push(address_hi);
+
+            let address = cpu.mem_read_u16(begin + 1);
+
+            match ops.mode {
+                AddressingMode::NoneAdressing => {
+                    if ops.code == 0x6c {
+                        //jmp indirect
+                        let jmp_addr = if address & 0x00FF == 0x00FF {
+                            let lo = cpu.mem_read(address);
+                            let hi = cpu.mem_read(address & 0xFF00);
+                            (hi as u16) << 8 | (lo as u16)
+                        } else {
+                            cpu.mem_read_u16(address)
+                        };
+
+                        // let jmp_addr = cpu.mem_read_u16(address);
+                        format!("(${:04x}) = {:04x}", address, jmp_addr)
+                    } else {
+                        format!("${:04x}", address)
+                    }
+                }
+                AddressingMode::Absolute => format!("${:04x} = {:02x}", mem_addr, stored_value),
+                AddressingMode::Absolute_X => format!(
+                    "${:04x},X @ {:04x} = {:02x}",
+                    address, mem_addr, stored_value
+                ),
+                AddressingMode::Absolute_Y => format!(
+                    "${:04x},Y @ {:04x} = {:02x}",
+                    address, mem_addr, stored_value
+                ),
+                _ => panic!(
+                    "unexpected addressing mode {:?} has ops-len 3. code {:02x}",
+                    ops.mode, ops.code
+                ),
+            }
+        }
+        _ => String::from(""),
     };
-    let asm = format!("{} {}", ops.mnemonic, operand);
-    let asm = format!("{:31}", asm);
 
-    // TODO
-    // let result = format!(
-    //     "{:04X}  {:}  {:}     A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X} {:?}",
-    //     cpu.program_counter,
-    //     machine,
-    //     asm,
-    //     cpu.register_a,
-    //     cpu.register_x,
-    //     cpu.register_y,
-    //     cpu.status,
-    //     cpu.stack_pointer,
-    //     ops.mode
-    // );
-    let result = format!(
-        "{:04X}  {:}  {:} A:{:02X} X:{:02X} Y:{:02X} P:{:02X} SP:{:02X}",
-        cpu.program_counter,
-        machine,
-        asm,
-        cpu.register_a,
-        cpu.register_x,
-        cpu.register_y,
-        cpu.status,
-        cpu.stack_pointer
-    );
-    return result;
+    let hex_str = hex_dump
+        .iter()
+        .map(|z| format!("{:02x}", z))
+        .collect::<Vec<String>>()
+        .join(" ");
+    let asm_str = format!("{:04x}  {:8} {: >4} {}", begin, hex_str, ops.mnemonic, tmp)
+        .trim()
+        .to_string();
+
+    format!(
+        "{:47} A:{:02x} X:{:02x} Y:{:02x} P:{:02x} SP:{:02x}",
+        asm_str, cpu.register_a, cpu.register_x, cpu.register_y, cpu.status, cpu.stack_pointer,
+    )
+    .to_ascii_uppercase()
 }
