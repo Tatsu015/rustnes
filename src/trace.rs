@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::ptr::addr_of;
 
 use crate::cpu::AddressingMode;
 use crate::cpu::{Memory, CPU};
