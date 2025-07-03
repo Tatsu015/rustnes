@@ -218,35 +218,40 @@ impl CPU {
 
     pub fn get_operand_adress(&self, mode: &AddressingMode) -> u16 {
         match mode {
-            // Immidiate use program counter value as operand adress
             AddressingMode::Immediate => self.program_counter,
+            _ => self.get_absolute_adress(mode, self.program_counter),
+        }
+    }
+
+    pub fn get_absolute_adress(&self, mode: &AddressingMode, addr: u16) -> u16 {
+        match mode {
             // `page` is 256byte memory region.
             // for ex. 0page:0x0000 ~ 0x00ff, 1page:0x0100 ~ 0x01ff, ...
             // ZeroPage adressing uses only the first 256 bytes of memory, where the adress is in the instruction
-            AddressingMode::ZeroPage => self.mem_read(self.program_counter) as u16,
-            AddressingMode::Absolute => self.mem_read_u16(self.program_counter),
+            AddressingMode::ZeroPage => self.mem_read(addr) as u16,
+            AddressingMode::Absolute => self.mem_read_u16(addr),
             AddressingMode::ZeroPage_X => {
-                let pos = self.mem_read(self.program_counter);
+                let pos = self.mem_read(addr);
                 let addr = pos.wrapping_add(self.register_x) as u16;
                 addr
             }
             AddressingMode::ZeroPage_Y => {
-                let pos = self.mem_read(self.program_counter);
+                let pos = self.mem_read(addr);
                 let addr = pos.wrapping_add(self.register_y) as u16;
                 addr
             }
             AddressingMode::Absolute_X => {
-                let base = self.mem_read_u16(self.program_counter);
+                let base = self.mem_read_u16(addr);
                 let addr = base.wrapping_add(self.register_x as u16);
                 addr
             }
             AddressingMode::Absolute_Y => {
-                let base = self.mem_read_u16(self.program_counter);
+                let base = self.mem_read_u16(addr);
                 let addr = base.wrapping_add(self.register_y as u16);
                 addr
             }
             AddressingMode::Indirect_X => {
-                let base = self.mem_read(self.program_counter);
+                let base = self.mem_read(addr);
 
                 let ptr = (base as u8).wrapping_add(self.register_x);
                 let lo = self.mem_read(ptr as u16);
@@ -255,7 +260,7 @@ impl CPU {
                 addr
             }
             AddressingMode::Indirect_Y => {
-                let base = self.mem_read(self.program_counter);
+                let base = self.mem_read(addr);
 
                 let lo = self.mem_read(base as u16);
                 let hi = self.mem_read((base as u8).wrapping_add(1) as u16);
@@ -263,8 +268,8 @@ impl CPU {
                 let deref = deref_base.wrapping_add(self.register_y as u16);
                 deref
             }
-            AddressingMode::NoneAdressing => {
-                panic!("mode {:?} is not supported", mode)
+            _ => {
+                panic!("mode {:?} is not supported", mode);
             }
         }
     }
