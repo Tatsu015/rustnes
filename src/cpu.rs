@@ -306,15 +306,17 @@ impl CPU {
 
     fn asl(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
-        let data = self.mem_read(addr) << 1;
+        let data = self.mem_read(addr);
+        let carry = data >> 7;
 
-        if self.register_a >> 7 == 1 {
+        if carry == 1 {
             self.status.insert(CpuFlags::CARRY);
         } else {
             self.status.remove(CpuFlags::CARRY);
         }
 
-        self.mem_write(addr, data);
+        let new_data = data << 1;
+        self.mem_write(addr, new_data);
         self.update_zero_and_negative_flags(self.register_a);
     }
 
