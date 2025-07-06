@@ -569,7 +569,7 @@ impl CPU {
         let addr = self.get_operand_adress(mode);
         let mut data = self.mem_read(addr);
         let carry = self.status.contains(CpuFlags::CARRY);
-        let bit7 = data << 7;
+        let bit7 = data >> 7;
         if bit7 == 0 {
             self.status.remove(CpuFlags::CARRY);
         } else {
