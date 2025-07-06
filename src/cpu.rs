@@ -309,6 +309,8 @@ impl CPU {
         let data = self.mem_read(addr);
         let carry = data >> 7;
 
+        println!("P: {:b}", self.status);
+
         if carry == 1 {
             self.status.insert(CpuFlags::CARRY);
         } else {
@@ -318,6 +320,7 @@ impl CPU {
         let new_data = data << 1;
         self.mem_write(addr, new_data);
         self.update_zero_and_negative_flags(self.register_a);
+        println!("P: {:b}", self.status);
     }
 
     fn asl_accumulator(&mut self) {
