@@ -32,6 +32,7 @@ pub fn trace(cpu: &CPU) -> String {
             // let value = cpu.mem_read(address));
             hex_dump.push(address);
 
+            println!("MMMMMMMMMMMMMM {:?}", ops.mode);
             match ops.mode {
                 AddressingMode::Immediate => format!("#${:02x}", address),
                 AddressingMode::ZeroPage => format!("${:02x} = {:02x}", mem_addr, stored_value),
