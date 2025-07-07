@@ -57,8 +57,8 @@ lazy_static! {
         // BEQ
         OpCode::new(0xf0, "BEQ", 2, 2 /*(+1 if branch succeeds +2 if to a new page)*/, AddressingMode::NoneAdressing),
         // BIT
-        OpCode::new(0x24, "BIT", 2, 5, AddressingMode::ZeroPage),
-        OpCode::new(0x2c, "BIT", 2, 6, AddressingMode::Absolute),
+        OpCode::new(0x24, "BIT", 2, 3, AddressingMode::ZeroPage),
+        OpCode::new(0x2c, "BIT", 3, 4, AddressingMode::Absolute),
         // BMI
         OpCode::new(0x30, "BMI", 2, 2 /*(+1 if branch succeeds +2 if to a new page)*/, AddressingMode::NoneAdressing),
         // BNE
