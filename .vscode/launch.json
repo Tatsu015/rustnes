@@ -10,7 +10,7 @@
       "name": "Cargo launch",
       "program": "${workspaceRoot}/target/debug/${workspaceRootFolderName}",
       "args": [],
-      "cwd": "${workspaceRoot}/target/debug/",
+      "cwd": "${workspaceRoot}",
       "sourceLanguages": ["rust"]
       //   "cargo": {
       //     "args": ["build", "--lib"]
