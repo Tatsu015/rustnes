@@ -162,7 +162,7 @@ impl CPU {
                 0xe8 => self.inx(),
                 0xc8 => self.iny(),
                 0x4c => self.jmp_absolute(),
-                0x6c => self.jmp(&opcode.mode),
+                0x6c => self.jmp(),
                 0x20 => self.jsr(),
                 0xa9 | 0xa5 | 0xb5 | 0xad | 0xbd | 0xb9 | 0xa1 | 0xb1 => self.lda(&opcode.mode),
                 0xa2 | 0xa6 | 0xb6 | 0xae | 0xbe => self.ldx(&opcode.mode),
@@ -472,10 +472,27 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_y);
     }
 
-    fn jmp(&mut self, mode: &AddressingMode) {
-        let addr = self.get_operand_adress(mode);
-        let data = self.mem_read_u16(addr);
-        self.program_counter = data;
+    fn jmp(&mut self) {
+        // let addr = self.get_operand_adress(mode);
+        // let data = self.mem_read_u16(addr);
+        // self.program_counter = data;
+
+        let addr = self.mem_read_u16(self.program_counter);
+        // let indirect_ref = self.mem_read_u16(mem_address);
+        //6502 bug mode with with page boundary:
+        //  if address $3000 contains $40, $30FF contains $80, and $3100 contains $50,
+        // the result of JMP ($30FF) will be a transfer of control to $4080 rather than $5080 as you intended
+        // i.e. the 6502 took the low byte of the address from $30FF and the high byte from $3000
+
+        let indirect_ref = if addr & 0x00FF == 0x00FF {
+            let lo = self.mem_read(addr);
+            let hi = self.mem_read(addr & 0xFF00);
+            (hi as u16) << 8 | (lo as u16)
+        } else {
+            self.mem_read_u16(addr)
+        };
+
+        self.program_counter = indirect_ref;
     }
 
     fn jmp_absolute(&mut self) {
