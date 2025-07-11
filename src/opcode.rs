@@ -233,6 +233,11 @@ lazy_static! {
         OpCode::new(0x9a, "TXS", 1, 2, AddressingMode::NoneAdressing),
         // TYA
         OpCode::new(0x98, "TYA", 1, 2, AddressingMode::NoneAdressing),
+
+        // No action
+        OpCode::new(0x04, "*NOP", 2, 3, AddressingMode::ZeroPage),
+        OpCode::new(0x44, "*NOP", 2, 3, AddressingMode::ZeroPage),
+        OpCode::new(0x64, "*NOP", 2, 3, AddressingMode::ZeroPage),
     ];
 
     pub static ref OPECODE_MAP: HashMap<u8, &'static OpCode>={

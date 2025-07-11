@@ -194,6 +194,7 @@ impl CPU {
                 0x8a => self.txa(),
                 0x9a => self.txs(),
                 0x98 => self.tya(),
+                0x04 | 0x44 | 0x64 => self.nop(),
                 _ => todo!(""),
             }
             if before_program_counter == self.program_counter {
