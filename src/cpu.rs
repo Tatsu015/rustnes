@@ -196,7 +196,7 @@ impl CPU {
                 0x98 => self.tya(),
                 0xa3 | 0xa7 | 0xaf | 0xb3 | 0xb7 | 0xbf => self.lax(&opcode.mode),
                 0x83 | 0x87 | 0x8f | 0x97 => self.sax(&opcode.mode),
-                0xeb => self.sbc(&opcode.mode), // TODO maybe...
+                0xeb => self.nop(),
                 0xc3 => self.dcp(&opcode.mode),
                 0x04 | 0x44 | 0x64 | 0x0c | 0x14 | 0x34 | 0x54 | 0x74 | 0xd4 | 0xf4 | 0x1a
                 | 0x3a | 0x5a | 0x7a | 0xda | 0xfa | 0x80 | 0x82 | 0x89 | 0xc2 | 0xe2 | 0x1c
@@ -768,7 +768,7 @@ impl CPU {
     }
 
     fn dcp(&mut self, mode: &AddressingMode) {
-        // // TODO maybe...
+        // https://www.masswerk.at/6502/6502_instruction_set.html#DCP
         let addr = self.get_operand_adress(mode);
         let data = self.mem_read(addr);
         let new_data = data.wrapping_sub(1);
