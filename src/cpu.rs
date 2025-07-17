@@ -197,6 +197,7 @@ impl CPU {
                 0xa3 | 0xa7 | 0xaf | 0xb3 | 0xb7 | 0xbf => self.lax(&opcode.mode),
                 0x83 | 0x87 | 0x8f | 0x97 => self.sax(&opcode.mode),
                 0xeb => self.sbc(&opcode.mode), // TODO maybe...
+                0xc3 => self.dcp(&opcode.mode),
                 0x04 | 0x44 | 0x64 | 0x0c | 0x14 | 0x34 | 0x54 | 0x74 | 0xd4 | 0xf4 | 0x1a
                 | 0x3a | 0x5a | 0x7a | 0xda | 0xfa | 0x80 | 0x82 | 0x89 | 0xc2 | 0xe2 | 0x1c
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
@@ -764,6 +765,19 @@ impl CPU {
         let data = self.register_a & self.register_x;
         let addr = self.get_operand_adress(mode);
         self.mem_write(addr, data);
+    }
+
+    fn dcp(&mut self, mode: &AddressingMode) {
+        // // TODO maybe...
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        let new_data = data.wrapping_sub(1);
+        self.mem_write(addr, new_data);
+        if data <= self.register_a {
+            self.status.insert(CpuFlags::CARRY);
+        }
+
+        self.update_zero_and_negative_flags(self.register_a.wrapping_sub(data));
     }
 
     fn branch(&mut self, condition: bool) {
