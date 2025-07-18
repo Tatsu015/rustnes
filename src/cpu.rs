@@ -771,15 +771,13 @@ impl CPU {
         // https://www.masswerk.at/6502/6502_instruction_set.html#DCP
         let addr = self.get_operand_adress(mode);
         let data = self.mem_read(addr);
-        // data = data.wrapping_sub(1);
-        // self.mem_write(addr, data);
         let new_data = data.wrapping_sub(1);
         self.mem_write(addr, new_data);
-        if data <= self.register_a {
+        if new_data <= self.register_a {
             self.status.insert(CpuFlags::CARRY);
         }
 
-        self.update_zero_and_negative_flags(self.register_a.wrapping_sub(data));
+        self.update_zero_and_negative_flags(self.register_a.wrapping_sub(new_data));
     }
 
     fn branch(&mut self, condition: bool) {
