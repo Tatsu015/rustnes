@@ -289,18 +289,22 @@ impl CPU {
         } else {
             0
         };
-        let overable_resule = self.register_a as i16 + data as i16 + carry as i16;
-        if overable_resule > 0xff {
+        let target_val = data;
+
+        let overable_result = self.register_a as i16 + target_val as i16 + carry as i16;
+        if overable_result > 0xff {
             self.status.insert(CpuFlags::CARRY);
         } else {
             self.status.remove(CpuFlags::CARRY);
         }
-        let result = overable_resule as u8;
-        if (result ^ self.register_a) & (result ^ data) & 0x80 == 0 {
+        let result = overable_result as u8;
+
+        if (result ^ self.register_a) & (result ^ target_val) & 0x80 == 0 {
             self.status.remove(CpuFlags::OVERFLOW);
         } else {
             self.status.insert(CpuFlags::OVERFLOW);
         }
+
         self.register_a = result;
         self.update_zero_and_negative_flags(result);
     }
@@ -678,8 +682,9 @@ impl CPU {
         // let sub_val = ((data as i8).wrapping_neg().wrapping_sub(1)) as u8;
         // let overable_result = self.register_a as u16 + sub_val as u16 + carry;
         // [TODO] maybe ok.
-        let sub_val = (-(data as i16) - 1) as u8;
-        let overable_result = self.register_a as i16 + sub_val as i16 + carry as i16;
+        let target_val = (-(data as i16) - 1) as u8;
+
+        let overable_result = self.register_a as i16 + target_val as i16 + carry as i16;
         if overable_result > 0xff {
             self.status.insert(CpuFlags::CARRY);
         } else {
@@ -687,7 +692,7 @@ impl CPU {
         }
         let result = overable_result as u8;
 
-        if (result ^ self.register_a) & (result ^ sub_val) & 0x80 == 0 {
+        if (result ^ self.register_a) & (result ^ target_val) & 0x80 == 0 {
             self.status.remove(CpuFlags::OVERFLOW);
         } else {
             self.status.insert(CpuFlags::OVERFLOW);
