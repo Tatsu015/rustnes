@@ -284,29 +284,9 @@ impl CPU {
     fn adc(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
         let data = self.mem_read(addr);
-        let carry = if self.status.contains(CpuFlags::CARRY) {
-            1
-        } else {
-            0
-        };
         let target_val = data;
 
-        let overable_result = self.register_a as i16 + target_val as i16 + carry as i16;
-        if overable_result > 0xff {
-            self.status.insert(CpuFlags::CARRY);
-        } else {
-            self.status.remove(CpuFlags::CARRY);
-        }
-        let result = overable_result as u8;
-
-        if (result ^ self.register_a) & (result ^ target_val) & 0x80 == 0 {
-            self.status.remove(CpuFlags::OVERFLOW);
-        } else {
-            self.status.insert(CpuFlags::OVERFLOW);
-        }
-
-        self.register_a = result;
-        self.update_zero_and_negative_flags(result);
+        self.set_register_a_with_flags(target_val);
     }
 
     fn and(&mut self, mode: &AddressingMode) {
@@ -673,33 +653,12 @@ impl CPU {
     fn sbc(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
         let data = self.mem_read(addr);
-        let carry = if self.status.contains(CpuFlags::CARRY) {
-            1
-        } else {
-            0
-        };
 
         // let sub_val = ((data as i8).wrapping_neg().wrapping_sub(1)) as u8;
         // let overable_result = self.register_a as u16 + sub_val as u16 + carry;
         // [TODO] maybe ok.
         let target_val = (-(data as i16) - 1) as u8;
-
-        let overable_result = self.register_a as i16 + target_val as i16 + carry as i16;
-        if overable_result > 0xff {
-            self.status.insert(CpuFlags::CARRY);
-        } else {
-            self.status.remove(CpuFlags::CARRY);
-        }
-        let result = overable_result as u8;
-
-        if (result ^ self.register_a) & (result ^ target_val) & 0x80 == 0 {
-            self.status.remove(CpuFlags::OVERFLOW);
-        } else {
-            self.status.insert(CpuFlags::OVERFLOW);
-        }
-
-        self.register_a = result;
-        self.update_zero_and_negative_flags(result);
+        self.set_register_a_with_flags(target_val)
     }
 
     fn sec(&mut self) {
@@ -807,6 +766,31 @@ impl CPU {
         } else {
             self.status.remove(CpuFlags::NEGATIVE);
         }
+    }
+
+    fn set_register_a_with_flags(&mut self, set_data: u8) {
+        let carry = if self.status.contains(CpuFlags::CARRY) {
+            1
+        } else {
+            0
+        };
+
+        let overable_result = self.register_a as i16 + set_data as i16 + carry as i16;
+        if overable_result > 0xff {
+            self.status.insert(CpuFlags::CARRY);
+        } else {
+            self.status.remove(CpuFlags::CARRY);
+        }
+        let result = overable_result as u8;
+
+        if (result ^ self.register_a) & (result ^ set_data) & 0x80 == 0 {
+            self.status.remove(CpuFlags::OVERFLOW);
+        } else {
+            self.status.insert(CpuFlags::OVERFLOW);
+        }
+
+        self.register_a = result;
+        self.update_zero_and_negative_flags(result);
     }
 
     fn stack_pop(&mut self) -> u8 {
