@@ -196,7 +196,7 @@ impl CPU {
                 0x98 => self.tya(),
                 0xa3 | 0xa7 | 0xaf | 0xb3 | 0xb7 | 0xbf => self.lax(&opcode.mode),
                 0x83 | 0x87 | 0x8f | 0x97 => self.sax(&opcode.mode),
-                0xeb => self.nop(),
+                0xeb => self.unofficial_sbc(&opcode.mode),
                 0xc3 | 0xc7 | 0xcf => self.dcp(&opcode.mode),
                 0x04 | 0x44 | 0x64 | 0x0c | 0x14 | 0x34 | 0x54 | 0x74 | 0xd4 | 0xf4 | 0x1a
                 | 0x3a | 0x5a | 0x7a | 0xda | 0xfa | 0x80 | 0x82 | 0x89 | 0xc2 | 0xe2 | 0x1c
@@ -284,9 +284,8 @@ impl CPU {
     fn adc(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_adress(mode);
         let data = self.mem_read(addr);
-        let target_val = data;
 
-        self.set_register_a_with_flags(target_val);
+        self.set_register_a_with_flags(data);
     }
 
     fn and(&mut self, mode: &AddressingMode) {
@@ -742,6 +741,12 @@ impl CPU {
         }
 
         self.update_zero_and_negative_flags(self.register_a.wrapping_sub(new_data));
+    }
+
+    fn unofficial_sbc(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+        self.set_register_a_with_flags(data.wrapping_neg().wrapping_sub(1));
     }
 
     fn branch(&mut self, condition: bool) {
