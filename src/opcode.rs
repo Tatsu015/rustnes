@@ -288,6 +288,7 @@ lazy_static! {
         OpCode::new(0xcf, "*DCP", 3, 6, AddressingMode::Absolute),
         OpCode::new(0xd3, "*DCP", 2, 8, AddressingMode::Indirect_Y),
         OpCode::new(0xd7, "*DCP", 2, 6, AddressingMode::ZeroPage_X),
+        OpCode::new(0xdb, "*DCP", 3, 7, AddressingMode::Absolute_Y),
     ];
 
     pub static ref OPECODE_MAP: HashMap<u8, &'static OpCode>={
