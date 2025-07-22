@@ -290,6 +290,9 @@ lazy_static! {
         OpCode::new(0xd7, "*DCP", 2, 6, AddressingMode::ZeroPage_X),
         OpCode::new(0xdb, "*DCP", 3, 7, AddressingMode::Absolute_Y),
         OpCode::new(0xdf, "*DCP", 3, 7, AddressingMode::Absolute_X),
+
+        // ISB (ISC is another nama)
+        OpCode::new(0xe3, "*ISB", 2, 8, AddressingMode::Indirect_X),
     ];
 
     pub static ref OPECODE_MAP: HashMap<u8, &'static OpCode>={

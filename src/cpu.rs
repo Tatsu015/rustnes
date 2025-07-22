@@ -198,6 +198,7 @@ impl CPU {
                 0x83 | 0x87 | 0x8f | 0x97 => self.sax(&opcode.mode),
                 0xeb => self.sbc(&opcode.mode),
                 0xc3 | 0xc7 | 0xcf | 0xd3 | 0xd7 | 0xdb | 0xdf => self.dcp(&opcode.mode),
+                0xe3 => self.isc(&opcode.mode),
                 0x04 | 0x44 | 0x64 | 0x0c | 0x14 | 0x34 | 0x54 | 0x74 | 0xd4 | 0xf4 | 0x1a
                 | 0x3a | 0x5a | 0x7a | 0xda | 0xfa | 0x80 | 0x82 | 0x89 | 0xc2 | 0xe2 | 0x1c
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
@@ -741,6 +742,19 @@ impl CPU {
         }
 
         self.update_zero_and_negative_flags(self.register_a.wrapping_sub(new_data));
+    }
+
+    // ISC or ISB
+    // this operation has some names.
+    fn isc(&mut self, mode: &AddressingMode) {
+        let addr = self.get_operand_adress(mode);
+        let data = self.mem_read(addr);
+
+        // let sub_val = ((data as i8).wrapping_neg().wrapping_sub(1)) as u8;
+        // let overable_result = self.register_a as u16 + sub_val as u16 + carry;
+        // [TODO] maybe ok.
+        let target_val = (-(data as i16) - 2) as u8;
+        self.set_register_a_with_flags(target_val)
     }
 
     fn branch(&mut self, condition: bool) {
