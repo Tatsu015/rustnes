@@ -743,12 +743,6 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_a.wrapping_sub(new_data));
     }
 
-    fn unofficial_sbc(&mut self, mode: &AddressingMode) {
-        let addr = self.get_operand_adress(mode);
-        let data = self.mem_read(addr);
-        self.set_register_a_with_flags(data.wrapping_neg().wrapping_sub(1));
-    }
-
     fn branch(&mut self, condition: bool) {
         if condition {
             let jump = self.mem_read(self.program_counter) as i8;
