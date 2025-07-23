@@ -15,9 +15,9 @@ pub fn trace(cpu: &CPU) -> String {
     hex_dump.push(code);
 
     let (mem_addr, stored_value) = match ops.mode {
-        AddressingMode::Immediate | AddressingMode::NoneAdressing => (0, 0),
+        AddressingMode::Immediate | AddressingMode::NoneAddressing => (0, 0),
         _ => {
-            let addr = cpu.get_absolute_adress(&ops.mode, begin + 1);
+            let addr = cpu.get_absolute_address(&ops.mode, begin + 1);
             (addr, cpu.mem_read(addr))
         }
     };
@@ -57,7 +57,7 @@ pub fn trace(cpu: &CPU) -> String {
                     mem_addr,
                     stored_value
                 ),
-                AddressingMode::NoneAdressing => {
+                AddressingMode::NoneAddressing => {
                     // assuming local jumps: BNE, BVS, etc....
                     let address: usize =
                         (begin as usize + 2).wrapping_add((address as i8) as usize);
@@ -79,7 +79,7 @@ pub fn trace(cpu: &CPU) -> String {
             let address = cpu.mem_read_u16(begin + 1);
 
             match ops.mode {
-                AddressingMode::NoneAdressing => {
+                AddressingMode::NoneAddressing => {
                     if ops.code == 0x6c {
                         //jmp indirect
                         let jmp_addr = if address & 0x00FF == 0x00FF {
