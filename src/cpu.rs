@@ -754,7 +754,8 @@ impl CPU {
         // let overable_result = self.register_a as u16 + sub_val as u16 + carry;
         // [TODO] maybe ok.
         let target_val = (-(data as i16) - 2) as u8;
-        self.set_register_a_with_flags(target_val)
+        self.set_register_a_with_flags(target_val);
+        self.mem_write(addr, data.wrapping_add(1));
     }
 
     fn branch(&mut self, condition: bool) {
