@@ -299,6 +299,9 @@ lazy_static! {
         OpCode::new(0xfb, "*ISB", 3, 7, AddressingMode::Absolute_Y),
         OpCode::new(0xe3, "*ISB", 2, 8, AddressingMode::Indirect_X),
         OpCode::new(0xf3, "*ISB", 2, 8, AddressingMode::Indirect_Y),
+
+        // SLO
+        OpCode::new(0x03, "*SLO", 2, 8, AddressingMode::Indirect_X),
     ];
 
     pub static ref OPECODE_MAP: HashMap<u8, &'static OpCode>={
