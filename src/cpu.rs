@@ -136,7 +136,9 @@ impl CPU {
                 0x69 | 0x65 | 0x75 | 0x6d | 0x7d | 0x79 | 0x61 | 0x71 => self.adc(&opcode.mode),
                 0x29 | 0x25 | 0x35 | 0x2d | 0x3d | 0x39 | 0x21 | 0x31 => self.and(&opcode.mode),
                 0x0a => self.asl_accumulator(),
-                0x06 | 0x16 | 0x0e | 0x1e => self.asl(&opcode.mode),
+                0x06 | 0x16 | 0x0e | 0x1e => {
+                    self.asl(&opcode.mode);
+                }
                 0x90 => self.bcc(),
                 0xb0 => self.bcs(),
                 0xf0 => self.beq(),
@@ -199,7 +201,7 @@ impl CPU {
                 0xeb => self.sbc(&opcode.mode),
                 0xc3 | 0xc7 | 0xcf | 0xd3 | 0xd7 | 0xdb | 0xdf => self.dcp(&opcode.mode),
                 0xe3 | 0xe7 | 0xef | 0xf3 | 0xf7 | 0xfb | 0xff => self.isc(&opcode.mode),
-                0x03 => self.slo(&opcode.mode),
+                0x03 | 0x07 | 0x17 | 0x0f | 0x1f | 0x1b | 0x13 => self.slo(&opcode.mode),
                 0x04 | 0x44 | 0x64 | 0x0c | 0x14 | 0x34 | 0x54 | 0x74 | 0xd4 | 0xf4 | 0x1a
                 | 0x3a | 0x5a | 0x7a | 0xda | 0xfa | 0x80 | 0x82 | 0x89 | 0xc2 | 0xe2 | 0x1c
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
@@ -296,7 +298,7 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_a);
     }
 
-    fn asl(&mut self, mode: &AddressingMode) {
+    fn asl(&mut self, mode: &AddressingMode) -> u8 {
         let addr = self.get_operand_address(mode);
         let data = self.mem_read(addr);
         let carry = data >> 7;
@@ -310,6 +312,7 @@ impl CPU {
         let new_data = data << 1;
         self.mem_write(addr, new_data);
         self.update_zero_and_negative_flags(new_data);
+        new_data
     }
 
     fn asl_accumulator(&mut self) {
@@ -759,7 +762,12 @@ impl CPU {
         self.mem_write(addr, data.wrapping_add(1));
     }
 
-    fn slo(&mut self, mode: &AddressingMode) {}
+    fn slo(&mut self, mode: &AddressingMode) {
+        let data = self.asl(mode);
+        let new_data = self.register_a | data;
+        self.register_a = new_data;
+        self.update_zero_and_negative_flags(new_data);
+    }
 
     fn branch(&mut self, condition: bool) {
         if condition {
