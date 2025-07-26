@@ -178,7 +178,9 @@ impl CPU {
                 0x68 => self.pla(),
                 0x28 => self.plp(),
                 0x2a => self.rol_accumulate(),
-                0x26 | 0x36 | 0x2e | 0x3e => self.rol(&opcode.mode),
+                0x26 | 0x36 | 0x2e | 0x3e => {
+                    self.rol(&opcode.mode);
+                }
                 0x6a => self.ror_accumulator(),
                 0x66 | 0x76 | 0x6e | 0x7e => self.ror(&opcode.mode),
                 0x40 => self.rti(),
@@ -578,7 +580,7 @@ impl CPU {
         self.status.insert(CpuFlags::RESERVED);
     }
 
-    fn rol(&mut self, mode: &AddressingMode) {
+    fn rol(&mut self, mode: &AddressingMode) -> u8 {
         let addr = self.get_operand_address(mode);
         let mut data = self.mem_read(addr);
         let carry = self.status.contains(CpuFlags::CARRY);
@@ -593,6 +595,7 @@ impl CPU {
         data = data | (carry as u8);
         self.mem_write(addr, data);
         self.update_zero_and_negative_flags(data);
+        data
     }
 
     fn rol_accumulate(&mut self) {
@@ -770,7 +773,12 @@ impl CPU {
         self.update_zero_and_negative_flags(new_data);
     }
 
-    fn rla(&mut self, mode: &AddressingMode) {}
+    fn rla(&mut self, mode: &AddressingMode) {
+        let data = self.rol(mode);
+        let new_data = self.register_a & data;
+        self.register_a = new_data;
+        self.update_zero_and_negative_flags(new_data);
+    }
 
     fn branch(&mut self, condition: bool) {
         if condition {
