@@ -324,6 +324,8 @@ lazy_static! {
         OpCode::new(0x5b, "*SRE", 3, 7, AddressingMode::Absolute_Y),
         OpCode::new(0x43, "*SRE", 2, 8, AddressingMode::Indirect_X),
         OpCode::new(0x53, "*SRE", 2, 8, AddressingMode::Indirect_Y),
+
+        OpCode::new(0x63, "*RRA", 2, 8, AddressingMode::Indirect_X),
     ];
 
     pub static ref OPECODE_MAP: HashMap<u8, &'static OpCode>={

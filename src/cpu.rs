@@ -184,7 +184,9 @@ impl CPU {
                     self.rol(&opcode.mode);
                 }
                 0x6a => self.ror_accumulator(),
-                0x66 | 0x76 | 0x6e | 0x7e => self.ror(&opcode.mode),
+                0x66 | 0x76 | 0x6e | 0x7e => {
+                    self.ror(&opcode.mode);
+                }
                 0x40 => self.rti(),
                 0x60 => self.rts(),
                 0xe9 | 0xe5 | 0xf5 | 0xed | 0xfd | 0xf9 | 0xe1 | 0xf1 => self.sbc(&opcode.mode),
@@ -208,6 +210,7 @@ impl CPU {
                 0x03 | 0x07 | 0x17 | 0x0f | 0x1f | 0x1b | 0x13 => self.slo(&opcode.mode),
                 0x27 | 0x37 | 0x2f | 0x3f | 0x3b | 0x23 | 0x33 => self.rla(&opcode.mode),
                 0x47 | 0x57 | 0x4f | 0x5f | 0x5b | 0x43 | 0x53 => self.sre(&opcode.mode),
+                0x63 => self.rra(&opcode.mode),
                 0x04 | 0x44 | 0x64 | 0x0c | 0x14 | 0x34 | 0x54 | 0x74 | 0xd4 | 0xf4 | 0x1a
                 | 0x3a | 0x5a | 0x7a | 0xda | 0xfa | 0x80 | 0x82 | 0x89 | 0xc2 | 0xe2 | 0x1c
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
@@ -617,7 +620,7 @@ impl CPU {
         self.update_zero_and_negative_flags(data);
     }
 
-    fn ror(&mut self, mode: &AddressingMode) {
+    fn ror(&mut self, mode: &AddressingMode) -> u8 {
         let addr = self.get_operand_address(mode);
         let mut data = self.mem_read(addr);
         let carry = self.status.contains(CpuFlags::CARRY);
@@ -632,6 +635,7 @@ impl CPU {
         data = data | (carry as u8) << 7;
         self.mem_write(addr, data);
         self.update_zero_and_negative_flags(data);
+        data
     }
 
     fn ror_accumulator(&mut self) {
@@ -789,6 +793,11 @@ impl CPU {
         let new_data = self.register_a ^ data;
         self.register_a = new_data;
         self.update_zero_and_negative_flags(new_data);
+    }
+
+    fn rra(&mut self, mode: &AddressingMode) {
+        let data = self.ror(mode);
+        self.set_register_a_with_flags(data);
     }
 
     fn branch(&mut self, condition: bool) {
