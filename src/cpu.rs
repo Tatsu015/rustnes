@@ -170,7 +170,9 @@ impl CPU {
                 0xa2 | 0xa6 | 0xb6 | 0xae | 0xbe => self.ldx(&opcode.mode),
                 0xa0 | 0xa4 | 0xb4 | 0xac | 0xbc => self.ldy(&opcode.mode),
                 0x4a => self.lsr_accumulator(),
-                0x46 | 0x56 | 0x4e | 0x5e => self.lsr(&opcode.mode),
+                0x46 | 0x56 | 0x4e | 0x5e => {
+                    self.lsr(&opcode.mode);
+                }
                 0xea => self.nop(),
                 0x09 | 0x05 | 0x15 | 0x0d | 0x1d | 0x19 | 0x01 | 0x11 => self.ora(&opcode.mode),
                 0x48 => self.pha(),
@@ -205,6 +207,7 @@ impl CPU {
                 0xe3 | 0xe7 | 0xef | 0xf3 | 0xf7 | 0xfb | 0xff => self.isc(&opcode.mode),
                 0x03 | 0x07 | 0x17 | 0x0f | 0x1f | 0x1b | 0x13 => self.slo(&opcode.mode),
                 0x27 | 0x37 | 0x2f | 0x3f | 0x3b | 0x23 | 0x33 => self.rla(&opcode.mode),
+                0x43 => self.sre(&opcode.mode),
                 0x04 | 0x44 | 0x64 | 0x0c | 0x14 | 0x34 | 0x54 | 0x74 | 0xd4 | 0xf4 | 0x1a
                 | 0x3a | 0x5a | 0x7a | 0xda | 0xfa | 0x80 | 0x82 | 0x89 | 0xc2 | 0xe2 | 0x1c
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
@@ -524,7 +527,7 @@ impl CPU {
         self.update_zero_and_negative_flags(self.register_y);
     }
 
-    fn lsr(&mut self, mode: &AddressingMode) {
+    fn lsr(&mut self, mode: &AddressingMode) -> u8 {
         let addr = self.get_operand_address(mode);
         let data = self.mem_read(addr);
         if data & 1 == 1 {
@@ -535,6 +538,7 @@ impl CPU {
         let new_data = data >> 1;
         self.mem_write(addr, new_data);
         self.update_zero_and_negative_flags(new_data);
+        new_data
     }
 
     fn lsr_accumulator(&mut self) {
@@ -776,6 +780,13 @@ impl CPU {
     fn rla(&mut self, mode: &AddressingMode) {
         let data = self.rol(mode);
         let new_data = self.register_a & data;
+        self.register_a = new_data;
+        self.update_zero_and_negative_flags(new_data);
+    }
+
+    fn sre(&mut self, mode: &AddressingMode) {
+        let data = self.lsr(mode);
+        let new_data = self.register_a ^ data;
         self.register_a = new_data;
         self.update_zero_and_negative_flags(new_data);
     }
