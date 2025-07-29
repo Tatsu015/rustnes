@@ -40,7 +40,7 @@ impl Memory for Bus {
             }
             0x8000..=0xFFFF => self.read_prg_rom(addr),
             _ => {
-                println!("Ignoring memory access at {}", addr);
+                println!("Ignoring mem write access at {}", addr);
                 0
             }
         }
@@ -58,7 +58,7 @@ impl Memory for Bus {
             0x8000..=0xFFFF => {
                 panic!("Attempt to write to Cartridge ROM space")
             }
-            _ => println!("Ignoring memory access at {}", addr),
+            _ => println!("Ignoring mem write-access at {}", addr),
         }
     }
 }
