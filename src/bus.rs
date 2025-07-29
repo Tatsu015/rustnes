@@ -40,7 +40,7 @@ impl Memory for Bus {
             }
             0x8000..=0xFFFF => self.read_prg_rom(addr),
             _ => {
-                println!("Ignoring mem write access at {}", addr);
+                println!("Ignoring mem access at {}", addr);
                 0
             }
         }
