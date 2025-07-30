@@ -6,3 +6,15 @@ pub struct NesPPU {
 
     pub mirroring: Mirroring,
 }
+
+impl NesPPU {
+    pub fn new(chr_rom: Vec<u8>, mirroring: Mirroring) -> Self {
+        NesPPU {
+            chr_rom: chr_rom,
+            mirroring: mirroring,
+            vram: [0; 2048],
+            oam_data: [0; 64 * 4],
+            palette_table: [0; 32],
+        }
+    }
+}
