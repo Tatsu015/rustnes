@@ -23,3 +23,17 @@ pub struct AddrRegister {
     value: (u8, u8),
     hi_ptr: bool,
 }
+
+impl AddrRegister {
+    pub fn new() -> Self {
+        AddrRegister {
+            value: (0, 0),
+            hi_ptr: true,
+        }
+    }
+
+    fn set(&mut self, data: u16) {
+        self.value.0 = (data >> 8) as u8;
+        self.value.1 = (data & 0xff) as u8;
+    }
+}
