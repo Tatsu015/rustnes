@@ -21,6 +21,7 @@ pub struct NesPPU {
 
     pub mirroring: Mirroring,
     addr: AddrRegister,
+    pub ctrl: ControlRegister,
 }
 
 impl ControlRegister {
@@ -54,6 +55,10 @@ impl NesPPU {
 
     fn write_to_ppu_addr(&mut self, value: u8) {
         self.addr.update(value);
+    }
+
+    fn write_to_ctrl(&mut self, value: u8) {
+        self.ctrl.update(value);
     }
 }
 
