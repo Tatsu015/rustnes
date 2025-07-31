@@ -23,6 +23,24 @@ pub struct NesPPU {
     addr: AddrRegister,
 }
 
+impl ControlRegister {
+    pub fn new() -> Self {
+        ControlRegister::from_bits_truncate(0b0000_0000);
+    }
+
+    pub fn vram_addr_increment(&self) -> u8 {
+        if !self.contains(ControlRegister::VRAM_ADDR_INCREMENT) {
+            1
+        } else {
+            32
+        }
+    }
+
+    pub fn update(&mut self, data: u8) {
+        self.bits = data;
+    }
+}
+
 impl NesPPU {
     pub fn new(chr_rom: Vec<u8>, mirroring: Mirroring) -> Self {
         NesPPU {
