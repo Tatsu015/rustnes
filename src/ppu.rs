@@ -5,6 +5,7 @@ pub struct NesPPU {
     pub oam_data: [u8; 256],
 
     pub mirroring: Mirroring,
+    addr: AddrRegister,
 }
 
 impl NesPPU {
@@ -16,6 +17,10 @@ impl NesPPU {
             oam_data: [0; 64 * 4],
             palette_table: [0; 32],
         }
+    }
+
+    fn write_to_ppu_addr(&mut self, value: u8) {
+        self.addr.update(value);
     }
 }
 
