@@ -13,6 +13,10 @@ bitflags! {
     }
 }
 
+enum Mirroring {
+    // TODO
+}
+
 pub struct NesPPU {
     pub chr_rom: Vec<u8>,
     pub palette_table: [u8; 32],
@@ -26,7 +30,7 @@ pub struct NesPPU {
 
 impl ControlRegister {
     pub fn new() -> Self {
-        ControlRegister::from_bits_truncate(0b0000_0000);
+        ControlRegister::from_bits_truncate(0b0000_0000)
     }
 
     pub fn vram_addr_increment(&self) -> u8 {
@@ -38,7 +42,7 @@ impl ControlRegister {
     }
 
     pub fn update(&mut self, data: u8) {
-        self.bits = data;
+        ControlRegister::from_bits_truncate(data);
     }
 }
 
@@ -50,6 +54,8 @@ impl NesPPU {
             vram: [0; 2048],
             oam_data: [0; 64 * 4],
             palette_table: [0; 32],
+            addr: AddrRegister::new(),
+            ctrl: ControlRegister::new(),
         }
     }
 
@@ -59,6 +65,10 @@ impl NesPPU {
 
     fn write_to_ctrl(&mut self, value: u8) {
         self.ctrl.update(value);
+    }
+
+    fn increment_vrar_addr(&mut self) {
+        self.addr.increment(self.ctrl.vram_addr_increment());
     }
 }
 

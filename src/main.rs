@@ -15,6 +15,7 @@ pub mod bus;
 pub mod cartoridge;
 pub mod cpu;
 pub mod opcode;
+pub mod ppu;
 pub mod trace;
 
 fn main() {
