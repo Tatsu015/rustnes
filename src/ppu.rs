@@ -70,6 +70,18 @@ impl NesPPU {
     fn increment_vrar_addr(&mut self) {
         self.addr.increment(self.ctrl.vram_addr_increment());
     }
+
+    fn read_data(&mut self) -> u8 {
+        let addr = self.addr.get();
+        self.increment_vrar_addr();
+
+        match addr {
+            0..=0x1fff => todo!("read from chr_rom"),
+            0x2000..=0x3eff => todo!("read from ram"),
+            0x3f00..=0x3fff => self.palette_table[(addr - 0x3f00) as usize],
+            _ => panic!("unexpected access to mirrored space {}", addr),
+        }
+    }
 }
 
 pub struct AddrRegister {
