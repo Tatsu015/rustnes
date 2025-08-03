@@ -26,6 +26,7 @@ pub struct NesPPU {
     pub mirroring: Mirroring,
     addr: AddrRegister,
     pub ctrl: ControlRegister,
+    internal_data_buf: u8,
 }
 
 impl ControlRegister {
@@ -76,7 +77,11 @@ impl NesPPU {
         self.increment_vrar_addr();
 
         match addr {
-            0..=0x1fff => todo!("read from chr_rom"),
+            0..=0x1fff => {
+                let result = self.internal_data_buf;
+                self.internal_data_buf = self.chr_rom[addr as usize];
+                result
+            }
             0x2000..=0x3eff => todo!("read from ram"),
             0x3f00..=0x3fff => self.palette_table[(addr - 0x3f00) as usize],
             _ => panic!("unexpected access to mirrored space {}", addr),
