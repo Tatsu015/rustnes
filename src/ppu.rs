@@ -1,5 +1,7 @@
 use bitflags::bitflags;
 
+use crate::cartoridge::Mirroing;
+
 bitflags! {
     pub struct ControlRegister: u8{
         const NAMETABLE1 = 0b0000_0001;
@@ -13,19 +15,13 @@ bitflags! {
     }
 }
 
-enum Mirroring {
-    Vertical,
-    Horizontial,
-    FourScreen,
-}
-
 pub struct NesPPU {
     pub chr_rom: Vec<u8>,
     pub palette_table: [u8; 32],
     pub vram: [u8; 2048],
     pub oam_data: [u8; 256],
 
-    pub mirroring: Mirroring,
+    pub mirroring: Mirroing,
     addr: AddrRegister,
     pub ctrl: ControlRegister,
     internal_data_buf: u8,
@@ -50,7 +46,7 @@ impl ControlRegister {
 }
 
 impl NesPPU {
-    pub fn new(chr_rom: Vec<u8>, mirroring: Mirroring) -> Self {
+    pub fn new(chr_rom: Vec<u8>, mirroring: Mirroing) -> Self {
         NesPPU {
             chr_rom: chr_rom,
             mirroring: mirroring,
@@ -59,6 +55,7 @@ impl NesPPU {
             palette_table: [0; 32],
             addr: AddrRegister::new(),
             ctrl: ControlRegister::new(),
+            internal_data_buf: 0,
         }
     }
 
@@ -99,8 +96,12 @@ impl NesPPU {
         let vram_index = mirrored_vram - 0x2000;
         let name_table = vram_index / 0x400;
 
-        match (&self.mirroring, name_table){
-            (Mirroring::Horizontal,2)=>vram_index - 0x400;
+        match (&self.mirroring, name_table) {
+            (Mirroing::Vertical, 2) | (Mirroing::Vertical, 3) => vram_index - 0x800,
+            (Mirroing::Horizontal, 2) => vram_index - 0x400,
+            (Mirroing::Horizontal, 1) => vram_index - 0x400,
+            (Mirroing::Horizontal, 3) => vram_index - 0x800,
+            _ => vram_index,
         }
     }
 }
