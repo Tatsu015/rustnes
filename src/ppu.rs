@@ -14,7 +14,9 @@ bitflags! {
 }
 
 enum Mirroring {
-    // TODO
+    Vertical,
+    Horizontial,
+    FourScreen,
 }
 
 pub struct NesPPU {
@@ -82,9 +84,23 @@ impl NesPPU {
                 self.internal_data_buf = self.chr_rom[addr as usize];
                 result
             }
-            0x2000..=0x3eff => todo!("read from ram"),
+            0x2000..=0x3eff => {
+                let result = self.internal_data_buf;
+                self.internal_data_buf = self.vram[self.mirror_vram_addr(addr) as usize];
+                result
+            }
             0x3f00..=0x3fff => self.palette_table[(addr - 0x3f00) as usize],
             _ => panic!("unexpected access to mirrored space {}", addr),
+        }
+    }
+
+    fn mirror_vram_addr(&self, addr: u16) -> u16 {
+        let mirrored_vram = addr & 0b10_1111_1111_1111;
+        let vram_index = mirrored_vram - 0x2000;
+        let name_table = vram_index / 0x400;
+
+        match (&self.mirroring, name_table){
+            (Mirroring::Horizontal,2)=>vram_index - 0x400;
         }
     }
 }
