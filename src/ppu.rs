@@ -1,6 +1,6 @@
 use bitflags::bitflags;
 
-use crate::cartoridge::Mirroing;
+use crate::cartoridge::Mirroring;
 
 bitflags! {
     pub struct ControlRegister: u8{
@@ -21,7 +21,7 @@ pub struct NesPPU {
     pub vram: [u8; 2048],
     pub oam_data: [u8; 256],
 
-    pub mirroring: Mirroing,
+    pub mirroring: Mirroring,
     addr: AddrRegister,
     pub ctrl: ControlRegister,
     internal_data_buf: u8,
@@ -46,7 +46,7 @@ impl ControlRegister {
 }
 
 impl NesPPU {
-    pub fn new(chr_rom: Vec<u8>, mirroring: Mirroing) -> Self {
+    pub fn new(chr_rom: Vec<u8>, mirroring: Mirroring) -> Self {
         NesPPU {
             chr_rom: chr_rom,
             mirroring: mirroring,
@@ -97,10 +97,10 @@ impl NesPPU {
         let name_table = vram_index / 0x400;
 
         match (&self.mirroring, name_table) {
-            (Mirroing::Vertical, 2) | (Mirroing::Vertical, 3) => vram_index - 0x800,
-            (Mirroing::Horizontal, 2) => vram_index - 0x400,
-            (Mirroing::Horizontal, 1) => vram_index - 0x400,
-            (Mirroing::Horizontal, 3) => vram_index - 0x800,
+            (Mirroring::Vertical, 2) | (Mirroring::Vertical, 3) => vram_index - 0x800,
+            (Mirroring::Horizontal, 2) => vram_index - 0x400,
+            (Mirroring::Horizontal, 1) => vram_index - 0x400,
+            (Mirroring::Horizontal, 3) => vram_index - 0x800,
             _ => vram_index,
         }
     }

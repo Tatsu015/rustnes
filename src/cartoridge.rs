@@ -3,7 +3,7 @@ const CHR_ROM_PAGE_SIZE: usize = 8 * 1024;
 const NES_TAG: [u8; 4] = [0x4E, 0x45, 0x53, 0x1A];
 
 #[derive(Debug, PartialEq)]
-pub enum Mirroing {
+pub enum Mirroring {
     Vertical,
     Horizontal,
     FourScreen,
@@ -13,7 +13,7 @@ pub struct Rom {
     pub prg_rom: Vec<u8>,
     pub chr_rom: Vec<u8>,
     pub mapper: u8,
-    pub screen_mirroring: Mirroing,
+    pub screen_mirroring: Mirroring,
 }
 
 impl Rom {
@@ -30,9 +30,9 @@ impl Rom {
         let four_screen = raw[6] & 0b1000 != 0;
         let vertical_mirroring = raw[6] & 0b1 != 0;
         let screen_mirroring = match (four_screen, vertical_mirroring) {
-            (true, _) => Mirroing::FourScreen,
-            (false, true) => Mirroing::Vertical,
-            (false, false) => Mirroing::Horizontal,
+            (true, _) => Mirroring::FourScreen,
+            (false, true) => Mirroring::Vertical,
+            (false, false) => Mirroring::Horizontal,
         };
 
         let prg_rom_size = raw[4] as usize * PRG_ROM_PAGE_SIZE;
