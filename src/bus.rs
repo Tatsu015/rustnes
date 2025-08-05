@@ -1,24 +1,28 @@
 use crate::cartoridge::Rom;
 use crate::cpu::Memory;
+use crate::ppu::NesPPU;
 
 pub struct Bus {
     cpu_vram: [u8; 2048],
-    rom: Rom,
+    prg_rom: Vec<u8>,
+    ppu: NesPPU,
 }
 
 impl Bus {
     pub fn new(rom: Rom) -> Self {
+        let ppu = NesPPU::new(rom.chr_rom, rom.screen_mirroring);
         Bus {
             cpu_vram: [0; 0x0800], // 2048
-            rom: rom,
+            prg_rom: rom.prg_rom,
+            ppu: ppu,
         }
     }
     fn read_prg_rom(&self, mut addr: u16) -> u8 {
         addr -= 0x8000;
-        if self.rom.prg_rom.len() == 0x4000 && addr >= 0x4000 {
+        if self.prg_rom.len() == 0x4000 && addr >= 0x4000 {
             addr = addr % 0x4000;
         }
-        self.rom.prg_rom[addr as usize]
+        self.prg_rom[addr as usize]
     }
 }
 
