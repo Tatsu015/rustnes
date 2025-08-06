@@ -38,10 +38,11 @@ impl Memory for Bus {
                 let mirror_down_addr = addr & 0b00000111_11111111;
                 self.cpu_vram[mirror_down_addr as usize]
             }
-            PPU_REGISTERS..=PPU_REGISTERS_MIRROR_END => {
-                let _mirror_down_addr = addr & 0b00100000_00000111;
-                todo!("PPU is not supported yet")
-            }
+            // PPU_REGISTERS..=PPU_REGISTERS_MIRROR_END => {
+            //     let _mirror_down_addr = addr & 0b00100000_00000111;
+            //     todo!("PPU is not supported yet")
+            // }
+            0x2000 | 0x2001 | 0x2003 | 0x2005 | 0x2006 | 0x4014 => {}
             0x8000..=0xFFFF => self.read_prg_rom(addr),
             _ => {
                 println!("Ignoring mem access at {}", addr);
