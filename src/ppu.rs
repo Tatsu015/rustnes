@@ -71,7 +71,7 @@ impl NesPPU {
         self.addr.increment(self.ctrl.vram_addr_increment());
     }
 
-    fn read_data(&mut self) -> u8 {
+    pub fn read_data(&mut self) -> u8 {
         let addr = self.addr.get();
         self.increment_vrar_addr();
 
