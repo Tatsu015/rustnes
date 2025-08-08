@@ -15,6 +15,19 @@ bitflags! {
     }
 }
 
+pub trait PPU {
+    fn write_to_ctrl(&mut self, value: u8);
+    fn write_to_mask(&mut self, value: u8);
+    fn read_status(&mut self) -> u8;
+    fn write_to_oam_addr(&mut self, value: u8);
+    fn write_to_oam_data(&mut self, value: u8);
+    fn read_oam_data(&self) -> u8;
+    fn write_to_scroll(&mut self, value: u8);
+    fn write_to_ppu_addr(&mut self, value: u8);
+    fn write_to_data(&mut self, value: u8);
+    fn read_data(&mut self) -> u8;
+    fn write_oam_dma(&mut self, value: &[u8; 256]);
+}
 pub struct NesPPU {
     pub chr_rom: Vec<u8>,
     pub palette_table: [u8; 32],
@@ -59,19 +72,65 @@ impl NesPPU {
         }
     }
 
-    fn write_to_ppu_addr(&mut self, value: u8) {
-        self.addr.update(value);
-    }
+    fn mirror_vram_addr(&self, addr: u16) -> u16 {
+        let mirrored_vram = addr & 0b10_1111_1111_1111;
+        let vram_index = mirrored_vram - 0x2000;
+        let name_table = vram_index / 0x400;
 
-    fn write_to_ctrl(&mut self, value: u8) {
-        self.ctrl.update(value);
+        match (&self.mirroring, name_table) {
+            (Mirroring::Vertical, 2) | (Mirroring::Vertical, 3) => vram_index - 0x800,
+            (Mirroring::Horizontal, 2) => vram_index - 0x400,
+            (Mirroring::Horizontal, 1) => vram_index - 0x400,
+            (Mirroring::Horizontal, 3) => vram_index - 0x800,
+            _ => vram_index,
+        }
     }
 
     fn increment_vrar_addr(&mut self) {
         self.addr.increment(self.ctrl.vram_addr_increment());
     }
+}
 
-    pub fn read_data(&mut self) -> u8 {
+impl PPU for NesPPU {
+    fn write_to_ctrl(&mut self, value: u8) {
+        self.ctrl.update(value);
+    }
+
+    fn write_to_mask(&mut self, value: u8) {
+        // TODO
+    }
+
+    fn read_status(&mut self) -> u8 {
+        0
+        // TODO
+    }
+
+    fn write_to_oam_addr(&mut self, value: u8) {
+        // TODO
+    }
+
+    fn write_to_oam_data(&mut self, value: u8) {
+        // TODO
+    }
+
+    fn read_oam_data(&self) -> u8 {
+        0
+        // TODO
+    }
+
+    fn write_to_scroll(&mut self, value: u8) {
+        // TODO
+    }
+
+    fn write_to_ppu_addr(&mut self, value: u8) {
+        self.addr.update(value);
+    }
+
+    fn write_to_data(&mut self, value: u8) {
+        // TODO
+    }
+
+    fn read_data(&mut self) -> u8 {
         let addr = self.addr.get();
         self.increment_vrar_addr();
 
@@ -91,18 +150,8 @@ impl NesPPU {
         }
     }
 
-    fn mirror_vram_addr(&self, addr: u16) -> u16 {
-        let mirrored_vram = addr & 0b10_1111_1111_1111;
-        let vram_index = mirrored_vram - 0x2000;
-        let name_table = vram_index / 0x400;
-
-        match (&self.mirroring, name_table) {
-            (Mirroring::Vertical, 2) | (Mirroring::Vertical, 3) => vram_index - 0x800,
-            (Mirroring::Horizontal, 2) => vram_index - 0x400,
-            (Mirroring::Horizontal, 1) => vram_index - 0x400,
-            (Mirroring::Horizontal, 3) => vram_index - 0x800,
-            _ => vram_index,
-        }
+    fn write_oam_dma(&mut self, value: &[u8; 256]) {
+        // TODO
     }
 }
 

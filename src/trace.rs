@@ -4,7 +4,7 @@ use crate::cpu::AddressingMode;
 use crate::cpu::{Memory, CPU};
 use crate::opcode;
 
-pub fn trace(cpu: &CPU) -> String {
+pub fn trace(cpu: &mut CPU) -> String {
     let ref opcodes: HashMap<u8, &'static opcode::OpCode> = *opcode::OPECODE_MAP;
 
     let code = cpu.mem_read(cpu.program_counter);
