@@ -13,6 +13,17 @@ bitflags! {
         const MASTER_SLAVE_SELECT = 0b0100_0000;
         const GENERATE_NMI = 0b1000_0000;
     }
+
+    pub struct MaskRegister:u8{
+        const GREYSCALE = 0b0000_0001;
+        const LEFTMOST_8PXL_BACKGROUND = 0b0000_0010;
+        const LEFTMOST_8PXL_STRITE = 0b0000_0100;
+        const SHOW_BACKGROUND = 0b0000_1000;
+        const SHOW_SPRITES = 0b0001_0000;
+        const EMPHASIZE_RED = 0b0010_0000;
+        const EMPHASIZE_GREEN = 0b0100_0000;
+        const EMPHASIZE_BLUE = 0b1000_0000;
+    }
 }
 
 pub trait PPU {
@@ -97,7 +108,7 @@ impl PPU for NesPPU {
     }
 
     fn write_to_mask(&mut self, value: u8) {
-        // TODO
+        self.
     }
 
     fn read_status(&mut self) -> u8 {
