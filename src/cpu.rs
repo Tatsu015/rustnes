@@ -1,5 +1,6 @@
 use crate::bus::Bus;
 use crate::opcode::{self, OpCode};
+use core::panic;
 use std::collections::HashMap;
 
 use bitflags::bitflags;
@@ -214,7 +215,7 @@ impl CPU {
                 0x04 | 0x44 | 0x64 | 0x0c | 0x14 | 0x34 | 0x54 | 0x74 | 0xd4 | 0xf4 | 0x1a
                 | 0x3a | 0x5a | 0x7a | 0xda | 0xfa | 0x80 | 0x82 | 0x89 | 0xc2 | 0xe2 | 0x1c
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
-                _ => todo!(""),
+                _ => panic!("not arrowed operation code."),
             }
             if before_program_counter == self.program_counter {
                 self.program_counter += (opcode.len - 1) as u16;
