@@ -26,6 +26,16 @@ bitflags! {
     }
 }
 
+impl MaskRegister {
+    pub fn new() -> Self {
+        MaskRegister::from_bits_truncate(0)
+    }
+
+    fn update(&mut self, data: u8) {
+        MaskRegister::from_bits_truncate(data);
+    }
+}
+
 pub trait PPU {
     fn write_to_ctrl(&mut self, value: u8);
     fn write_to_mask(&mut self, value: u8);
@@ -44,6 +54,7 @@ pub struct NesPPU {
     pub palette_table: [u8; 32],
     pub vram: [u8; 2048],
     pub oam_data: [u8; 256],
+    pub mask: MaskRegister,
 
     pub mirroring: Mirroring,
     addr: AddrRegister,
@@ -79,6 +90,7 @@ impl NesPPU {
             palette_table: [0; 32],
             addr: AddrRegister::new(),
             ctrl: ControlRegister::new(),
+            mask: MaskRegister::new(),
             internal_data_buf: 0,
         }
     }
@@ -108,7 +120,7 @@ impl PPU for NesPPU {
     }
 
     fn write_to_mask(&mut self, value: u8) {
-        self.
+        self.mask.update(value);
     }
 
     fn read_status(&mut self) -> u8 {
