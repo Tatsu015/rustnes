@@ -175,7 +175,7 @@ impl PPU for NesPPU {
     }
 
     fn write_to_scroll(&mut self, value: u8) {
-        // TODO
+        self.scroll.write(value);
     }
 
     fn write_to_ppu_addr(&mut self, value: u8) {
