@@ -53,6 +53,7 @@ pub struct NesPPU {
     pub chr_rom: Vec<u8>,
     pub palette_table: [u8; 32],
     pub vram: [u8; 2048],
+    pub oam_addr: u8,
     pub oam_data: [u8; 256],
     pub mask: MaskRegister,
 
@@ -129,16 +130,16 @@ impl PPU for NesPPU {
     }
 
     fn write_to_oam_addr(&mut self, value: u8) {
-        // TODO
+        self.oam_addr = value;
     }
 
     fn write_to_oam_data(&mut self, value: u8) {
-        // TODO
+        self.oam_data[self.oam_addr as usize] = value;
+        self.oam_addr = self.oam_addr.wrapping_add(1);
     }
 
     fn read_oam_data(&self) -> u8 {
-        0
-        // TODO
+        self.oam_data[self.oam_addr as usize]
     }
 
     fn write_to_scroll(&mut self, value: u8) {
