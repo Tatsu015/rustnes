@@ -3,7 +3,7 @@ use bitflags::bitflags;
 use crate::cartoridge::Mirroring;
 
 bitflags! {
-    pub struct ControlRegister: u8{
+    pub struct ControlRegister: u8 {
         const NAMETABLE1 = 0b0000_0001;
         const NAMETABLE2 = 0b0000_0010;
         const VRAM_ADDR_INCREMENT = 0b0000_0100;
@@ -14,7 +14,7 @@ bitflags! {
         const GENERATE_NMI = 0b1000_0000;
     }
 
-    pub struct MaskRegister:u8{
+    pub struct MaskRegister:u8 {
         const GREYSCALE = 0b0000_0001;
         const LEFTMOST_8PXL_BACKGROUND = 0b0000_0010;
         const LEFTMOST_8PXL_STRITE = 0b0000_0100;
@@ -26,14 +26,10 @@ bitflags! {
     }
 }
 
-impl MaskRegister {
-    pub fn new() -> Self {
-        MaskRegister::from_bits_truncate(0)
-    }
-
-    fn update(&mut self, data: u8) {
-        MaskRegister::from_bits_truncate(data);
-    }
+pub struct ScrollRegister {
+    pub scroll_x: u8,
+    pub scroll_y: u8,
+    pub latch: bool,
 }
 
 pub trait PPU {
@@ -56,11 +52,22 @@ pub struct NesPPU {
     pub oam_addr: u8,
     pub oam_data: [u8; 256],
     pub mask: MaskRegister,
+    pub scroll: ScrollRegister,
 
     pub mirroring: Mirroring,
     addr: AddrRegister,
     pub ctrl: ControlRegister,
     internal_data_buf: u8,
+}
+
+impl MaskRegister {
+    pub fn new() -> Self {
+        MaskRegister::from_bits_truncate(0)
+    }
+
+    fn update(&mut self, data: u8) {
+        MaskRegister::from_bits_truncate(data);
+    }
 }
 
 impl ControlRegister {
@@ -81,17 +88,42 @@ impl ControlRegister {
     }
 }
 
+impl ScrollRegister {
+    pub fn new() -> Self {
+        ScrollRegister {
+            scroll_x: 0,
+            scroll_y: 0,
+            latch: false,
+        }
+    }
+
+    pub fn write(&mut self, data: u8) {
+        if !self.latch {
+            self.scroll_x = data
+        } else {
+            self.scroll_y = data
+        }
+        self.latch = !self.latch;
+    }
+
+    pub fn reset(&mut self) {
+        self.latch = false;
+    }
+}
+
 impl NesPPU {
     pub fn new(chr_rom: Vec<u8>, mirroring: Mirroring) -> Self {
         NesPPU {
             chr_rom: chr_rom,
             mirroring: mirroring,
             vram: [0; 2048],
+            oam_addr: 0,
             oam_data: [0; 64 * 4],
             palette_table: [0; 32],
             addr: AddrRegister::new(),
             ctrl: ControlRegister::new(),
             mask: MaskRegister::new(),
+            scroll: ScrollRegister::new(),
             internal_data_buf: 0,
         }
     }
