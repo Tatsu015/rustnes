@@ -59,6 +59,7 @@ pub struct NesPPU {
     pub oam_data: [u8; 256],
     pub mask: MaskRegister,
     pub scroll: ScrollRegister,
+    pub status: StatusRegister,
 
     pub mirroring: Mirroring,
     addr: AddrRegister,
@@ -112,7 +113,7 @@ impl ScrollRegister {
         self.latch = !self.latch;
     }
 
-    pub fn reset(&mut self) {
+    pub fn reset_latch(&mut self) {
         self.latch = false;
     }
 }
@@ -136,6 +137,7 @@ impl NesPPU {
             ctrl: ControlRegister::new(),
             mask: MaskRegister::new(),
             scroll: ScrollRegister::new(),
+            status: StatusRegister::new(),
             internal_data_buf: 0,
         }
     }
@@ -169,8 +171,11 @@ impl PPU for NesPPU {
     }
 
     fn read_status(&mut self) -> u8 {
-        0
-        // TODO
+        let data = self.status.bits();
+        self.status.remove(StatusRegister::VBLANK_STARTED);
+        self.addr.reset_latch();
+        self.scroll.reset_latch();
+        data
     }
 
     fn write_to_oam_addr(&mut self, value: u8) {
