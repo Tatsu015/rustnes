@@ -214,6 +214,7 @@ impl PPU for NesPPU {
             }
             _ => panic!("unexpected access"),
         }
+        self.increment_vrar_addr();
     }
 
     fn read_data(&mut self) -> u8 {
