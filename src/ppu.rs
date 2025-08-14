@@ -200,7 +200,20 @@ impl PPU for NesPPU {
     }
 
     fn write_to_data(&mut self, value: u8) {
-        // TODO
+        let addr = self.addr.get();
+        match addr {
+            0..=0x1fff => println!("attempt to chr rom space {}", addr),
+            0x2000..=0x2fff => self.vram[self.mirror_vram_addr(addr) as usize] = value,
+            0x3000..=0x3eff => unimplemented!("addr {} shouldn't be used in reallity", addr),
+            0x3f10 | 0x3f14 | 0x3f18 | 0x3f1c => {
+                let addr_mirror = addr - 0x10;
+                self.palette_table[(addr_mirror - 0x3f00) as usize] = value;
+            }
+            0x3f00..=0x3fff => {
+                self.palette_table[addr as usize] = value;
+            }
+            _ => panic!("unexpected access"),
+        }
     }
 
     fn read_data(&mut self) -> u8 {
