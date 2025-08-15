@@ -1,6 +1,7 @@
 use bitflags::bitflags;
 
 use crate::cartoridge::Mirroring;
+use crate::status::StatusRegister;
 
 bitflags! {
     pub struct ControlRegister: u8 {
@@ -23,12 +24,6 @@ bitflags! {
         const EMPHASIZE_RED = 0b0010_0000;
         const EMPHASIZE_GREEN = 0b0100_0000;
         const EMPHASIZE_BLUE = 0b1000_0000;
-    }
-
-    pub struct StatusRegister:u8 {
-        const SPRITE_OVERFLOW_FLAG = 0b0010_0000;
-        const SPRITE_ZERO_HIT = 0b0100_0000;
-        const VBLANK_STARTED = 0b1000_0000;
     }
 }
 
@@ -115,12 +110,6 @@ impl ScrollRegister {
 
     pub fn reset_latch(&mut self) {
         self.latch = false;
-    }
-}
-
-impl StatusRegister {
-    pub fn new() -> Self {
-        StatusRegister::from_bits_truncate(0)
     }
 }
 
