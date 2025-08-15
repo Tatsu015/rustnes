@@ -238,7 +238,10 @@ impl PPU for NesPPU {
     }
 
     fn write_oam_dma(&mut self, value: &[u8; 256]) {
-        // TODO
+        for x in value {
+            self.oam_data[self.oam_addr as usize] = *x;
+            self.oam_addr = self.oam_addr.wrapping_add(1);
+        }
     }
 }
 
