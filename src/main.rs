@@ -15,6 +15,7 @@ pub mod bus;
 pub mod cartoridge;
 pub mod control;
 pub mod cpu;
+pub mod mask;
 pub mod opcode;
 pub mod ppu;
 pub mod status;
