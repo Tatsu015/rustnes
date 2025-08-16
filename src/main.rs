@@ -13,6 +13,7 @@ use trace::trace;
 
 pub mod bus;
 pub mod cartoridge;
+pub mod control;
 pub mod cpu;
 pub mod opcode;
 pub mod ppu;
