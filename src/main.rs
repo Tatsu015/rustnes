@@ -18,6 +18,7 @@ pub mod cpu;
 pub mod mask;
 pub mod opcode;
 pub mod ppu;
+pub mod scroll;
 pub mod status;
 pub mod trace;
 
