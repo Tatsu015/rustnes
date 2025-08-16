@@ -18,7 +18,7 @@ impl MaskRegister {
         MaskRegister::from_bits_truncate(0)
     }
 
-    fn update(&mut self, data: u8) {
+    pub fn update(&mut self, data: u8) {
         MaskRegister::from_bits_truncate(data);
     }
 }
