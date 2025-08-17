@@ -31,6 +31,8 @@ pub struct NesPPU {
     addr: AddrRegister,
     pub ctrl: ControlRegister,
     internal_data_buf: u8,
+    scanline: u16,
+    cycle: usize,
 }
 
 impl NesPPU {
@@ -48,7 +50,14 @@ impl NesPPU {
             scroll: ScrollRegister::new(),
             status: StatusRegister::new(),
             internal_data_buf: 0,
+            scanline: 0,
+            cycle: 0,
         }
+    }
+
+    pub fn tick(&mut self, cycle: u8) -> bool {
+        // TODO
+        false
     }
 
     fn mirror_vram_addr(&self, addr: u16) -> u16 {
