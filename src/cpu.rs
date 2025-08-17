@@ -217,6 +217,9 @@ impl CPU {
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
                 _ => panic!("not arrowed operation code."),
             }
+
+            self.bus.tick(opcode.cycle);
+
             if before_program_counter == self.program_counter {
                 self.program_counter += (opcode.len - 1) as u16;
             }

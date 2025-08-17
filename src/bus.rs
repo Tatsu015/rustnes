@@ -17,6 +17,11 @@ impl Bus {
             ppu: ppu,
         }
     }
+
+    pub fn tick(&mut self, cycle: u8) {
+        // TODO
+    }
+
     fn read_prg_rom(&self, mut addr: u16) -> u8 {
         addr -= 0x8000;
         if self.prg_rom.len() == 0x4000 && addr >= 0x4000 {
