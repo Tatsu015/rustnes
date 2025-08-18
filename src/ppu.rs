@@ -1,3 +1,5 @@
+use sdl2::libc::ELAST;
+
 use crate::cartoridge::Mirroring;
 use crate::control::ControlRegister;
 use crate::mask::MaskRegister;
@@ -56,8 +58,24 @@ impl NesPPU {
     }
 
     pub fn tick(&mut self, cycle: u8) -> bool {
-        // TODO
-        false
+        self.cycle += cycle as usize;
+        if self.cycle >= 341 {
+            self.cycle = self.cycle - 341;
+            self.scanline += 1;
+            if self.scanline >= 241 {
+                if self.ctrl.generate_vblank_status() {
+                    self.status.set(StatusRegister::VBLANK_STARTED, true);
+                    todo!("Should trigger NMI interrupt")
+                }
+            }
+
+            if self.scanline >= 262 {
+                self.scanline = 0;
+                self.status.set(StatusRegister::VBLANK_STARTED, false);
+                return true;
+            }
+        }
+        return false;
     }
 
     fn mirror_vram_addr(&self, addr: u16) -> u16 {

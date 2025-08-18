@@ -19,7 +19,7 @@ impl Bus {
     }
 
     pub fn tick(&mut self, cycle: u8) {
-        // TODO
+        self.ppu.tick(cycle);
     }
 
     fn read_prg_rom(&self, mut addr: u16) -> u8 {
