@@ -22,6 +22,10 @@ impl Bus {
         self.ppu.tick(cycle);
     }
 
+    pub fn poll_nmi_status() -> Option<u8> {
+        todo!("implement me");
+    }
+
     fn read_prg_rom(&self, mut addr: u16) -> u8 {
         addr -= 0x8000;
         if self.prg_rom.len() == 0x4000 && addr >= 0x4000 {

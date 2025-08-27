@@ -116,12 +116,19 @@ impl CPU {
         self.run_with_callback(|_| {});
     }
 
+    fn interrupt_nmi() {
+        todo!("implement me")
+    }
+
     pub fn run_with_callback<F>(&mut self, mut callback: F)
     where
         F: FnMut(&mut CPU),
     {
         let ref opcodes: HashMap<u8, &'static OpCode> = *opcode::OPECODE_MAP;
         loop {
+            if let Some(_nmi) = self.bus.poll_nmi_status() {
+                self.interrupt_nmi();
+            }
             callback(self);
 
             let code = self.mem_read(self.program_counter);
