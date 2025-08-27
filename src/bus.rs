@@ -22,7 +22,7 @@ impl Bus {
         self.ppu.tick(cycle);
     }
 
-    pub fn poll_nmi_status() -> Option<u8> {
+    pub fn poll_nmi_status(&mut self) -> Option<u8> {
         todo!("implement me");
     }
 

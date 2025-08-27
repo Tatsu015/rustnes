@@ -116,7 +116,7 @@ impl CPU {
         self.run_with_callback(|_| {});
     }
 
-    fn interrupt_nmi() {
+    fn interrupt_nmi(&mut self) {
         todo!("implement me")
     }
 
