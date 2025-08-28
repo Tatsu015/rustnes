@@ -35,6 +35,7 @@ pub struct NesPPU {
     internal_data_buf: u8,
     scanline: u16,
     cycle: usize,
+    pub nmi_interrupt: Option<u8>,
 }
 
 impl NesPPU {
@@ -54,6 +55,7 @@ impl NesPPU {
             internal_data_buf: 0,
             scanline: 0,
             cycle: 0,
+            nmi_interrupt: None,
         }
     }
 
@@ -99,7 +101,14 @@ impl NesPPU {
 
 impl PPU for NesPPU {
     fn write_to_ctrl(&mut self, value: u8) {
+        let before_nmi_status = self.ctrl.contains(ControlRegister::GENERATE_NMI);
         self.ctrl.update(value);
+        if !before_nmi_status
+            && self.ctrl.contains(ControlRegister::GENERATE_NMI)
+            && self.status.contains(StatusRegister::VBLANK_STARTED)
+        {
+            self.nmi_interrupt = Some(1);
+        }
     }
 
     fn write_to_mask(&mut self, value: u8) {
