@@ -1,5 +1,3 @@
-use sdl2::libc::ELAST;
-
 use crate::cartoridge::Mirroring;
 use crate::control::ControlRegister;
 use crate::mask::MaskRegister;

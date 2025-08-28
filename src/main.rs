@@ -1,4 +1,4 @@
-// use rand::Rng;
+use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
@@ -9,7 +9,6 @@ use crate::bus::Bus;
 use crate::cartoridge::Rom;
 use crate::cpu::Memory;
 use cpu::CPU;
-use trace::trace;
 
 pub mod bus;
 pub mod cartoridge;
@@ -21,6 +20,8 @@ pub mod ppu;
 pub mod scroll;
 pub mod status;
 pub mod trace;
+
+// use trace::trace;
 
 fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -51,18 +52,18 @@ fn main() {
     let mut rng = rand::rng();
 
     cpu.run_with_callback(move |cpu| {
-        println!("{}", trace(cpu))
-        // handle_user_input(cpu, &mut event_pump);
+        // println!("{}", trace(cpu))
+        handle_user_input(cpu, &mut event_pump);
 
-        // cpu.mem_write(0xfe, rng.random_range(1..16));
+        cpu.mem_write(0xfe, rng.random_range(1..16));
 
-        // if read_screen_state(cpu, &mut screen_state) {
-        //     texture.update(None, &screen_state, 32 * 3).unwrap();
-        //     canvas.copy(&texture, None, None).unwrap();
-        //     canvas.present();
-        // }
+        if read_screen_state(cpu, &mut screen_state) {
+            texture.update(None, &screen_state, 32 * 3).unwrap();
+            canvas.copy(&texture, None, None).unwrap();
+            canvas.present();
+        }
 
-        // std::thread::sleep(std::time::Duration::new(0, 70_000));
+        std::thread::sleep(std::time::Duration::new(0, 70_000));
     });
 }
 
@@ -109,19 +110,19 @@ fn color(byte: u8) -> Color {
     }
 }
 
-// fn read_screen_state(cpu: &CPU, frame: &mut [u8; 32 * 3 * 32]) -> bool {
-//     let mut frame_idx = 0;
-//     let mut update = false;
-//     for i in 0x0200..0x600 {
-//         let color_idx = cpu.mem_read(i as u16);
-//         let (b1, b2, b3) = color(color_idx).rgb();
-//         if frame[frame_idx] != b1 || frame[frame_idx + 1] != b2 || frame[frame_idx + 2] != b3 {
-//             frame[frame_idx] = b1;
-//             frame[frame_idx + 1] = b2;
-//             frame[frame_idx + 2] = b3;
-//             update = true;
-//         }
-//         frame_idx += 3;
-//     }
-//     update
-// }
+fn read_screen_state(cpu: &mut CPU, frame: &mut [u8; 32 * 3 * 32]) -> bool {
+    let mut frame_idx = 0;
+    let mut update = false;
+    for i in 0x0200..0x600 {
+        let color_idx = cpu.mem_read(i as u16);
+        let (b1, b2, b3) = color(color_idx).rgb();
+        if frame[frame_idx] != b1 || frame[frame_idx + 1] != b2 || frame[frame_idx + 2] != b3 {
+            frame[frame_idx] = b1;
+            frame[frame_idx + 1] = b2;
+            frame[frame_idx + 2] = b3;
+            update = true;
+        }
+        frame_idx += 3;
+    }
+    update
+}
