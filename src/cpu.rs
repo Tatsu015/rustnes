@@ -117,7 +117,16 @@ impl CPU {
     }
 
     fn interrupt_nmi(&mut self) {
-        todo!("implement me")
+        self.stack_push_u16(self.program_counter);
+        let mut flag = self.status.clone();
+        flag.set(CpuFlags::BREAK, false);
+        flag.set(CpuFlags::RESERVED, true);
+
+        self.stack_push(flag.bits());
+        self.status.insert(CpuFlags::INTERRUPT_DISABLE);
+
+        self.bus.tick(2);
+        self.program_counter = self.mem_read_u16(0xfffa);
     }
 
     pub fn run_with_callback<F>(&mut self, mut callback: F)
