@@ -42,7 +42,7 @@ impl Frame {
     }
 }
 
-fn show_tile(chr_rom: &Vec<u8>, bank: usize, tile_n: usize) -> Frame {
+pub fn show_tile(chr_rom: &Vec<u8>, bank: usize, tile_n: usize) -> Frame {
     assert!(bank <= 11);
 
     let mut frame = Frame::new();

@@ -1,4 +1,5 @@
 use rand::Rng;
+use sdl2::event;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
@@ -8,6 +9,7 @@ use sdl2::EventPump;
 use crate::bus::Bus;
 use crate::cartoridge::Rom;
 use crate::cpu::Memory;
+use crate::frame::show_tile;
 use cpu::CPU;
 
 pub mod bus;
@@ -41,31 +43,50 @@ fn main() {
         .create_texture_target(PixelFormatEnum::RGB24, 32, 32)
         .unwrap();
 
-    let bytes = std::fs::read("./test/sample/nestest.nes").unwrap();
+    let bytes = std::fs::read("./test/sample/sample1.nes").unwrap();
     let rom = Rom::new(&bytes).unwrap();
-    let bus = Bus::new(rom);
-    let mut cpu = CPU::new(bus);
-    cpu.reset();
-    // TODO for test rom
-    cpu.program_counter = 0xC000;
 
-    let mut screen_state = [0 as u8; 32 * 3 * 32];
-    let mut rng = rand::rng();
+    let tile_frame = show_tile(&rom.chr_rom, 1, 0);
+    texture.update(None, &tile_frame.data, 256 * 4).unwrap();
+    canvas.copy(&texture, None, None).unwrap();
+    canvas.present();
 
-    cpu.run_with_callback(move |cpu| {
-        // println!("{}", trace(cpu))
-        handle_user_input(cpu, &mut event_pump);
-
-        cpu.mem_write(0xfe, rng.random_range(1..16));
-
-        if read_screen_state(cpu, &mut screen_state) {
-            texture.update(None, &screen_state, 32 * 3).unwrap();
-            canvas.copy(&texture, None, None).unwrap();
-            canvas.present();
+    loop {
+        for event in event_pump.poll_iter() {
+            match event {
+                Event::Quit { .. }
+                | Event::KeyDown {
+                    keycode: Some(Keycode::Escape),
+                    ..
+                } => std::process::exit(0),
+                _ => { /* nop */ }
+            }
         }
+    }
 
-        std::thread::sleep(std::time::Duration::new(0, 70_000));
-    });
+    // let bus = Bus::new(rom);
+    // let mut cpu = CPU::new(bus);
+    // cpu.reset();
+    // // TODO for test rom
+    // cpu.program_counter = 0xC000;
+
+    // let mut screen_state = [0 as u8; 32 * 3 * 32];
+    // let mut rng = rand::rng();
+
+    // cpu.run_with_callback(move |cpu| {
+    //     // println!("{}", trace(cpu))
+    //     handle_user_input(cpu, &mut event_pump);
+
+    //     cpu.mem_write(0xfe, rng.random_range(1..16));
+
+    //     if read_screen_state(cpu, &mut screen_state) {
+    //         texture.update(None, &screen_state, 32 * 3).unwrap();
+    //         canvas.copy(&texture, None, None).unwrap();
+    //         canvas.present();
+    //     }
+
+    //     std::thread::sleep(std::time::Duration::new(0, 70_000));
+    // });
 }
 
 fn handle_user_input(cpu: &mut CPU, event_pump: &mut EventPump) {
