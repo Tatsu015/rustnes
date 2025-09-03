@@ -89,7 +89,7 @@ pub fn show_tile_brank(chr_rom: &Vec<u8>, bank: usize) -> Frame {
         let tile_start_pos = bank + tile_n * 16;
         let tile = &chr_rom[tile_start_pos..=tile_start_pos + 15];
 
-        for y in 0..7 {
+        for y in 0..=7 {
             let mut upper = tile[y];
             let mut lower = tile[y + 8];
 
@@ -107,6 +107,7 @@ pub fn show_tile_brank(chr_rom: &Vec<u8>, bank: usize) -> Frame {
                 frame.set_pixcel(tile_x + x, tile_y + y, rgb)
             }
         }
+        tile_x += 10;
     }
 
     frame
