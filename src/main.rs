@@ -25,7 +25,7 @@ pub mod status;
 pub mod trace;
 
 fn main() {
-    const LOGICAL_WIDTH: u32 = 245;
+    const LOGICAL_WIDTH: u32 = 256;
     const LOGICAL_HEIGHT: u32 = 240;
     const WINDOW_SCALE: u32 = 3;
     const BYTES_PER_PIXEL: u32 = 3;
