@@ -25,27 +25,44 @@ pub mod status;
 pub mod trace;
 
 fn main() {
+    const LOGICAL_WIDTH: u32 = 245;
+    const LOGICAL_HEIGHT: u32 = 240;
+    const WINDOW_SCALE: u32 = 3;
+    const BYTES_PER_PIXEL: u32 = 3;
+
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
     let window = video_subsystem
-        .window("Snake game", (245 * 3) as u32, (240 * 3) as u32)
+        .window(
+            "Snake game",
+            (LOGICAL_WIDTH * WINDOW_SCALE) as u32,
+            (LOGICAL_HEIGHT * WINDOW_SCALE) as u32,
+        )
         .position_centered()
         .build()
         .unwrap();
     let mut canvas = window.into_canvas().present_vsync().build().unwrap();
     let mut event_pump = sdl_context.event_pump().unwrap();
-    canvas.set_scale(3.0, 3.0).unwrap();
+    canvas
+        .set_scale(WINDOW_SCALE as f32, WINDOW_SCALE as f32)
+        .unwrap();
 
     let creator = canvas.texture_creator();
     let mut texture = creator
-        .create_texture_target(PixelFormatEnum::RGB24, 256, 240)
+        .create_texture_target(PixelFormatEnum::RGB24, LOGICAL_WIDTH, LOGICAL_HEIGHT)
         .unwrap();
 
     let bytes = std::fs::read("./test/sample/sample1.nes").unwrap();
     let rom = Rom::new(&bytes).unwrap();
 
     let tile_frame = show_tile_brank(&rom.chr_rom, 1);
-    texture.update(None, &tile_frame.data, 256 * 3).unwrap();
+    texture
+        .update(
+            None,
+            &tile_frame.data,
+            (LOGICAL_WIDTH * BYTES_PER_PIXEL) as usize,
+        )
+        .unwrap();
     canvas.copy(&texture, None, None).unwrap();
     canvas.present();
 
