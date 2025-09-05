@@ -1,5 +1,3 @@
-use sdl2::pixels::Palette;
-
 #[rustfmt::skip]
 
 pub static SYSTEM_PALLETE: [(u8,u8,u8); 64] = [
