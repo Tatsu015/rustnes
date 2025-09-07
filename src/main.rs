@@ -19,6 +19,7 @@ pub mod mask;
 pub mod opcode;
 pub mod palette;
 pub mod ppu;
+pub mod render;
 pub mod scroll;
 pub mod status;
 pub mod trace;
