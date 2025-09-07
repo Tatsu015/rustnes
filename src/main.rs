@@ -17,6 +17,7 @@ pub mod cpu;
 pub mod frame;
 pub mod mask;
 pub mod opcode;
+pub mod palette;
 pub mod ppu;
 pub mod scroll;
 pub mod status;
@@ -26,7 +27,6 @@ fn main() {
     const LOGICAL_WIDTH: u32 = 256;
     const LOGICAL_HEIGHT: u32 = 240;
     const WINDOW_SCALE: u32 = 3;
-    const BYTES_PER_PIXEL: u32 = 3;
 
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
