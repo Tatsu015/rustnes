@@ -38,7 +38,7 @@ impl<'a> Bus<'a> {
     }
 
     pub fn poll_nmi_status(&mut self) -> Option<u8> {
-        todo!("implement me");
+        self.ppu.nmi_interrupt.take()
     }
 
     fn read_prg_rom(&self, mut addr: u16) -> u8 {
