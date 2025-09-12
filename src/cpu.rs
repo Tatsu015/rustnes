@@ -53,17 +53,17 @@ pub trait Memory {
         self.mem_write(pos + 1, hi);
     }
 }
-pub struct CPU {
+pub struct CPU<'a> {
     pub register_a: u8,
     pub register_x: u8,
     pub register_y: u8,
     pub status: CpuFlags,
     pub program_counter: u16,
     pub stack_pointer: u8,
-    pub bus: Bus,
+    pub bus: Bus<'a>,
 }
 
-impl Memory for CPU {
+impl Memory for CPU<'_> {
     fn mem_read(&mut self, addr: u16) -> u8 {
         self.bus.mem_read(addr)
     }
@@ -74,8 +74,8 @@ impl Memory for CPU {
     }
 }
 
-impl CPU {
-    pub fn new(bus: Bus) -> Self {
+impl<'a> CPU<'a> {
+    pub fn new<'b>(bus: Bus<'b>) -> CPU<'b> {
         CPU {
             register_a: 0,
             register_x: 0,
@@ -895,7 +895,10 @@ impl CPU {
 
 #[cfg(test)]
 mod test {
-    use crate::cartoridge::Rom;
+    use crate::{
+        cartoridge::Rom,
+        ppu::{self, NesPPU},
+    };
 
     use super::*;
 
@@ -921,7 +924,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom);
+        let bus = Bus::new(rom, |_: &NesPPU| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -941,7 +944,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom);
+        let bus = Bus::new(rom, |_: &NesPPU| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -959,7 +962,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom);
+        let bus = Bus::new(rom, |_: &NesPPU| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -977,7 +980,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom);
+        let bus = Bus::new(rom, |_: &NesPPU| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -995,7 +998,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom);
+        let bus = Bus::new(rom, |_: &NesPPU| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -1013,7 +1016,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom);
+        let bus = Bus::new(rom, |_: &NesPPU| {});
         let mut cpu = CPU::new(bus);
 
         cpu.mem_write(0x10, 0x55); // set test data
