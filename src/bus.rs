@@ -26,7 +26,15 @@ impl<'a> Bus<'a> {
     }
 
     pub fn tick(&mut self, cycle: u8) {
-        self.ppu.tick(cycle);
+        self.cycle += cycle as usize;
+
+        let nmi_before = self.ppu.nmi_interrupt.is_some();
+        self.ppu.tick(cycle * 3);
+        let nmi_after = self.ppu.nmi_interrupt.is_some();
+
+        if !nmi_before && nmi_after {
+            (self.gameloop_callback)(&self.ppu);
+        }
     }
 
     pub fn poll_nmi_status(&mut self) -> Option<u8> {
