@@ -2,19 +2,26 @@ use crate::cartoridge::Rom;
 use crate::cpu::Memory;
 use crate::ppu::{NesPPU, PPU};
 
-pub struct Bus {
+pub struct Bus<'call> {
     cpu_vram: [u8; 2048],
     prg_rom: Vec<u8>,
     ppu: NesPPU,
+    cycle: usize,
+    gameloop_callback: Box<dyn FnMut(&NesPPU) + 'call>,
 }
 
-impl Bus {
-    pub fn new(rom: Rom) -> Self {
+impl<'a> Bus<'a> {
+    pub fn new<'call, F>(rom: Rom, gameloop_callback: F) -> Bus<'call>
+    where
+        F: FnMut(&NesPPU) + 'call,
+    {
         let ppu = NesPPU::new(rom.chr_rom, rom.screen_mirroring);
         Bus {
             cpu_vram: [0; 0x0800], // 2048
             prg_rom: rom.prg_rom,
             ppu: ppu,
+            cycle: 0,
+            gameloop_callback: Box::from(gameloop_callback),
         }
     }
 
