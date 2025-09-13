@@ -895,10 +895,7 @@ impl<'a> CPU<'a> {
 
 #[cfg(test)]
 mod test {
-    use crate::{
-        cartoridge::Rom,
-        ppu::{self, NesPPU},
-    };
+    use crate::{cartoridge::Rom, ppu::NesPPU};
 
     use super::*;
 

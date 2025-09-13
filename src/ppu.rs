@@ -153,7 +153,7 @@ impl PPU for NesPPU {
                 self.palette_table[(addr_mirror - 0x3f00) as usize] = value;
             }
             0x3f00..=0x3fff => {
-                self.palette_table[addr as usize] = value;
+                self.palette_table[(addr - 0x3f00) as usize] = value;
             }
             _ => panic!("unexpected access"),
         }
