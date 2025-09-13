@@ -214,7 +214,7 @@ impl AddrRegister {
         }
 
         if self.get() > 0x3fff {
-            self.set(self.get() & 0b11111111111);
+            self.set(self.get() & 0b11_11111_1111_1111);
         }
         self.hi_ptr = !self.hi_ptr;
     }
@@ -226,7 +226,7 @@ impl AddrRegister {
             self.value.0 = self.value.0.wrapping_add(1);
         }
         if self.get() > 0x3fff {
-            self.set(self.get() & 0b11111111111);
+            self.set(self.get() & 0b11_11111_1111_1111);
         }
     }
 
