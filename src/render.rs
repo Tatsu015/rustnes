@@ -25,7 +25,7 @@ pub fn render(ppu: &NesPPU, frame: &mut Frame) {
                     3 => palette::SYSTEM_PALLETE[0x30],
                     _ => panic!("can't be"),
                 };
-                frame.set_pixcel(tile_x + x, tile_y + y, rgb)
+                frame.set_pixcel(tile_x * 8 + x, tile_y * 8 + y, rgb)
             }
         }
     }
