@@ -25,14 +25,10 @@ impl<'a> Bus<'a> {
         }
     }
 
-    pub fn tick(&mut self, cycle: u8) {
-        self.cycle += cycle as usize;
-
-        let nmi_before = self.ppu.nmi_interrupt.is_some();
-        self.ppu.tick(cycle * 3);
-        let nmi_after = self.ppu.nmi_interrupt.is_some();
-
-        if !nmi_before && nmi_after {
+    pub fn tick(&mut self, cycles: u8) {
+        self.cycle += cycles as usize;
+        let new_frame = self.ppu.tick(cycles * 3);
+        if new_frame {
             (self.gameloop_callback)(&self.ppu);
         }
     }
