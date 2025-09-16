@@ -41,4 +41,12 @@ impl ControlRegister {
             0
         }
     }
+
+    pub fn sprt_pattern_addr(&self) -> u16 {
+        if self.contains(ControlRegister::STRIPE_SIZE) {
+            0x1000
+        } else {
+            0
+        }
+    }
 }
