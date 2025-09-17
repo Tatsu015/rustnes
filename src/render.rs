@@ -13,7 +13,7 @@ pub fn render(ppu: &NesPPU, frame: &mut Frame) {
             let mut upper = tile[y];
             let mut lower = tile[y + 8];
 
-            for x in (0..7).rev() {
+            for x in (0..=7).rev() {
                 let value = (1 & upper) << 1 | (1 & lower);
                 upper = upper >> 1;
                 lower = lower >> 1;
