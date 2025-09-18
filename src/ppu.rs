@@ -144,7 +144,6 @@ impl PPU for NesPPU {
 
     fn write_to_data(&mut self, value: u8) {
         let addr = self.addr.get();
-        println!("{}", addr);
         match addr {
             0..=0x1fff => println!("attempt to chr rom space {}", addr),
             0x2000..=0x2fff => self.vram[self.mirror_vram_addr(addr) as usize] = value,
