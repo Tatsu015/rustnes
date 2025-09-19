@@ -30,6 +30,55 @@ pub fn render(ppu: &NesPPU, frame: &mut Frame) {
             }
         }
     }
+
+    for i in (0..ppu.oam_data.len()).step_by(4).rev() {
+        let tile_idx = ppu.oam_data[i + 1] as u16;
+        let tile_x = ppu.oam_data[i + 3] as usize;
+        let tile_y = ppu.oam_data[i] as usize;
+
+        let flip_vertical = if ppu.oam_data[i + 2] >> 7 & 1 == 1 {
+            true
+        } else {
+            false
+        };
+        let flip_horizontial = if ppu.oam_data[i + 2] >> 6 & 1 == 1 {
+            true
+        } else {
+            false
+        };
+
+        let palette_idx = ppu.oam_data[i + 2] & 0b11;
+        let sprite_palette = sprite_palette(ppu, palette_idx);
+
+        let bank = ppu.ctrl.sprt_pattern_addr();
+
+        let tile =
+            &ppu.chr_rom[(bank + tile_idx * 16) as usize..=(bank + tile_idx * 16 + 15) as usize];
+
+        for y in 0..=7 {
+            let mut upper = tile[y];
+            let mut lower = tile[y + 8];
+
+            'loop_skip: for x in (0..=7).rev() {
+                let value = (1 & lower) << 1 | (1 & upper);
+                upper = upper >> 1;
+                lower = lower >> 1;
+                let rgb = match value {
+                    0 => continue 'loop_skip,
+                    1 => palette::SYSTEM_PALLETE[sprite_palette[1] as usize],
+                    2 => palette::SYSTEM_PALLETE[sprite_palette[2] as usize],
+                    3 => palette::SYSTEM_PALLETE[sprite_palette[3] as usize],
+                    _ => panic!("can't be"),
+                };
+                match (flip_horizontial, flip_vertical) {
+                    (false, false) => frame.set_pixcel(tile_x + x, tile_y + y, rgb),
+                    (true, false) => frame.set_pixcel(tile_x + 7 - x, tile_y + y, rgb),
+                    (false, true) => frame.set_pixcel(tile_x + x, tile_y + 7 - y, rgb),
+                    (true, true) => frame.set_pixcel(tile_x + 7 - x, tile_y + 7 - y, rgb),
+                }
+            }
+        }
+    }
 }
 
 fn bg_palette(ppu: &NesPPU, tile_column: usize, tile_row: usize) -> [u8; 4] {
@@ -52,3 +101,5 @@ fn bg_palette(ppu: &NesPPU, tile_column: usize, tile_row: usize) -> [u8; 4] {
         ppu.palette_table[palette_start + 2],
     ]
 }
+
+fn sprite_palette(ppu: &NesPPU, palette_idx: u8) -> [u8; 4] {}
