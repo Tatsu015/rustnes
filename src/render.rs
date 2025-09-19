@@ -102,4 +102,12 @@ fn bg_palette(ppu: &NesPPU, tile_column: usize, tile_row: usize) -> [u8; 4] {
     ]
 }
 
-fn sprite_palette(ppu: &NesPPU, palette_idx: u8) -> [u8; 4] {}
+fn sprite_palette(ppu: &NesPPU, palette_idx: u8) -> [u8; 4] {
+    let start = 0x11 + (palette_idx * 4) as usize;
+    [
+        0,
+        ppu.palette_table[start],
+        ppu.palette_table[start + 1],
+        ppu.palette_table[start + 2],
+    ]
+}
