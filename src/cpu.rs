@@ -69,6 +69,7 @@ impl Memory for CPU<'_> {
     }
 
     fn mem_write(&mut self, addr: u16, data: u8) {
+        println!("bbbbb");
         self.bus.mem_write(addr, data);
         // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
     }
@@ -141,7 +142,7 @@ impl<'a> CPU<'a> {
             callback(self);
 
             let code = self.mem_read(self.program_counter);
-            // self.debug(code);
+            self.debug(code);
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
