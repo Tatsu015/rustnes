@@ -69,7 +69,6 @@ impl Memory for CPU<'_> {
     }
 
     fn mem_write(&mut self, addr: u16, data: u8) {
-        println!("bbbbb");
         self.bus.mem_write(addr, data);
         // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
     }
@@ -717,6 +716,7 @@ impl<'a> CPU<'a> {
 
     fn stx(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_address(mode);
+        println!("here!");
         self.mem_write(addr, self.register_x);
     }
 
