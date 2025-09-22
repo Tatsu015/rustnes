@@ -53,6 +53,7 @@ const PPU_REGISTERS_MIRROR_END: u16 = 0x3FFF;
 
 impl Memory for Bus<'_> {
     fn mem_read(&mut self, addr: u16) -> u8 {
+        println!("aaa: {:02x}", addr);
         match addr {
             RAM..=RAM_MIRRORS_END => {
                 let mirror_down_addr = addr & 0b00000111_11111111;
@@ -68,7 +69,22 @@ impl Memory for Bus<'_> {
                 let mirror_down_addr = addr & 0b00100000_00000111;
                 self.mem_read(mirror_down_addr)
             }
+            0x4000..=0x4015 => {
+                //ignore APU
+                0
+            }
+
+            0x4016 => {
+                // ignore joypad 1;
+                0
+            }
+
+            0x4017 => {
+                // ignore joypad 2
+                0
+            }
             0x8000..=0xFFFF => self.read_prg_rom(addr),
+
             _ => {
                 println!("Ignoring mem access at {}", addr);
                 0
