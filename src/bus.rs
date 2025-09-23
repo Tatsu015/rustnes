@@ -92,7 +92,7 @@ impl Memory for Bus<'_> {
         }
     }
     fn mem_write(&mut self, addr: u16, data: u8) {
-        println!("{:02x}, {}", addr, addr);
+        println!("bbb: {:02x}, {}", addr, addr);
         match addr {
             RAM..=RAM_MIRRORS_END => {
                 let mirror_down_addr = addr & 0b00000111_11111111;
@@ -126,6 +126,21 @@ impl Memory for Bus<'_> {
                 let mirror_down_addr = addr & 0b00100000_00000111;
                 println!("aaaa");
                 self.mem_write(mirror_down_addr, data);
+            }
+            0x4000..=0x4013 => {
+                // TODO APU
+            }
+            0x4014 => {
+                // TODO OAMDMA
+            }
+            0x4015 => {
+                // TODO SND_CHN
+            }
+            0x4016 => {
+                // TODO joypad1
+            }
+            0x4017 => {
+                // TODOjoypad2
             }
             0x8000..=0xFFFF => {
                 panic!("Attempt to write to Cartridge ROM space")
