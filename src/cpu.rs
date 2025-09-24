@@ -141,7 +141,7 @@ impl<'a> CPU<'a> {
             callback(self);
 
             let code = self.mem_read(self.program_counter);
-            // self.debug(code);
+            self.debug(code);
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
@@ -254,6 +254,7 @@ impl<'a> CPU<'a> {
             self.program_counter,
             self.stack_pointer
         )
+        // println!("0x{:02x}", code)
     }
 
     pub fn get_operand_address(&mut self, mode: &AddressingMode) -> u16 {
