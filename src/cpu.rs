@@ -370,17 +370,19 @@ impl<'a> CPU<'a> {
     fn bit(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_address(mode);
         let data = self.mem_read(addr);
+        println!("addr:{}, val:{}", addr, data);
+
         let and = self.register_a & data;
         if and == 0 {
             self.status.insert(CpuFlags::ZERO);
         } else {
             self.status.remove(CpuFlags::ZERO);
         }
-
-        self.status
-            .set(CpuFlags::NEGATIVE, data & CpuFlags::NEGATIVE.bits() > 0);
-        self.status
-            .set(CpuFlags::OVERFLOW, data & CpuFlags::OVERFLOW.bits() > 0);
+        let flags = CpuFlags::NEGATIVE | CpuFlags::OVERFLOW;
+        let v = data & flags.bits();
+        self.status.remove(CpuFlags::NEGATIVE);
+        self.status.remove(CpuFlags::OVERFLOW);
+        self.status.insert(CpuFlags::from_bits_truncate(v));
     }
 
     fn bmi(&mut self) {
