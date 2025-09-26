@@ -370,7 +370,7 @@ impl<'a> CPU<'a> {
     fn bit(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_address(mode);
         let data = self.mem_read(addr);
-        println!("addr:{}, val:{}", addr, data);
+        println!("addr:{}, val:{}", addr, data); // TODO for debug
 
         let and = self.register_a & data;
         if and == 0 {
