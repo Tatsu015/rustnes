@@ -31,7 +31,7 @@ fn main() {
     let video_subsystem = sdl_context.video().unwrap();
     let window = video_subsystem
         .window(
-            "Snake game",
+            "NES Emulator",
             (LOGICAL_WIDTH * WINDOW_SCALE) as u32,
             (LOGICAL_HEIGHT * WINDOW_SCALE) as u32,
         )
