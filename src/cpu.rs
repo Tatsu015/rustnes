@@ -61,6 +61,8 @@ pub struct CPU<'a> {
     pub program_counter: u16,
     pub stack_pointer: u8,
     pub bus: Bus<'a>,
+
+    pub add_cycles: u8,
 }
 
 impl Memory for CPU<'_> {
@@ -84,6 +86,7 @@ impl<'a> CPU<'a> {
             program_counter: 0x8000,
             stack_pointer: INITIAL_STACK,
             bus: bus,
+            add_cycles: 0,
         }
     }
 
