@@ -2,6 +2,7 @@
 name = "rustnes"
 version = "0.1.0"
 edition = "2021"
+default-run = "main"
 
 [dependencies]
 bitflags = "2.9.0"
