@@ -26,11 +26,13 @@ impl<'a> Bus<'a> {
     }
 
     pub fn tick(&mut self, cycles: u8) {
+        println!("before: {}", self.cycle);
         self.cycle += cycles as usize;
         let new_frame = self.ppu.tick(cycles * 3);
         if new_frame {
             (self.gameloop_callback)(&self.ppu);
         }
+        println!("after: {}", self.cycle);
     }
 
     pub fn poll_nmi_status(&mut self) -> Option<u8> {
