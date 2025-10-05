@@ -71,8 +71,8 @@ impl Memory for CPU<'_> {
     }
 
     fn mem_write(&mut self, addr: u16, data: u8) {
-        self.bus.mem_write(addr, data);
         println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
+        self.bus.mem_write(addr, data);
     }
 }
 
@@ -257,7 +257,7 @@ impl<'a> CPU<'a> {
         //     self.program_counter,
         //     self.stack_pointer
         // )
-        println!("0x{:02x} st:0b{:08b}", code, self.status)
+        // println!("0x{:02x} st:0b{:08b}", code, self.status) // TODO
     }
 
     pub fn get_operand_address(&mut self, mode: &AddressingMode) -> u16 {
@@ -373,7 +373,7 @@ impl<'a> CPU<'a> {
     fn bit(&mut self, mode: &AddressingMode) {
         let addr = self.get_operand_address(mode);
         let data = self.mem_read(addr);
-        println!("addr:{}, val:{}", addr, data); // TODO for debug
+        // println!("addr:{}, val:{}", addr, data); // TODO for debug
 
         let and = self.register_a & data;
         if and == 0 {
@@ -541,7 +541,7 @@ impl<'a> CPU<'a> {
         let addr = self.get_operand_address(mode);
         let value = self.mem_read(addr);
         self.register_a = value;
-        println!("lda: addr:0x{:04x}, val:0x{:02x}", addr, value); // TODO for debug
+        // println!("lda: addr:0x{:04x}, val:0x{:02x}", addr, value); // TODO for debug
         self.update_zero_and_negative_flags(value);
     }
 
@@ -828,7 +828,7 @@ impl<'a> CPU<'a> {
     }
 
     fn branch(&mut self, condition: bool) {
-        println!("bc: {} ", condition);
+        // println!("bc: {} ", condition); // TODO
         if condition {
             let jump = self.mem_read(self.program_counter) as i8;
             let jump_addr = self
@@ -836,7 +836,7 @@ impl<'a> CPU<'a> {
                 .wrapping_add(1)
                 .wrapping_add(jump as u16);
             self.program_counter = jump_addr;
-            println!("jump: {}, ctr: {}", jump_addr, self.program_counter);
+            // println!("jump: {}, ctr: {}", jump_addr, self.program_counter); // TODO
         }
     }
 
