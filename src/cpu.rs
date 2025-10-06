@@ -268,7 +268,9 @@ impl<'a> CPU<'a> {
     }
 
     fn is_page_crossed(&self, addr1: u16, addr2: u16) -> bool {
-        true
+        let page_crossed = (addr1 & 0xFF00) != (addr2 & 0xFF);
+        println!("{}", page_crossed); // TODO
+        page_crossed
     }
 
     pub fn get_absolute_address(&mut self, mode: &AddressingMode, addr: u16) -> (u16, bool) {
