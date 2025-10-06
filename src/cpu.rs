@@ -267,6 +267,27 @@ impl<'a> CPU<'a> {
         }
     }
 
+    fn is_page_crossed(&self, addr1: u16, addr2: u16) -> bool {
+        true
+    }
+
+    pub fn get_operand_adress_with_page_crossed(&mut self, mode: &AddressingMode) -> (u16, bool) {
+        let addr = self.get_operand_address(mode);
+        let page_crossed = match mode {
+            AddressingMode::Immediate => false,
+            AddressingMode::ZeroPage => false,
+            AddressingMode::ZeroPage_X => false,
+            AddressingMode::ZeroPage_Y => false,
+            AddressingMode::Absolute => false,
+            AddressingMode::Absolute_X => self.is_page_crossed(0, 0), // TODO
+            AddressingMode::Absolute_Y => self.is_page_crossed(0, 0), // TODO
+            AddressingMode::Indirect_X => false,
+            AddressingMode::Indirect_Y => self.is_page_crossed(0, 0), // TODO
+            AddressingMode::NoneAddressing => false,
+        };
+        (addr, page_crossed)
+    }
+
     pub fn get_absolute_address(&mut self, mode: &AddressingMode, addr: u16) -> u16 {
         match mode {
             // `page` is 256byte memory region.
