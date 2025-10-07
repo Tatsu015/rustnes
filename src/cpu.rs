@@ -269,7 +269,6 @@ impl<'a> CPU<'a> {
 
     fn is_page_crossed(&self, addr1: u16, addr2: u16) -> bool {
         let page_crossed = (addr1 & 0xFF00) != (addr2 & 0xFF);
-        println!("{}", page_crossed); // TODO
         page_crossed
     }
 
@@ -869,15 +868,16 @@ impl<'a> CPU<'a> {
     }
 
     fn branch(&mut self, condition: bool) {
-        // println!("bc: {} ", condition); // TODO
+        let jump = self.mem_read(self.program_counter) as i8;
+        let old_pc = self.program_counter.wrapping_add(1);
+        let new_pc = old_pc.wrapping_add(jump as u16);
+
         if condition {
-            let jump = self.mem_read(self.program_counter) as i8;
-            let jump_addr = self
-                .program_counter
-                .wrapping_add(1)
-                .wrapping_add(jump as u16);
-            self.program_counter = jump_addr;
-            // println!("jump: {}, ctr: {}", jump_addr, self.program_counter); // TODO
+            self.program_counter = new_pc;
+            self.bus.tick(1);
+        }
+        if self.is_page_crossed(old_pc, new_pc) {
+            self.bus.tick(1);
         }
     }
 
