@@ -25,6 +25,10 @@ impl<'a> Bus<'a> {
         }
     }
 
+    pub fn print_cycle(&self) {
+        println!("bus cycle: {}", self.cycle);
+    }
+
     pub fn tick(&mut self, cycles: u8) {
         // println!("before: {}", self.cycle);
         self.cycle += cycles as usize;
