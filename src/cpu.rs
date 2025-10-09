@@ -878,7 +878,8 @@ impl<'a> CPU<'a> {
             self.bus.tick(1);
         }
         if self.is_page_crossed(old_pc, new_pc) {
-            self.bus.tick(1);
+            println!("page crossed");
+            // self.bus.tick(1);
         }
     }
 
