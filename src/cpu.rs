@@ -565,6 +565,8 @@ impl<'a> CPU<'a> {
         self.register_a = value;
         self.update_zero_and_negative_flags(value);
 
+        println!("addr:{}, val:{}, st:0b{:08b}", addr, value, self.status); // TODO
+
         if page_crossed {
             self.bus.tick(1);
         }
