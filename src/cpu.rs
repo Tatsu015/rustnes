@@ -875,6 +875,11 @@ impl<'a> CPU<'a> {
         let old_pc = self.program_counter.wrapping_add(1);
         let new_pc = old_pc.wrapping_add(jump as u16);
 
+        println!(
+            "c:{}, jmp:{}, old:{}, new:{}",
+            condition, jump, old_pc, new_pc
+        );
+
         if condition {
             self.program_counter = new_pc;
             self.bus.tick(1);
@@ -929,6 +934,7 @@ impl<'a> CPU<'a> {
     }
 
     fn stack_push(&mut self, data: u8) {
+        println!("stack pushed:{}", data); // TODO
         self.mem_write((STACK_TOP as u16) + self.stack_pointer as u16, data);
         self.stack_pointer = self.stack_pointer.wrapping_sub(1);
     }
