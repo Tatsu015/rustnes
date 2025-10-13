@@ -120,6 +120,7 @@ impl<'a> CPU<'a> {
     }
 
     fn interrupt_nmi(&mut self) {
+        println!("interrupt nmi!!!!!!!!!!!!!!!!!!!"); // TODO
         self.stack_push_u16(self.program_counter);
         let mut flag = self.status.clone();
         flag.set(CpuFlags::BREAK, false);
@@ -144,7 +145,8 @@ impl<'a> CPU<'a> {
             callback(self);
 
             let code = self.mem_read(self.program_counter);
-            self.debug(code);
+            self.debug(code); // TODO
+            self.bus.show_ppu_status(); // TODO
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
@@ -241,6 +243,7 @@ impl<'a> CPU<'a> {
             self.bus.print_cycle();
 
             if before_program_counter == self.program_counter {
+                // println!("aaaaaaaaaaaaaaaaaaaaaa"); // TODO is this true??
                 self.program_counter += (opcode.len - 1) as u16;
             }
         }
@@ -877,11 +880,6 @@ impl<'a> CPU<'a> {
         let old_pc = self.program_counter.wrapping_add(1);
         let new_pc = old_pc.wrapping_add(jump as u16);
 
-        println!(
-            "c:{}, jmp:{}, old:{}, new:{}",
-            condition, jump, old_pc, new_pc
-        );
-
         if condition {
             self.program_counter = new_pc;
             self.bus.tick(1);
@@ -890,6 +888,12 @@ impl<'a> CPU<'a> {
             println!("page crossed");
             // self.bus.tick(1);
         }
+
+        // println!(
+        //     "c:{}, jmp:0x{:04x}, old:0x{:04x}, new:0x{:04x}",
+        //     condition, jump, old_pc, new_pc
+        // );
+        // println!("old:0x{:04x}, new:0x{:04x}", old_pc, new_pc); // TODO
     }
 
     fn update_zero_and_negative_flags(&mut self, result: u8) {

@@ -25,6 +25,10 @@ impl<'a> Bus<'a> {
         }
     }
 
+    pub fn show_ppu_status(&self) {
+        self.ppu.show_cycle_and_scanline();
+    }
+
     pub fn print_cycle(&self) {
         println!("bus cycle: {}", self.cycle);
     }
