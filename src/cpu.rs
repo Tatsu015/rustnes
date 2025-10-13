@@ -785,6 +785,7 @@ impl<'a> CPU<'a> {
     }
 
     fn tsx(&mut self) {
+        println!("tsx:{}", self.register_x);
         self.register_x = self.stack_pointer;
         self.update_zero_and_negative_flags(self.register_x);
     }
@@ -795,6 +796,7 @@ impl<'a> CPU<'a> {
     }
 
     fn txs(&mut self) {
+        println!("txs:{}", self.register_x);
         self.stack_pointer = self.register_x;
     }
 
@@ -930,13 +932,20 @@ impl<'a> CPU<'a> {
 
     fn stack_pop(&mut self) -> u8 {
         self.stack_pointer = self.stack_pointer.wrapping_add(1);
-        self.mem_read((STACK_TOP as u16) + self.stack_pointer as u16)
+        let val = self.mem_read((STACK_TOP as u16) + self.stack_pointer as u16);
+        println!(
+            "pop: pointer:{}, val:{}, adddr:{}",
+            self.stack_pointer,
+            val,
+            (STACK_TOP as u16) + self.stack_pointer as u16
+        );
+        return val;
     }
 
     fn stack_push(&mut self, data: u8) {
-        println!("stack pushed:{}", data); // TODO
         self.mem_write((STACK_TOP as u16) + self.stack_pointer as u16, data);
         self.stack_pointer = self.stack_pointer.wrapping_sub(1);
+        println!("push: pointer:{}, val:{}", self.stack_pointer, data);
     }
 
     fn stack_pop_u16(&mut self) -> u16 {
