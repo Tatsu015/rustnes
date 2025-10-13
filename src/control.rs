@@ -30,8 +30,10 @@ impl ControlRegister {
         ControlRegister::from_bits_truncate(data);
     }
 
-    pub fn generate_vblank_status(&self) -> bool {
-        return self.contains(ControlRegister::GENERATE_NMI);
+    pub fn generate_vblank_status(&mut self) -> bool {
+        let result = self.contains(ControlRegister::GENERATE_NMI);
+        self.set(ControlRegister::GENERATE_NMI, true);
+        result
     }
 
     pub fn bknd_pattern_addr(&self) -> u16 {
