@@ -58,7 +58,10 @@ impl NesPPU {
     }
 
     pub fn show_cycle_and_scanline(&self) {
-        println!("ppu cycle:{}, scanline:{}", self.cycle, self.scanline);
+        println!(
+            "ppu cycle:{}, scanline:{}, ctrl:{:08b}",
+            self.cycle, self.scanline, self.ctrl
+        ); // TODO
     }
 
     pub fn tick(&mut self, cycle: u8) -> bool {
@@ -108,6 +111,7 @@ impl NesPPU {
 
 impl PPU for NesPPU {
     fn write_to_ctrl(&mut self, value: u8) {
+        println!("write_to_ctrl:{}", value); // TODO
         let before_nmi_status = self.ctrl.generate_vblank_status();
         self.ctrl.update(value);
         if !before_nmi_status

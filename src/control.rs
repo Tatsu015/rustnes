@@ -33,6 +33,7 @@ impl ControlRegister {
     pub fn generate_vblank_status(&mut self) -> bool {
         let result = self.contains(ControlRegister::GENERATE_NMI);
         self.set(ControlRegister::GENERATE_NMI, true);
+        println!("generate_vbrank_status result:{}", result); // TODO
         result
     }
 
