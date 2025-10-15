@@ -101,6 +101,7 @@ impl Memory for Bus<'_> {
         }
     }
     fn mem_write(&mut self, addr: u16, data: u8) {
+        println!("mem_write addr:{}, data:{}", addr, data); // TODO
         match addr {
             RAM..=RAM_MIRRORS_END => {
                 let mirror_down_addr = addr & 0b00000111_11111111;
