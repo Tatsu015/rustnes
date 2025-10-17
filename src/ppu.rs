@@ -66,11 +66,11 @@ impl NesPPU {
 
     pub fn tick(&mut self, cycle: u8) -> bool {
         self.cycle += cycle as usize;
-        // println!("cycle:{}", self.cycle); // TODO
+        println!("ppu.tick cycle:{}", self.cycle);
         if self.cycle >= 341 {
             self.cycle = self.cycle - 341;
             self.scanline += 1;
-            if self.scanline >= 241 {
+            if self.scanline == 241 {
                 if self.ctrl.generate_vblank_status() {
                     self.status.set(StatusRegister::VBLANK_STARTED, true);
                     // todo!("Should trigger NMI interrupt")
