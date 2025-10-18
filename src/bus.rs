@@ -30,7 +30,7 @@ impl<'a> Bus<'a> {
     }
 
     pub fn print_cycle(&self) {
-        println!("bus cycle: {}", self.cycle);
+        // println!("bus cycle: {}", self.cycle);
     }
 
     pub fn tick(&mut self, cycles: u8) {
@@ -101,7 +101,7 @@ impl Memory for Bus<'_> {
         }
     }
     fn mem_write(&mut self, addr: u16, data: u8) {
-        println!("mem_write addr:0x{:04x}, data:0x{:02x}", addr, data); // TODO
+        // println!("mem_write addr:0x{:04x}, data:0x{:02x}", addr, data); // TODO
         match addr {
             RAM..=RAM_MIRRORS_END => {
                 let mirror_down_addr = addr & 0b00000111_11111111;

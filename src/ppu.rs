@@ -58,15 +58,15 @@ impl NesPPU {
     }
 
     pub fn show_cycle_and_scanline(&self) {
-        println!(
-            "ppu cycle:{}, scanline:{}, ctrl:{:08b}",
-            self.cycle, self.scanline, self.ctrl
-        ); // TODO
+        // println!(
+        //     "ppu cycle:{}, scanline:{}, ctrl:{:08b}",
+        //     self.cycle, self.scanline, self.ctrl
+        // ); // TODO
     }
 
     pub fn tick(&mut self, cycle: u8) -> bool {
         self.cycle += cycle as usize;
-        println!("ppu.tick cycle:{}", self.cycle);
+        // println!("ppu.tick cycle:{}", self.cycle);
         if self.cycle >= 341 {
             self.cycle = self.cycle - 341;
             self.scanline += 1;
@@ -74,7 +74,7 @@ impl NesPPU {
                 if self.ctrl.generate_vblank_status() {
                     self.status.set(StatusRegister::VBLANK_STARTED, true);
                     // todo!("Should trigger NMI interrupt")
-                    println!("nmi interrupt!!!");
+                    // println!("nmi interrupt!!!");
                     self.nmi_interrupt = Some(1);
                 }
             }
@@ -83,7 +83,7 @@ impl NesPPU {
                 self.scanline = 0;
                 self.status.set(StatusRegister::VBLANK_STARTED, false);
                 self.nmi_interrupt = None;
-                println!("reset vbrank");
+                // println!("reset vbrank");
                 return true;
             }
         }
@@ -111,7 +111,7 @@ impl NesPPU {
 
 impl PPU for NesPPU {
     fn write_to_ctrl(&mut self, value: u8) {
-        println!("write_to_ctrl:{}", value); // TODO
+        // println!("write_to_ctrl:{}", value); // TODO
         let before_nmi_status = self.ctrl.generate_vblank_status();
         self.ctrl.update(value);
         if !before_nmi_status

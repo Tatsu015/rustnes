@@ -71,7 +71,7 @@ impl Memory for CPU<'_> {
     }
 
     fn mem_write(&mut self, addr: u16, data: u8) {
-        println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
+        // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
         self.bus.mem_write(addr, data);
     }
 }
@@ -120,7 +120,7 @@ impl<'a> CPU<'a> {
     }
 
     fn interrupt_nmi(&mut self) {
-        println!("interrupt nmi!!!!!!!!!!!!!!!!!!!"); // TODO
+        // println!("interrupt nmi!!!!!!!!!!!!!!!!!!!"); // TODO
         self.stack_push_u16(self.program_counter);
         let mut flag = self.status.clone();
         flag.set(CpuFlags::BREAK, false);
@@ -568,7 +568,7 @@ impl<'a> CPU<'a> {
         self.register_a = value;
         self.update_zero_and_negative_flags(value);
 
-        println!("addr:{}, val:{}, st:0b{:08b}", addr, value, self.status); // TODO
+        // println!("addr:{}, val:{}, st:0b{:08b}", addr, value, self.status); // TODO
 
         if page_crossed {
             self.bus.tick(1);
@@ -788,7 +788,7 @@ impl<'a> CPU<'a> {
     }
 
     fn tsx(&mut self) {
-        println!("tsx:{}", self.register_x);
+        // println!("tsx:{}", self.register_x); // TODO
         self.register_x = self.stack_pointer;
         self.update_zero_and_negative_flags(self.register_x);
     }
@@ -799,7 +799,7 @@ impl<'a> CPU<'a> {
     }
 
     fn txs(&mut self) {
-        println!("txs:{}", self.register_x);
+        // println!("txs:{}", self.register_x);
         self.stack_pointer = self.register_x;
     }
 
@@ -885,8 +885,8 @@ impl<'a> CPU<'a> {
             self.bus.tick(1);
         }
         if self.is_page_crossed(old_pc, new_pc) {
-            println!("page crossed");
-            // self.bus.tick(1);
+            // println!("page crossed");
+            // self.bus.tick(1); // FIXME
         }
 
         // println!(
@@ -937,19 +937,19 @@ impl<'a> CPU<'a> {
     fn stack_pop(&mut self) -> u8 {
         self.stack_pointer = self.stack_pointer.wrapping_add(1);
         let val = self.mem_read((STACK_TOP as u16) + self.stack_pointer as u16);
-        println!(
-            "pop: pointer:{}, val:{}, adddr:{}",
-            self.stack_pointer,
-            val,
-            (STACK_TOP as u16) + self.stack_pointer as u16
-        );
+        // println!(
+        //     "pop: pointer:{}, val:{}, adddr:{}",
+        //     self.stack_pointer,
+        //     val,
+        //     (STACK_TOP as u16) + self.stack_pointer as u16
+        // );
         return val;
     }
 
     fn stack_push(&mut self, data: u8) {
         self.mem_write((STACK_TOP as u16) + self.stack_pointer as u16, data);
         self.stack_pointer = self.stack_pointer.wrapping_sub(1);
-        println!("push: pointer:{}, val:{}", self.stack_pointer, data);
+        // println!("push: pointer:{}, val:{}", self.stack_pointer, data);
     }
 
     fn stack_pop_u16(&mut self) -> u16 {
