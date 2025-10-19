@@ -71,7 +71,7 @@ impl Memory for CPU<'_> {
     }
 
     fn mem_write(&mut self, addr: u16, data: u8) {
-        // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
+        println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
         self.bus.mem_write(addr, data);
     }
 }
@@ -147,6 +147,8 @@ impl<'a> CPU<'a> {
             let code = self.mem_read(self.program_counter);
             self.debug(code); // TODO
             self.bus.show_ppu(); // TODO
+            let v = self.mem_read(0x2002); // TODO
+            println!("0x2002 val {}", v); // TODO
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
@@ -568,7 +570,7 @@ impl<'a> CPU<'a> {
         self.register_a = value;
         self.update_zero_and_negative_flags(value);
 
-        // println!("addr:{}, val:{}, st:0b{:08b}", addr, value, self.status); // TODO
+        println!("addr:{:02x}, val:{}, st:0b{:08b}", addr, value, self.status); // TODO
 
         if page_crossed {
             self.bus.tick(1);
