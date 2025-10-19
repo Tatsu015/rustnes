@@ -25,8 +25,8 @@ impl<'a> Bus<'a> {
         }
     }
 
-    pub fn show_ppu_status(&self) {
-        self.ppu.show_cycle_and_scanline();
+    pub fn show_ppu(&self) {
+        self.ppu.show_ppu();
     }
 
     pub fn print_cycle(&self) {

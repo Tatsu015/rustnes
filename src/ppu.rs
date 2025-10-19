@@ -57,11 +57,11 @@ impl NesPPU {
         }
     }
 
-    pub fn show_cycle_and_scanline(&self) {
-        // println!(
-        //     "ppu cycle:{}, scanline:{}, ctrl:{:08b}",
-        //     self.cycle, self.scanline, self.ctrl
-        // ); // TODO
+    pub fn show_ppu(&self) {
+        println!(
+            "ppu cycle:{}, scanline:{}, ctrl:{:08b}, nmi:{:?}",
+            self.cycle, self.scanline, self.ctrl, self.nmi_interrupt
+        ); // TODO
     }
 
     pub fn tick(&mut self, cycle: u8) -> bool {
