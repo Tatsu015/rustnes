@@ -949,9 +949,13 @@ impl<'a> CPU<'a> {
     }
 
     fn stack_push(&mut self, data: u8) {
-        self.mem_write((STACK_TOP as u16) + self.stack_pointer as u16, data);
+        let addr = (STACK_TOP as u16) + self.stack_pointer as u16;
+        self.mem_write(addr, data);
         self.stack_pointer = self.stack_pointer.wrapping_sub(1);
-        // println!("push: pointer:{}, val:{}", self.stack_pointer, data);
+        println!(
+            "push: pointer:{}, addr:{}, val:{}",
+            self.stack_pointer, addr, data
+        );
     }
 
     fn stack_pop_u16(&mut self) -> u16 {
