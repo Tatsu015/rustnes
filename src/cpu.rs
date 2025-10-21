@@ -883,12 +883,13 @@ impl<'a> CPU<'a> {
         let new_pc = old_pc.wrapping_add(jump as u16);
 
         if condition {
+            println!("branch condition true"); // TODO
             self.program_counter = new_pc;
             self.bus.tick(1);
-        }
-        if self.is_page_crossed(old_pc, new_pc) {
-            // println!("page crossed");
-            // self.bus.tick(1); // FIXME
+            if self.is_page_crossed(old_pc, new_pc) {
+                println!("page crossed"); // TODO
+                self.bus.tick(1); // FIXME
+            }
         }
 
         // println!(
