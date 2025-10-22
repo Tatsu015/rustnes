@@ -67,11 +67,13 @@ pub struct CPU<'a> {
 
 impl Memory for CPU<'_> {
     fn mem_read(&mut self, addr: u16) -> u8 {
-        self.bus.mem_read(addr)
+        let d = self.bus.mem_read(addr);
+        println!("mem_read: addr:0x{:04x}, data:0x{:02x}", addr, d); // TODO
+        return d;
     }
 
     fn mem_write(&mut self, addr: u16, data: u8) {
-        println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data);
+        println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data); // TODO
         self.bus.mem_write(addr, data);
     }
 }
