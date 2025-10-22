@@ -878,19 +878,35 @@ impl<'a> CPU<'a> {
     }
 
     fn branch(&mut self, condition: bool) {
-        let jump = self.mem_read(self.program_counter) as i8;
-        let old_pc = self.program_counter.wrapping_add(1);
-        let new_pc = old_pc.wrapping_add(jump as u16);
-
         if condition {
-            println!("branch condition true"); // TODO
-            self.program_counter = new_pc;
             self.bus.tick(1);
-            if self.is_page_crossed(old_pc, new_pc) {
-                println!("page crossed"); // TODO
-                self.bus.tick(1); // FIXME
+
+            let jump: i8 = self.mem_read(self.program_counter) as i8;
+            let jump_addr = self
+                .program_counter
+                .wrapping_add(1)
+                .wrapping_add(jump as u16);
+
+            if self.program_counter.wrapping_add(1) & 0xFF00 != jump_addr & 0xFF00 {
+                self.bus.tick(1);
             }
+
+            self.program_counter = jump_addr;
         }
+
+        // let jump = self.mem_read(self.program_counter) as i8;
+        // let old_pc = self.program_counter.wrapping_add(1);
+        // let new_pc = old_pc.wrapping_add(jump as u16);
+
+        // if condition {
+        //     println!(""); // TODO
+        //     self.program_counter = new_pc;
+        //     self.bus.tick(1);
+        //     if self.is_page_crossed(old_pc, new_pc) {
+        //         println!("page crossed"); // TODO
+        //         self.bus.tick(1); // FIXME
+        //     }
+        // }
 
         // println!(
         //     "c:{}, jmp:0x{:04x}, old:0x{:04x}, new:0x{:04x}",
