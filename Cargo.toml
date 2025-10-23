@@ -2,7 +2,7 @@
 name = "rustnes"
 version = "0.1.0"
 edition = "2021"
-default-run = "main"
+default-run = "rustnes"
 
 [dependencies]
 bitflags = "2.9.0"
@@ -11,7 +11,7 @@ rand = "0.9.1"
 sdl2 = "0.37.0"
 
 [[bin]]
-name = "main"
+name = "rustnes"
 path = "src/main.rs"
 
 [[bin]]
