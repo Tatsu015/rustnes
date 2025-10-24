@@ -62,6 +62,9 @@ impl NesPPU {
             "ppu cycle:{}, scanline:{}, ctrl:{:08b}, nmi:{:?}",
             self.cycle, self.scanline, self.ctrl, self.nmi_interrupt
         ); // TODO
+        if self.cycle == 340 && self.scanline == 240 {
+            println!("here");
+        }
     }
 
     pub fn tick(&mut self, cycle: u8) -> bool {

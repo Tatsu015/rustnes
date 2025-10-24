@@ -128,9 +128,11 @@ impl<'a> CPU<'a> {
         flag.set(CpuFlags::BREAK, false);
         flag.set(CpuFlags::RESERVED, true);
 
+        println!("bits:{:04b}", flag);
+
         self.stack_push(flag.bits());
         self.status.insert(CpuFlags::INTERRUPT_DISABLE);
-
+        println!("new status:{:04b}", self.status);
         self.bus.tick(2);
         self.program_counter = self.mem_read_u16(0xfffa);
     }
@@ -881,6 +883,7 @@ impl<'a> CPU<'a> {
 
     fn branch(&mut self, condition: bool) {
         if condition {
+            println!("bit flag {}", condition);
             self.bus.tick(1);
 
             let jump: i8 = self.mem_read(self.program_counter) as i8;
