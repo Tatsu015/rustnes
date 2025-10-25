@@ -75,7 +75,7 @@ impl NesPPU {
             self.scanline += 1;
             if self.scanline == 241 {
                 if self.ctrl.generate_vblank_status() {
-                    self.status.set(StatusRegister::VBLANK_STARTED, true);
+                    self.status.set_start_vblank();
                     // todo!("Should trigger NMI interrupt")
                     // println!("nmi interrupt!!!");
                     self.nmi_interrupt = Some(1);
@@ -84,7 +84,7 @@ impl NesPPU {
 
             if self.scanline >= 262 {
                 self.scanline = 0;
-                self.status.set(StatusRegister::VBLANK_STARTED, false);
+                self.status.set_enf_vblank();
                 self.nmi_interrupt = None;
                 // println!("reset vbrank");
                 return true;
