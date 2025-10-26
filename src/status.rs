@@ -17,7 +17,11 @@ impl StatusRegister {
         self.set(StatusRegister::VBLANK_STARTED, true);
     }
 
-    pub fn set_enf_vblank(&mut self) {
+    pub fn set_end_vblank(&mut self) {
         self.set(StatusRegister::VBLANK_STARTED, false);
+    }
+
+    pub fn is_in_vbrank(&self) -> bool {
+        self.contains(StatusRegister::VBLANK_STARTED)
     }
 }

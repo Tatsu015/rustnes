@@ -84,7 +84,7 @@ impl NesPPU {
 
             if self.scanline >= 262 {
                 self.scanline = 0;
-                self.status.set_enf_vblank();
+                self.status.set_end_vblank();
                 self.nmi_interrupt = None;
                 // println!("reset vbrank");
                 return true;
@@ -117,10 +117,7 @@ impl PPU for NesPPU {
         // println!("write_to_ctrl:{}", value); // TODO
         let before_nmi_status = self.ctrl.generate_vblank_status();
         self.ctrl.update(value);
-        if !before_nmi_status
-            && self.ctrl.generate_vblank_status()
-            && self.status.contains(StatusRegister::VBLANK_STARTED)
-        {
+        if !before_nmi_status && self.ctrl.generate_vblank_status() && self.status.is_in_vbrank() {
             self.nmi_interrupt = Some(1);
         }
     }
@@ -131,7 +128,7 @@ impl PPU for NesPPU {
 
     fn read_status(&mut self) -> u8 {
         let data = self.status.bits();
-        self.status.remove(StatusRegister::VBLANK_STARTED);
+        self.status.set_end_vblank();
         self.addr.reset_latch();
         self.scroll.reset_latch();
         data
