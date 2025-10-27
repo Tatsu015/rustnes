@@ -128,9 +128,6 @@ impl PPU for NesPPU {
 
     fn read_status(&mut self) -> u8 {
         let data = self.status.bits();
-        self.status.set_end_vblank();
-        self.addr.reset_latch();
-        self.scroll.reset_latch();
         // println!("read_status:{:04x}", data); // TODO
         data
     }
