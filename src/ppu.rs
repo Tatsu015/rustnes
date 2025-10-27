@@ -131,6 +131,7 @@ impl PPU for NesPPU {
         self.status.set_end_vblank();
         self.addr.reset_latch();
         self.scroll.reset_latch();
+        println!("read_status:{:04x}", data);
         data
     }
 

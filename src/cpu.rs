@@ -143,6 +143,7 @@ impl<'a> CPU<'a> {
     {
         let ref opcodes: HashMap<u8, &'static OpCode> = *opcode::OPECODE_MAP;
         loop {
+            println!("1. 0x2002 val {}", self.mem_read(0x2002)); // TODO
             if let Some(_nmi) = self.bus.poll_nmi_status() {
                 self.interrupt_nmi();
             }
@@ -151,15 +152,14 @@ impl<'a> CPU<'a> {
             let code = self.mem_read(self.program_counter);
             self.debug(code); // TODO
             self.bus.show_ppu(); // TODO
-            let v = self.mem_read(0x2002); // TODO
-            println!("0x2002 val {}", v); // TODO
+            println!("2. 0x2002 val {}", self.mem_read(0x2002)); // TODO
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
             let opcode = opcodes
                 .get(&code)
                 .expect(&format!("OpCode {:x} is not recognized", code));
-
+            println!("3. 0x2002 val {}", self.mem_read(0x2002)); // TODO
             match code {
                 0x69 | 0x65 | 0x75 | 0x6d | 0x7d | 0x79 | 0x61 | 0x71 => self.adc(&opcode.mode),
                 0x29 | 0x25 | 0x35 | 0x2d | 0x3d | 0x39 | 0x21 | 0x31 => self.and(&opcode.mode),
@@ -244,14 +244,17 @@ impl<'a> CPU<'a> {
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
                 _ => panic!("not arrowed operation code."),
             }
+            println!("4. 0x2002 val {}", self.mem_read(0x2002)); // TODO
 
             self.bus.tick(opcode.cycle);
             self.bus.print_cycle();
+            println!("5. 0x2002 val {}", self.mem_read(0x2002)); // TODO
 
             if before_program_counter == self.program_counter {
                 // println!("aaaaaaaaaaaaaaaaaaaaaa"); // TODO is this true??
                 self.program_counter += (opcode.len - 1) as u16;
             }
+            println!("6. 0x2002 val {}", self.mem_read(0x2002)); // TODO
         }
     }
 
