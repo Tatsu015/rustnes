@@ -35,8 +35,10 @@ impl<'a> Bus<'a> {
 
     pub fn tick(&mut self, cycles: u8) {
         // println!("before: {}", self.cycle);
+        // println!("tick mem read:{:04x}", self.mem_read(0x2002)); // TODO
         self.cycle += cycles as usize;
         let new_frame = self.ppu.tick(cycles * 3);
+        // println!("tick mem read:{:04x}", self.mem_read(0x2002)); // TODO
         if new_frame {
             (self.gameloop_callback)(&self.ppu);
         }

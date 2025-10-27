@@ -68,12 +68,12 @@ pub struct CPU<'a> {
 impl Memory for CPU<'_> {
     fn mem_read(&mut self, addr: u16) -> u8 {
         let d = self.bus.mem_read(addr);
-        println!("mem_read: addr:0x{:04x}, data:0x{:02x}", addr, d); // TODO
+        // println!("mem_read: addr:0x{:04x}, data:0x{:02x}", addr, d); // TODO
         return d;
     }
 
     fn mem_write(&mut self, addr: u16, data: u8) {
-        println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data); // TODO
+        // println!("mem_write: addr:0x{:04x}, data:0x{:02x}", addr, data); // TODO
         self.bus.mem_write(addr, data);
     }
 }
@@ -128,11 +128,11 @@ impl<'a> CPU<'a> {
         flag.set(CpuFlags::BREAK, false);
         flag.set(CpuFlags::RESERVED, true);
 
-        println!("bits:{:04b}", flag);
+        // println!("bits:{:04b}", flag);
 
         self.stack_push(flag.bits());
         self.status.insert(CpuFlags::INTERRUPT_DISABLE);
-        println!("new status:{:04b}", self.status);
+        // println!("new status:{:04b}", self.status);
         self.bus.tick(2);
         self.program_counter = self.mem_read_u16(0xfffa);
     }
@@ -143,23 +143,20 @@ impl<'a> CPU<'a> {
     {
         let ref opcodes: HashMap<u8, &'static OpCode> = *opcode::OPECODE_MAP;
         loop {
-            println!("1. 0x2002 val {}", self.mem_read(0x2002)); // TODO
             if let Some(_nmi) = self.bus.poll_nmi_status() {
                 self.interrupt_nmi();
             }
             callback(self);
 
             let code = self.mem_read(self.program_counter);
-            self.debug(code); // TODO
-            self.bus.show_ppu(); // TODO
-            println!("2. 0x2002 val {}", self.mem_read(0x2002)); // TODO
+            // self.debug(code); // TODO
+            // self.bus.show_ppu(); // TODO
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
             let opcode = opcodes
                 .get(&code)
                 .expect(&format!("OpCode {:x} is not recognized", code));
-            println!("3. 0x2002 val {}", self.mem_read(0x2002)); // TODO
             match code {
                 0x69 | 0x65 | 0x75 | 0x6d | 0x7d | 0x79 | 0x61 | 0x71 => self.adc(&opcode.mode),
                 0x29 | 0x25 | 0x35 | 0x2d | 0x3d | 0x39 | 0x21 | 0x31 => self.and(&opcode.mode),
@@ -244,17 +241,13 @@ impl<'a> CPU<'a> {
                 | 0x3c | 0x5c | 0x7c | 0xdc | 0xfc => self.nop(),
                 _ => panic!("not arrowed operation code."),
             }
-            println!("4. 0x2002 val {}", self.mem_read(0x2002)); // TODO
 
             self.bus.tick(opcode.cycle);
             self.bus.print_cycle();
-            println!("5. 0x2002 val {}", self.mem_read(0x2002)); // TODO
 
             if before_program_counter == self.program_counter {
-                // println!("aaaaaaaaaaaaaaaaaaaaaa"); // TODO is this true??
                 self.program_counter += (opcode.len - 1) as u16;
             }
-            println!("6. 0x2002 val {}", self.mem_read(0x2002)); // TODO
         }
     }
 
@@ -577,7 +570,7 @@ impl<'a> CPU<'a> {
         self.register_a = value;
         self.update_zero_and_negative_flags(value);
 
-        println!("addr:{:02x}, val:{}, st:0b{:08b}", addr, value, self.status); // TODO
+        // println!("addr:{:02x}, val:{}, st:0b{:08b}", addr, value, self.status); // TODO
 
         if page_crossed {
             self.bus.tick(1);
@@ -886,7 +879,6 @@ impl<'a> CPU<'a> {
 
     fn branch(&mut self, condition: bool) {
         if condition {
-            println!("bit flag {}", condition);
             self.bus.tick(1);
 
             let jump: i8 = self.mem_read(self.program_counter) as i8;
@@ -977,10 +969,10 @@ impl<'a> CPU<'a> {
         let addr = (STACK_TOP as u16) + self.stack_pointer as u16;
         self.mem_write(addr, data);
         self.stack_pointer = self.stack_pointer.wrapping_sub(1);
-        println!(
-            "push: pointer:{}, addr:{}, val:{}",
-            self.stack_pointer, addr, data
-        );
+        // println!(
+        //     "push: pointer:{}, addr:{}, val:{}",
+        //     self.stack_pointer, addr, data
+        // ); // TODO
     }
 
     fn stack_pop_u16(&mut self) -> u16 {
