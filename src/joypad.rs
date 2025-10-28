@@ -12,3 +12,19 @@ bitflags! {
         const BUTTON_A = 0b0000_0001;
     }
 }
+
+pub struct Joypad {
+    strobe: bool,
+    button_index: u8,
+    button_status: JoypadButton,
+}
+
+impl Joypad {
+    pub fn new() -> Self {
+        Joypad {
+            strobe: false,
+            button_index: 0,
+            button_status: JoypadButton::from_bits_truncate(0),
+        }
+    }
+}
