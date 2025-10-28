@@ -8,7 +8,7 @@ pub fn render(ppu: &NesPPU, frame: &mut Frame) {
         let tile_x = i % 32;
         let tile_y = i / 32;
         let tile = &ppu.chr_rom[(bank + tile * 16) as usize..=(bank + tile * 16 + 15) as usize];
-        let palette = bg_palette(ppu, tile_x, tile_y);
+        let palette = bg_pallette(ppu, tile_x, tile_y);
 
         for y in 0..=7 {
             let mut upper = tile[y];
@@ -81,7 +81,7 @@ pub fn render(ppu: &NesPPU, frame: &mut Frame) {
     }
 }
 
-fn bg_palette(ppu: &NesPPU, tile_column: usize, tile_row: usize) -> [u8; 4] {
+fn bg_pallette(ppu: &NesPPU, tile_column: usize, tile_row: usize) -> [u8; 4] {
     let attr_table_idx = tile_row / 4 * 8 + tile_column / 4;
     let attr_byte = ppu.vram[0x3c0 + attr_table_idx];
 
