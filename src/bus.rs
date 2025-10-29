@@ -88,10 +88,7 @@ impl Memory for Bus<'_> {
                 0
             }
 
-            0x4016 => {
-                // ignore joypad 1;
-                0
-            }
+            0x4016 => self.joypad1.read(),
 
             0x4017 => {
                 // ignore joypad 2
@@ -150,7 +147,7 @@ impl Memory for Bus<'_> {
                 // TODO SND_CHN
             }
             0x4016 => {
-                // TODO joypad1
+                self.joypad1.write(data);
             }
             0x4017 => {
                 // TODOjoypad2
