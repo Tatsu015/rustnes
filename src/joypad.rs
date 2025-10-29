@@ -1,6 +1,7 @@
 use bitflags::bitflags;
 
 bitflags! {
+    #[derive(Clone, Copy)]
     pub struct JoypadButton: u8 {
         const RIGHT    = 0b1000_0000;
         const LEFT     = 0b0100_0000;

@@ -991,7 +991,7 @@ impl<'a> CPU<'a> {
 
 #[cfg(test)]
 mod test {
-    use crate::{cartoridge::Rom, ppu::NesPPU};
+    use crate::{cartoridge::Rom, joypad::Joypad, ppu::NesPPU};
 
     use super::*;
 
@@ -1017,7 +1017,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom, |_: &NesPPU| {});
+        let bus = Bus::new(rom, |_: &NesPPU, _: &mut Joypad| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -1037,7 +1037,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom, |_: &NesPPU| {});
+        let bus = Bus::new(rom, |_: &NesPPU, _: &mut Joypad| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -1055,7 +1055,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom, |_: &NesPPU| {});
+        let bus = Bus::new(rom, |_: &NesPPU, _: &mut Joypad| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -1073,7 +1073,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom, |_: &NesPPU| {});
+        let bus = Bus::new(rom, |_: &NesPPU, _: &mut Joypad| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -1091,7 +1091,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom, |_: &NesPPU| {});
+        let bus = Bus::new(rom, |_: &NesPPU, _: &mut Joypad| {});
         let mut cpu = CPU::new(bus);
         cpu.run();
 
@@ -1109,7 +1109,7 @@ mod test {
         rom_data.extend_from_slice(&[2; 1 * 8 * 1024]);
 
         let rom = Rom::new(&rom_data).unwrap();
-        let bus = Bus::new(rom, |_: &NesPPU| {});
+        let bus = Bus::new(rom, |_: &NesPPU, _: &mut Joypad| {});
         let mut cpu = CPU::new(bus);
 
         cpu.mem_write(0x10, 0x55); // set test data

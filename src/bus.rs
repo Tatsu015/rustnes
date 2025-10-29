@@ -1,5 +1,6 @@
 use crate::cartoridge::Rom;
 use crate::cpu::Memory;
+use crate::joypad::Joypad;
 use crate::ppu::{NesPPU, PPU};
 
 pub struct Bus<'call> {
@@ -7,13 +8,14 @@ pub struct Bus<'call> {
     prg_rom: Vec<u8>,
     ppu: NesPPU,
     cycle: usize,
-    gameloop_callback: Box<dyn FnMut(&NesPPU) + 'call>,
+    gameloop_callback: Box<dyn FnMut(&NesPPU, &mut Joypad) + 'call>,
+    joypad1: Joypad,
 }
 
 impl<'a> Bus<'a> {
     pub fn new<'call, F>(rom: Rom, gameloop_callback: F) -> Bus<'call>
     where
-        F: FnMut(&NesPPU) + 'call,
+        F: FnMut(&NesPPU, &mut Joypad) + 'call,
     {
         let ppu = NesPPU::new(rom.chr_rom, rom.screen_mirroring);
         Bus {
@@ -22,6 +24,7 @@ impl<'a> Bus<'a> {
             ppu: ppu,
             cycle: 0,
             gameloop_callback: Box::from(gameloop_callback),
+            joypad1: Joypad::new(),
         }
     }
 
@@ -40,7 +43,7 @@ impl<'a> Bus<'a> {
         let new_frame = self.ppu.tick(cycles * 3);
         // println!("tick mem read:{:04x}", self.mem_read(0x2002)); // TODO
         if new_frame {
-            (self.gameloop_callback)(&self.ppu);
+            (self.gameloop_callback)(&self.ppu, &mut self.joypad1);
         }
         // println!("after: {}", self.cycle);
     }
