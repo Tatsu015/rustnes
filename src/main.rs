@@ -63,7 +63,7 @@ fn main() {
         .create_texture_target(PixelFormatEnum::RGB24, LOGICAL_WIDTH, LOGICAL_HEIGHT)
         .unwrap();
 
-    let bytes = std::fs::read("./test/sample/Alter_Ego.nes").unwrap();
+    let bytes = std::fs::read("./test/sample/nestest.nes").unwrap();
     let rom = Rom::new(&bytes).unwrap();
 
     let mut frame = Frame::new();

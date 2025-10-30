@@ -263,7 +263,7 @@ impl<'a> CPU<'a> {
         //     self.program_counter,
         //     self.stack_pointer
         // )
-        println!("0x{:02x} st:0b{:08b}", code, self.status) // TODO
+        // println!("0x{:02x} st:0b{:08b}", code, self.status) // TODO
     }
 
     pub fn get_operand_address(&mut self, mode: &AddressingMode) -> (u16, bool) {
