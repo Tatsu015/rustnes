@@ -149,8 +149,8 @@ impl<'a> CPU<'a> {
             callback(self);
 
             let code = self.mem_read(self.program_counter);
-            // self.debug(code); // TODO
-            // self.bus.show_ppu(); // TODO
+            self.debug(code); // TODO
+                              // self.bus.show_ppu(); // TODO
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
@@ -253,17 +253,17 @@ impl<'a> CPU<'a> {
 
     #[allow(dead_code)]
     fn debug(&mut self, code: u8) {
-        println!(
-            "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
-            code,
-            self.register_a,
-            self.register_x,
-            self.register_y,
-            self.status,
-            self.program_counter,
-            self.stack_pointer
-        )
-        // println!("0x{:02x} st:0b{:08b}", code, self.status) // TODO
+        // println!(
+        //     "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
+        //     code,
+        //     self.register_a,
+        //     self.register_x,
+        //     self.register_y,
+        //     self.status,
+        //     self.program_counter,
+        //     self.stack_pointer
+        // )
+        println!("0x{:02x} st:0b{:08b}", code, self.status) // TODO
     }
 
     pub fn get_operand_address(&mut self, mode: &AddressingMode) -> (u16, bool) {

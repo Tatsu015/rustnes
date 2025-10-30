@@ -157,7 +157,9 @@ impl PPU for NesPPU {
         let addr = self.addr.get();
 
         match addr {
-            0..=0x1fff => println!("attempt to chr rom space {}", addr),
+            0..=0x1fff => {
+                // println!("attempt to chr rom space {}", addr);
+            }
             0x2000..=0x2fff => self.vram[self.mirror_vram_addr(addr) as usize] = value,
             0x3000..=0x3eff => unimplemented!("addr {} shouldn't be used in reallity", addr),
             0x3f10 | 0x3f14 | 0x3f18 | 0x3f1c => {
