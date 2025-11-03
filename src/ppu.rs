@@ -67,8 +67,8 @@ impl NesPPU {
         }
     }
 
-    pub fn tick(&mut self, cycle: u8) -> bool {
-        self.cycle += cycle as usize;
+    pub fn tick(&mut self, cycle: usize) -> bool {
+        self.cycle += cycle;
         // println!("ppu.tick cycle:{}", self.cycle);
         if self.cycle >= 341 {
             self.cycle = self.cycle - 341;

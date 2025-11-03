@@ -62,7 +62,7 @@ pub struct CPU<'a> {
     pub stack_pointer: u8,
     pub bus: Bus<'a>,
 
-    pub add_cycles: u8,
+    pub extra_cycles: usize,
 }
 
 impl Memory for CPU<'_> {
@@ -88,7 +88,7 @@ impl<'a> CPU<'a> {
             program_counter: 0x8000,
             stack_pointer: INITIAL_STACK,
             bus: bus,
-            add_cycles: 0,
+            extra_cycles: 0,
         }
     }
 
@@ -141,6 +141,7 @@ impl<'a> CPU<'a> {
     where
         F: FnMut(&mut CPU),
     {
+        self.extra_cycles = 0;
         let ref opcodes: HashMap<u8, &'static OpCode> = *opcode::OPECODE_MAP;
         loop {
             if let Some(_nmi) = self.bus.poll_nmi_status() {
@@ -242,7 +243,8 @@ impl<'a> CPU<'a> {
                 _ => panic!("not arrowed operation code."),
             }
 
-            self.bus.tick(opcode.cycle);
+            self.bus
+                .tick(opcode.cycle as usize + self.extra_cycles as usize);
             self.bus.print_cycle();
 
             if before_program_counter == self.program_counter {
@@ -336,7 +338,7 @@ impl<'a> CPU<'a> {
         self.set_register_a_with_flags(data);
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -346,7 +348,7 @@ impl<'a> CPU<'a> {
         self.update_zero_and_negative_flags(self.register_a);
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -456,7 +458,7 @@ impl<'a> CPU<'a> {
         self.update_zero_and_negative_flags(self.register_a.wrapping_sub(data));
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -507,7 +509,7 @@ impl<'a> CPU<'a> {
         self.update_zero_and_negative_flags(self.register_a); // [TODO] maybe need.
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -573,7 +575,7 @@ impl<'a> CPU<'a> {
         // println!("addr:{:02x}, val:{}, st:0b{:08b}", addr, value, self.status); // TODO
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -583,7 +585,7 @@ impl<'a> CPU<'a> {
         self.update_zero_and_negative_flags(self.register_x);
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -593,7 +595,7 @@ impl<'a> CPU<'a> {
         self.update_zero_and_negative_flags(self.register_y);
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -632,7 +634,7 @@ impl<'a> CPU<'a> {
         self.update_zero_and_negative_flags(self.register_a);
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -748,7 +750,7 @@ impl<'a> CPU<'a> {
         self.set_register_a_with_flags(target_val);
 
         if page_crossed {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
         }
     }
 
@@ -879,7 +881,7 @@ impl<'a> CPU<'a> {
 
     fn branch(&mut self, condition: bool) {
         if condition {
-            self.bus.tick(1);
+            self.extra_cycles += 1;
 
             let jump: i8 = self.mem_read(self.program_counter) as i8;
             let jump_addr = self
@@ -888,7 +890,7 @@ impl<'a> CPU<'a> {
                 .wrapping_add(jump as u16);
 
             if self.program_counter.wrapping_add(1) & 0xFF00 != jump_addr & 0xFF00 {
-                self.bus.tick(1);
+                self.extra_cycles += 1;
             }
 
             self.program_counter = jump_addr;
