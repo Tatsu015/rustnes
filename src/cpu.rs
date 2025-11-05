@@ -150,8 +150,8 @@ impl<'a> CPU<'a> {
             callback(self);
 
             let code = self.mem_read(self.program_counter);
-            // self.debug(code); // TODO
-            // self.bus.show_ppu(); // TODO
+            self.debug(code); // TODO
+                              // self.bus.show_ppu(); // TODO
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 

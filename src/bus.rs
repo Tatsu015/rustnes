@@ -40,7 +40,7 @@ impl<'a> Bus<'a> {
         // println!("before: {}", self.cycle);
         // println!("tick mem read:{:04x}", self.mem_read(0x2002)); // TODO
         self.cycle += cycles;
-        println!("aaaaaaaaaaaaa:{}", cycles);
+        // println!("aaaaaaaaaaaaa:{}", cycles);
         let new_frame = self.ppu.tick(cycles * 3);
         // println!("tick mem read:{:04x}", self.mem_read(0x2002)); // TODO
         if new_frame {

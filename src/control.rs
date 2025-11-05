@@ -27,7 +27,7 @@ impl ControlRegister {
     }
 
     pub fn update(&mut self, data: u8) {
-        ControlRegister::from_bits_truncate(data);
+        *self = ControlRegister::from_bits_truncate(data);
     }
 
     pub fn generate_vblank_status(&mut self) -> bool {
