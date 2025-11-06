@@ -180,19 +180,17 @@ impl PPU for NesPPU {
 
     fn read_data(&mut self) -> u8 {
         let addr = self.addr.get();
-        println!("before addr:{:4x}", addr);
-        self.increment_vrar_addr();
-        let addr = self.addr.get();
-        println!("after  addr:{:4x}", addr);
         match addr {
             0..=0x1fff => {
                 let result = self.internal_data_buf;
                 self.internal_data_buf = self.chr_rom[addr as usize];
+                self.increment_vrar_addr();
                 result
             }
             0x2000..=0x3eff => {
                 let result = self.internal_data_buf;
                 self.internal_data_buf = self.vram[self.mirror_vram_addr(addr) as usize];
+                self.increment_vrar_addr();
                 result
             }
             0x3f00..=0x3fff => self.palette_table[(addr - 0x3f00) as usize],
@@ -313,20 +311,7 @@ pub mod test {
         ppu.write_to_ppu_addr(0x21);
         ppu.write_to_ppu_addr(0xff);
 
-        eprintln!("addr after setup: {:04x}", ppu.addr.get());
-        // debug: internal buffer の初期値
-        eprintln!(
-            "internal buffer before any read: {:02x}",
-            ppu.internal_data_buf
-        );
-
-        ppu.read_data(); //load_into_buffer
-
-        eprintln!(
-            "internal buffer after first read: {:02x}",
-            ppu.internal_data_buf
-        );
-        eprintln!("addr after first read: {:04x}", ppu.addr.get());
+        assert_eq!(ppu.read_data(), 0x00); //load_into_buffer
 
         assert_eq!(ppu.read_data(), 0x66);
         assert_eq!(ppu.read_data(), 0x77);
