@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::env;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -30,6 +31,13 @@ fn main() {
     const LOGICAL_WIDTH: u32 = 256;
     const LOGICAL_HEIGHT: u32 = 240;
     const WINDOW_SCALE: u32 = 3;
+
+    let args: Vec<String> = env::args().collect();
+    let rom_path = if args.len() > 2 {
+        &args[1]
+    } else {
+        "./test/sample/nestest.nes"
+    };
 
     let mut key_map = HashMap::new();
     key_map.insert(Keycode::Down, joypad::JoypadButton::DOWN);
@@ -63,7 +71,7 @@ fn main() {
         .create_texture_target(PixelFormatEnum::RGB24, LOGICAL_WIDTH, LOGICAL_HEIGHT)
         .unwrap();
 
-    let bytes = std::fs::read("./test/sample/nestest.nes").unwrap();
+    let bytes = std::fs::read(rom_path).unwrap();
     let rom = Rom::new(&bytes).unwrap();
 
     let mut frame = Frame::new();
