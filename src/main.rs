@@ -33,7 +33,7 @@ fn main() {
     const WINDOW_SCALE: u32 = 3;
 
     let args: Vec<String> = env::args().collect();
-    let rom_path = if args.len() > 2 {
+    let rom_path = if args.len() >= 2 {
         &args[1]
     } else {
         "./test/sample/nestest.nes"
