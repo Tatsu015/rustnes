@@ -128,9 +128,9 @@ impl PPU for NesPPU {
 
     fn read_status(&mut self) -> u8 {
         let data = self.status.bits();
-        self.status.set_end_vblank(); // TODO not graphic progress when activate, but not pass test when deactivate
-        self.addr.reset_latch(); // TODO same
-        self.scroll.reset_latch(); // TODO same
+        // self.status.set_end_vblank(); // TODO not graphic progress when activate, but not pass test when deactivate
+        // self.addr.reset_latch(); // TODO same
+        // self.scroll.reset_latch(); // TODO same
 
         // println!("read_status:{:04x}", data); // TODO
         data
