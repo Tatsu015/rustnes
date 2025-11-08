@@ -159,38 +159,35 @@ impl PPU for NesPPU {
 
     fn write_to_data(&mut self, value: u8) {
         let addr = self.addr.get();
+        self.increment_vrar_addr();
 
         match addr {
             0..=0x1fff => {
-                // println!("attempt to chr rom space {}", addr);
+                // panic!("ppu addr 0..0x1fff is not used {}", addr);
             }
-            0x2000..=0x2fff => self.vram[self.mirror_vram_addr(addr) as usize] = value,
-            0x3000..=0x3eff => unimplemented!("addr {} shouldn't be used in reallity", addr),
-            0x3f10 | 0x3f14 | 0x3f18 | 0x3f1c => {
-                let addr_mirror = addr - 0x10;
-                self.palette_table[(addr_mirror - 0x3f00) as usize] = value;
+            0x2000..=0x3eff => {
+                self.vram[self.mirror_vram_addr(addr) as usize] = value;
             }
             0x3f00..=0x3fff => {
-                self.palette_table[(addr - 0x3f00) as usize] = value;
+                self.palette_table[(addr - 0x3F00) as usize] = value;
             }
-            _ => panic!("unexpected access"),
+            _ => panic!("unexpected access to mirrored space {}", addr),
         }
-        self.increment_vrar_addr();
     }
 
     fn read_data(&mut self) -> u8 {
         let addr = self.addr.get();
+        self.increment_vrar_addr();
+
         match addr {
             0..=0x1fff => {
                 let result = self.internal_data_buf;
                 self.internal_data_buf = self.chr_rom[addr as usize];
-                self.increment_vrar_addr();
                 result
             }
             0x2000..=0x3eff => {
                 let result = self.internal_data_buf;
                 self.internal_data_buf = self.vram[self.mirror_vram_addr(addr) as usize];
-                self.increment_vrar_addr();
                 result
             }
             0x3f00..=0x3fff => self.palette_table[(addr - 0x3f00) as usize],
@@ -220,11 +217,13 @@ impl AddrRegister {
     }
 
     fn set(&mut self, data: u16) {
+        println!("set {}", data);
         self.value.0 = (data >> 8) as u8;
         self.value.1 = (data & 0xff) as u8;
     }
 
     pub fn update(&mut self, data: u8) {
+        println!("update {}", data);
         if self.hi_ptr {
             self.value.0 = data
         } else {
@@ -238,6 +237,7 @@ impl AddrRegister {
     }
 
     pub fn increment(&mut self, inc: u8) {
+        println!("increment {}", inc);
         let lo = self.value.1;
         self.value.1 = self.value.1.wrapping_add(inc);
         if lo > self.value.1 {
@@ -253,6 +253,7 @@ impl AddrRegister {
     }
 
     pub fn get(&self) -> u16 {
+        println!("get");
         ((self.value.0 as u16) << 8) | (self.value.1 as u16)
     }
 }
