@@ -36,6 +36,7 @@ bitflags! {
 const INITIAL_STATUS: u8 = CpuFlags::RESERVED.bits() | CpuFlags::INTERRUPT_DISABLE.bits();
 const STACK_TOP: u16 = 0x0100;
 const INITIAL_STACK: u8 = 0xfd;
+const INTERRUP_VECTOR_ADDR: u16 = 0xfffe;
 
 pub trait Memory {
     fn mem_read(&mut self, addr: u16) -> u8;
@@ -147,8 +148,8 @@ impl<'a> CPU<'a> {
             callback(self);
 
             let code = self.mem_read(self.program_counter);
-            // self.debug(code); // TODO
-            // self.bus.show_ppu(); // TODO
+            self.debug(code); // TODO
+                              // self.bus.show_ppu(); // TODO
             self.program_counter += 1;
             let before_program_counter = self.program_counter;
 
@@ -169,7 +170,7 @@ impl<'a> CPU<'a> {
                 0x30 => self.bmi(),
                 0xd0 => self.bne(),
                 0x10 => self.bpl(),
-                0x00 => return, // BRK
+                0x00 => self.brk(),
                 0x50 => self.bvc(),
                 0x70 => self.bvs(),
                 0x18 => self.clc(),
@@ -417,6 +418,13 @@ impl<'a> CPU<'a> {
         self.branch(!self.status.contains(CpuFlags::NEGATIVE));
     }
 
+    fn brk(&mut self) {
+        self.stack_push_u16(self.program_counter.wrapping_add(2));
+        self.status.set(CpuFlags::BREAK, true);
+        self.status.set(CpuFlags::INTERRUPT_DISABLE, true);
+        self.stack_push(self.status.bits());
+        self.program_counter = self.mem_read_u16(INTERRUP_VECTOR_ADDR);
+    }
     // no brk function needed. 0x00 case only return
 
     fn bvc(&mut self) {
