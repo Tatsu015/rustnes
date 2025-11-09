@@ -36,7 +36,7 @@ fn main() {
     let rom_path = if args.len() >= 2 {
         &args[1]
     } else {
-        "./test/sample/nestest.nes"
+        "./test/sample/helloworld.nes"
     };
 
     let mut key_map = HashMap::new();

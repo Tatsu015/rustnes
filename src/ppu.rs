@@ -169,7 +169,8 @@ impl PPU for NesPPU {
                 self.vram[self.mirror_vram_addr(addr) as usize] = value;
             }
             0x3f00..=0x3fff => {
-                self.palette_table[(addr - 0x3F00) as usize] = value;
+                let index = (addr - 0x3f00) as usize;
+                self.palette_table[index] = value;
             }
             _ => panic!("unexpected access to mirrored space {}", addr),
         }
@@ -217,13 +218,13 @@ impl AddrRegister {
     }
 
     fn set(&mut self, data: u16) {
-        println!("set {}", data);
+        // println!("set {}", data); TODO
         self.value.0 = (data >> 8) as u8;
         self.value.1 = (data & 0xff) as u8;
     }
 
     pub fn update(&mut self, data: u8) {
-        println!("update {}", data);
+        // println!("update {}", data); TODO
         if self.hi_ptr {
             self.value.0 = data
         } else {
@@ -237,7 +238,7 @@ impl AddrRegister {
     }
 
     pub fn increment(&mut self, inc: u8) {
-        println!("increment {}", inc);
+        // println!("increment {}", inc); TODO
         let lo = self.value.1;
         self.value.1 = self.value.1.wrapping_add(inc);
         if lo > self.value.1 {
@@ -253,7 +254,7 @@ impl AddrRegister {
     }
 
     pub fn get(&self) -> u16 {
-        println!("get");
+        // println!("get"); TODO
         ((self.value.0 as u16) << 8) | (self.value.1 as u16)
     }
 }
