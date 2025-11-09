@@ -425,7 +425,6 @@ impl<'a> CPU<'a> {
         self.stack_push(self.status.bits());
         self.program_counter = self.mem_read_u16(INTERRUP_VECTOR_ADDR);
     }
-    // no brk function needed. 0x00 case only return
 
     fn bvc(&mut self) {
         self.branch(!self.status.contains(CpuFlags::OVERFLOW));
