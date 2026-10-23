@@ -7,7 +7,7 @@ bitflags! {
         const VRAM_ADDR_INCREMENT = 0b0000_0100;
         const SPRITE_PATTERN_ADDR = 0b0000_1000;
         const BACKGROUND_PATTERN_ADDR = 0b0001_0000;
-        const STRIPE_SIZE = 0b0010_0000;
+        const SPRITE_SIZE = 0b0010_0000;
         const MASTER_SLAVE_SELECT = 0b0100_0000;
         const GENERATE_NMI = 0b1000_0000;
     }
@@ -46,8 +46,16 @@ impl ControlRegister {
     }
 
     pub fn sprt_pattern_addr(&self) -> u16 {
-        if self.contains(ControlRegister::STRIPE_SIZE) {
+        if self.contains(ControlRegister::SPRITE_PATTERN_ADDR) {
             0x1000
+        } else {
+            0
+        }
+    }
+
+    pub fn sprt_size(&self) -> u16 {
+        if self.contains(ControlRegister::SPRITE_SIZE) {
+            16
         } else {
             0
         }
