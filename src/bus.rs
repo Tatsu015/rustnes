@@ -142,7 +142,12 @@ impl Memory for Bus<'_> {
                 // TODO APU
             }
             0x4014 => {
-                // TODO OAMDMA
+                let hi: u16 = (data as u16) << 8;
+                let mut buffer: [u8; 256] = [0; 256];
+                for i in 0..256u16 {
+                    buffer[i as usize] = self.mem_read(hi + i);
+                }
+                self.ppu.write_oam_dma(&buffer);
             }
             0x4015 => {
                 // TODO SND_CHN
