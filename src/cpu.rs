@@ -251,7 +251,7 @@ impl<'a> CPU<'a> {
     }
 
     #[allow(dead_code)]
-    fn debug(&mut self, code: u8) {
+    fn debug(&mut self, _code: u8) {
         // println!(
         //     "CPU,code:0x{:02x},ra:0x{:02x},rx:0x{:02x},ry:0x{:02x},st:0b{:08b},pc:0x{:04x},sp:0x{:02x}",
         //     code,
